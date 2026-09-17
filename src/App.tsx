@@ -3,6 +3,7 @@ import { useMidnight } from './hooks/useMidnight';
 import { WalletConnect } from './components/WalletConnect';
 import { CircuitCall } from './components/CircuitCall';
 import { ObservablePrivacyInspector } from './components/ObservablePrivacyInspector';
+import { BackgroundAnimation } from './components/BackgroundAnimation';
 import {
   Shield,
   Layers,
@@ -40,6 +41,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-container">
+      {/* Background Celestial Figure Animation (Half Light, Half Shadow) */}
+      <BackgroundAnimation />
+
       {/* Background glowing gradients */}
       <div className="bg-glow bg-glow-1"></div>
       <div className="bg-glow bg-glow-2"></div>
@@ -54,7 +58,7 @@ export const App: React.FC = () => {
             <div>
               <div className="brand-name-row">
                 <span className="brand-title">Proofolio</span>
-                <span className="brand-version-tag">Level 2 dApp</span>
+                <span className="brand-version-tag">Level 3 dApp</span>
               </div>
               <span className="brand-subtitle">Midnight ZK Proof-of-Reserves</span>
             </div>
@@ -284,7 +288,7 @@ export const App: React.FC = () => {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
-          <p>© 2026 Proofolio — Midnight Builder Challenge Level 2 (Rise In)</p>
+          <p>© 2026 Proofolio — Midnight Builder Challenge Level 3 (Rise In)</p>
           <div className="footer-links">
             <a
               href="https://midnight.network"

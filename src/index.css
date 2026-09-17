@@ -57,6 +57,24 @@ body {
   right: 10%;
 }
 
+/* Background Celestial Figure Animation */
+.background-animation-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.88;
+}
+
+.background-animation-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* App Container */
 .app-container {
   position: relative;
@@ -64,6 +82,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: rgba(7, 11, 20, 0.45);
 }
 
 /* Navbar */
