@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "compile": "compact compile contracts/proof_of_reserves.compact managed/proof_of_reserves",
-    "test": "npx tsx tests/proof_of_reserves.test.ts",
+    "test": "npx tsx tests/proof_of_reserves.test.ts && npx tsx tests/eligibility_gate.test.ts",
     "deploy": "npx tsx src/deploy.ts",
     "cli": "npx tsx src/cli.ts",
     "query-state": "npx tsx src/query-state.ts",
