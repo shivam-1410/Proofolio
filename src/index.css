@@ -1,7 +1,7 @@
 :root {
   --bg-dark: #070b14;
-  --bg-card: rgba(14, 22, 40, 0.75);
-  --bg-card-hover: rgba(19, 31, 56, 0.85);
+  --bg-card: rgba(13, 20, 36, 0.94);
+  --bg-card-hover: rgba(18, 28, 50, 0.97);
   --border-color: rgba(56, 189, 248, 0.15);
   --border-glow: rgba(99, 102, 241, 0.3);
   --text-primary: #f1f5f9;
@@ -66,7 +66,7 @@ body {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.88;
+  opacity: 0.45;
 }
 
 .background-animation-canvas {
@@ -82,7 +82,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: rgba(7, 11, 20, 0.45);
+  background: transparent;
 }
 
 /* Navbar */

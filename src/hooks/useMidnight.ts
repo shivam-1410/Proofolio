@@ -81,7 +81,7 @@ export function useMidnight() {
   }, [fetchLedgerState]);
 
   // Connect to Lace Wallet
-  const connectWallet = async () => {
+  const connectWallet = async (overrideNetwork?: string) => {
     setIsConnecting(true);
     setError(null);
 
@@ -107,14 +107,39 @@ export function useMidnight() {
 
       console.log('Found Midnight wallet:', laceWallet.name, 'v' + laceWallet.apiVersion);
 
-      // 2. Connect to wallet with target network
+      // 2. Connect to wallet with target network and automatic fallback
       let api: ConnectedAPI;
-      if (typeof laceWallet.connect === 'function') {
-        api = await laceWallet.connect(networkId);
-      } else if (typeof (laceWallet as any).enable === 'function') {
-        api = await (laceWallet as any).enable();
-      } else {
-        throw new Error('Wallet does not provide a valid connect or enable method.');
+      const targetNet = overrideNetwork || networkId;
+      const fallbackNet = targetNet === 'preprod' ? 'preview' : 'preprod';
+
+      try {
+        if (typeof laceWallet.connect === 'function') {
+          api = await laceWallet.connect(targetNet);
+        } else if (typeof (laceWallet as any).enable === 'function') {
+          api = await (laceWallet as any).enable();
+        } else {
+          throw new Error('Wallet does not provide a valid connect or enable method.');
+        }
+      } catch (firstErr: any) {
+        const msg = String(firstErr?.message || firstErr);
+        if (msg.toLowerCase().includes('mismatch') || msg.toLowerCase().includes('network')) {
+          console.warn(`Lace network mismatch with '${targetNet}'. Auto-attempting '${fallbackNet}'...`);
+          try {
+            if (typeof laceWallet.connect === 'function') {
+              api = await laceWallet.connect(fallbackNet);
+              setNetworkId(fallbackNet);
+              console.log(`Successfully connected via auto-fallback to ${fallbackNet}!`);
+            } else {
+              throw firstErr;
+            }
+          } catch (secondErr) {
+            throw new Error(
+              `Network ID mismatch: Your Lace wallet is set to a different network. Please switch Lace wallet to ${targetNet.toUpperCase()} or click below to switch dApp to ${fallbackNet.toUpperCase()}.`
+            );
+          }
+        } else {
+          throw firstErr;
+        }
       }
 
       // 3. Extract addresses

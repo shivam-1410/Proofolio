@@ -11,6 +11,7 @@ interface WalletConnectProps {
   onConnect: () => void;
   onDisconnect: () => void;
   onClearError: () => void;
+  onSwitchNetwork?: (newNetwork: string) => void;
 }
 
 export const WalletConnect: React.FC<WalletConnectProps> = ({
@@ -23,6 +24,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
   onConnect,
   onDisconnect,
   onClearError,
+  onSwitchNetwork,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -47,13 +49,25 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           </div>
           <div>
             <h3 className="wallet-heading">Midnight Lace Wallet</h3>
-            <p className="wallet-subheading">Preprod Network Connection</p>
+            <p className="wallet-subheading">Network: {networkId.toUpperCase()}</p>
           </div>
         </div>
 
-        <div className="network-pill">
-          <span className={`status-dot ${isConnected ? 'dot-active' : 'dot-idle'}`}></span>
-          <span className="network-name">{networkId.toUpperCase()}</span>
+        <div className="network-selector-pill">
+          <button
+            type="button"
+            onClick={() => onSwitchNetwork && onSwitchNetwork('preprod')}
+            className={`net-tab ${networkId === 'preprod' ? 'net-tab-active' : ''}`}
+          >
+            Preprod
+          </button>
+          <button
+            type="button"
+            onClick={() => onSwitchNetwork && onSwitchNetwork('preview')}
+            className={`net-tab ${networkId === 'preview' ? 'net-tab-active' : ''}`}
+          >
+            Preview
+          </button>
         </div>
       </div>
 
@@ -65,6 +79,24 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           <div className="error-body">
             <div className="error-title">Connection Error</div>
             <div className="error-message">{error}</div>
+            {error.toLowerCase().includes('mismatch') && (
+              <div className="error-action-row">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const alt = networkId === 'preprod' ? 'preview' : 'preprod';
+                    if (onSwitchNetwork) onSwitchNetwork(alt);
+                    onConnect();
+                  }}
+                  className="switch-connect-btn"
+                >
+                  Switch to {networkId === 'preprod' ? 'Preview' : 'Preprod'} &amp; Reconnect
+                </button>
+                <p className="error-tip-text">
+                  Tip: Open Lace Extension &rarr; Settings &rarr; Network to match your active network.
+                </p>
+              </div>
+            )}
             {error.includes('not installed') && (
               <a
                 href="https://midnight.network"

@@ -180,6 +180,7 @@ export const App: React.FC = () => {
               onConnect={connectWallet}
               onDisconnect={disconnectWallet}
               onClearError={() => setError(null)}
+              onSwitchNetwork={setNetworkId}
             />
           </div>
 
