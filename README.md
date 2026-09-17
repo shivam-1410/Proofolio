@@ -43,6 +43,16 @@ Centralized exchanges, crypto custodians, and financial institutions face a crit
 
 ---
 
+## Observable Privacy Behavior
+In traditional blockchain systems, verifying financial solvency requires either full disclosure of asset and liability balances on a public ledger, or reliance on trusted third-party auditing firms.
+
+**Proofolio demonstrates observable privacy behavior through zero-knowledge execution:**
+1. **Client-Side Private Witnessing:** The custodian's raw asset figures (`total_reserves = 12,500,000`) and customer deposit liabilities (`total_liabilities = 8,750,000`) exist solely inside local browser memory.
+2. **Zero Information Leakage:** Neither the Vite frontend DOM, clear-text network requests, nor the transaction payload ever disclose the numerical figures.
+3. **Succinct On-Chain Verification:** The Midnight blockchain verifies the mathematical constraint `total_reserves >= total_liabilities` via cryptographic proof. An on-chain observer sees that the entity is 100% solvent, yet possesses zero mathematical capability to determine whether reserves were 12.5M, 100M, or 10B.
+
+---
+
 ## Privacy Claim
 An on-chain observer or adversary inspecting the Midnight blockchain sees only the binary certification that the audited entity holds sufficient reserves to cover liabilities, along with an immutable cryptographic commitment hash and timestamp. The observer **CANNOT** deduce, estimate, or reconstruct the actual reserve balances, customer liabilities, or deposit sizes.
 
