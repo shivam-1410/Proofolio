@@ -24,6 +24,7 @@ export const App: React.FC = () => {
     walletAddress,
     shieldedAddress,
     networkId,
+    setNetworkId,
     isConnecting,
     error,
     setError,
