@@ -2,8 +2,8 @@
 > Zero-Knowledge Proof-of-Reserves dApp built on Midnight Network that mathematically proves asset solvency without disclosing balance sheets or customer numbers.
 
 ## Live Demo
-[PASTE LIVE URL AFTER DEPLOYING FRONTEND]
-*(Deploy using `npx vercel` or `npx netlify deploy --prod`)*
+🔗 **Live Application:** [https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/)
+*(Also deployable to Vercel and Netlify with included `vercel.json` & `netlify.toml`)*
 
 ## Contract Address
 | Network  | Address                          |
