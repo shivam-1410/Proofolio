@@ -2,6 +2,7 @@ import React from 'react';
 import { useMidnight } from './hooks/useMidnight';
 import { WalletConnect } from './components/WalletConnect';
 import { CircuitCall } from './components/CircuitCall';
+import { ObservablePrivacyInspector } from './components/ObservablePrivacyInspector';
 import {
   Shield,
   Layers,
@@ -193,6 +194,11 @@ export const App: React.FC = () => {
               onCallCircuit={callVerifySolvencyCircuit}
             />
           </div>
+        </section>
+
+        {/* Observable Privacy Behavior Demo */}
+        <section className="observable-privacy-section">
+          <ObservablePrivacyInspector />
         </section>
 
         {/* Privacy Architecture & Model Breakdown */}
