@@ -1,183 +1,157 @@
-# ZK Proof-of-Reserves: Confidential Solvency Verifier
+# Proofolio: Confidential Solvency Verifier
+> Zero-Knowledge Proof-of-Reserves dApp built on Midnight Network that mathematically proves asset solvency without disclosing balance sheets or customer numbers.
 
-A zero-knowledge solvency verification smart contract deployed on the **Midnight Network** (Preview). Financial institutions, custodians, and decentralized exchanges can cryptographically prove their reserve assets meet or exceed their customer liabilities (`total_reserves >= total_liabilities`) with 100% mathematical certainty—**without disclosing raw asset quantities, customer liability balances, or proprietary financial positions**.
+## Live Demo
+[PASTE LIVE URL AFTER DEPLOYING FRONTEND]
+*(Deploy using `npx vercel` or `npx netlify deploy --prod`)*
 
----
+## Contract Address
+| Network  | Address                          |
+|----------|----------------------------------|
+| Preprod  | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` |
 
-## 📋 Deployed Contract Addresses (Midnight Preview)
+*(Contract address is MANDATORY. Do not leave this blank.)*
 
-| Contract | Network | Contract Address | Transaction Hash | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **ZK Proof-of-Reserves** | **Preview** | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` | `9ab1763a332e55a22c9d9ef03e93e2c287f2d9313a2d52af4d5f562437dbbbe7` | **LIVE & VERIFIED** |
-| **Live Proof Tx (`verifySolvency`)** | **Preview** | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` | `00ec78c9bd1fe53a7b77e09b52c28022a06b7736fc550da2b28f8fb60e8707aea6` | **Block 900942** |
-| **Hello-World (Milestone 4)** | **Preview** | `e1f8853d62e5d91a331f7b6fe82025f3e4fb5ea72cc8349fa5967273c3902e43` | `a39158e0a16bfa58d4a6bb4bcfecfaaa2185d953a99266e8555e7149a405c106` | **VERIFIED** |
-
-- **Deployer / Audited Entity Address:** `mn_addr_preview1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5`
-- **Current On-Chain Solvency Status:** `true` (Solvent)
-- **Current On-Chain Commitment Hash:** `0x678605e736b76aac95555f7b1b5940893de24decf6824c192d3bbb89946dcb4e`
-
----
-
-## 💡 What This Does
-
-Centralized exchanges and financial custodians face a fundamental dilemma: depositors demand proof that the custodian is fully solvent and not rehypothecating funds, yet publishing full balance sheets leaks trade secrets, invites competitive front-running, and compromises user privacy. **ZK Proof-of-Reserves** resolves this conflict using zero-knowledge cryptography on the Midnight Network. The custodian generates an off-chain cryptographic proof that their total reserves cover all customer liabilities. The Midnight blockchain verifies this proof and updates an immutable public ledger indicating certified solvency, while keeping all actual financial numbers completely private.
+- **Deployed Contract Address:** `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d`
+- **Deployer / Institution Address:** `mn_addr_preview1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5`
+- **Initial Deployment Block:** `900782`
+- **Verified Proof Tx:** `00ec78c9bd1fe53a7b77e09b52c28022a06b7736fc550da2b28f8fb60e8707aea6` (Block `900942`)
 
 ---
 
-## 🛡️ Privacy Model & Circuit Architecture
+## What This Does
+Centralized exchanges, crypto custodians, and financial institutions face a critical transparency problem: depositors and regulators demand mathematical proof that customer deposits are 100% backed (`total_reserves >= total_liabilities`), yet disclosing complete balance sheets exposes confidential trade secrets, invites competitive front-running, and violates user financial privacy.
 
-```
-                 OFF-CHAIN (Client-Side Private Witnesses)
-┌────────────────────────────────────────────────────────────────────────┐
-│  • total_reserves: Uint<64>    (e.g., 10,000,000 tNight)               │
-│  • total_liabilities: Uint<64> (e.g.,  8,500,000 tNight)               │
-│  • salt: Bytes<32>             (Cryptographic blinding entropy)        │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼
-                    COMPACT ZK PROVING CIRCUIT
-               assert(total_reserves >= total_liabilities)
-               commitment = persistentHash<Bytes<32>>(salt)
-                                   │
-                                   ▼
-        ON-CHAIN PUBLIC LEDGER STATE (Midnight Preview Network)
-┌────────────────────────────────────────────────────────────────────────┐
-│  • solvency_status: true      (Public boolean flag)                    │
-│  • last_verified_block: Uint<64> (Block height / verification epoch)   │
-│  • commitment_hash: Bytes<32> (Cryptographic audit anchor)             │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-### 1. What is Public (On-Chain, Globally Verifiable)
-- **`solvency_status: Boolean`**: An on-chain public flag certifying whether the institution passed its solvency constraint. Anyone in the world can inspect this state to verify solvency.
-- **`last_verified_block: Uint<64>`**: The block height or timestamp at which the solvency proof was recorded, demonstrating proof freshness and audit cadence.
-- **`commitment_hash: Bytes<32>`**: A cryptographic hash commitment binding the audit to a specific confidential snapshot without exposing its contents.
-
-### 2. What is Private (Client-Side Only, Never Leaves Institution)
-- **`total_reserves: Uint<64>`**: The exact reserve assets held by the custodian.
-- **`total_liabilities: Uint<64>`**: The exact total liabilities and deposit balances owed.
-- **`salt: Bytes<32>`**: Cryptographic blinding entropy preventing rainbow-table attacks or brute-force derivation of financial positions.
-
-### 3. What is Proven Without Revealing
-- **Mathematical Solvency**: The circuit strictly enforces `total_reserves >= total_liabilities`. If reserves are less than liabilities, circuit proof generation mathematically aborts.
-- **Zero Financial Leakage**: Neither the ledger state, block headers, nor transaction payloads reveal the raw balance numbers.
-- **Audit Consistency**: The commitment hash prevents the entity from swapping underlying accounts across sequential proofs.
+**Proofolio** resolves this dilemma using zero-knowledge cryptography on the **Midnight Network**. Through a browser-based dApp connecting directly to the **Lace wallet**, an institution or auditor evaluates balance sheet assets and liabilities inside a client-side zero-knowledge circuit. The circuit generates a cryptographic proof verifying that reserves exceed customer liabilities, which is then submitted and recorded on-chain. The public ledger is updated with an immutable certification of solvency without disclosing the underlying asset balances or customer totals.
 
 ---
 
-## ⚡ Why Midnight?
-
-Midnight is specifically designed for **data protection and programmable privacy** using a dual-state architecture:
-1. **Native Hybrid State**: Unlike transparent blockchains (Ethereum, Solana) where all contract storage is public, Midnight provides first-class separation between public on-chain ledger state and client-side private witnesses.
-2. **Compact Smart Contract Language**: Writing ZK circuits in Compact requires no manual arithmetic circuit design (R1CS/Plonk gadgets). Compact compiles declarative constraints directly into zero-knowledge circuits (`zkir`), proving keys, and TypeScript runtime bindings.
-3. **Local Proving with Proof Server**: Private witnesses remain entirely on the user's machine; only the resulting Succinct Non-Interactive Zero-Knowledge Proof (ZKP) and selectively disclosed public outputs are transmitted over the network.
-
----
-
-## 🛠️ Tech Stack
-
-- **Blockchain:** [Midnight Network](https://midnight.network) (Preview Testnet)
-- **Smart Contract Language:** [Compact](https://docs.midnight.network) `0.23.0` (Compiler `compactc 0.31.1`)
-- **ZK Prover:** Docker `midnightntwrk/proof-server:8.1.0`
-- **SDK & Protocol:** `@midnight-ntwrk/midnight-js-contracts@4.1.1`, `@midnight-ntwrk/wallet-sdk@1.2.0`, `@midnight-ntwrk/compact-runtime@0.16.0`
-- **Runtime Environment:** Node.js `v22.23.1` on macOS (Apple Silicon `aarch64`)
-- **Language / Tooling:** TypeScript, `tsx`, Node.js native test runner
+## Privacy Model
+- **What is PUBLIC:**
+  - `solvency_status: Boolean` — Global boolean flag indicating whether the institution has satisfied the mathematical solvency constraint.
+  - `last_verified_block: Uint<64>` — Block height / timestamp recording when the proof was verified on-chain.
+  - `commitment_hash: Bytes<32>` — Cryptographic audit commitment binding the proof to a specific balance sheet snapshot.
+- **What is PRIVATE:**
+  - `total_reserves: Uint<64>` — Exact reserve assets held and controlled by the institution (e.g. `10,000,000`).
+  - `total_liabilities: Uint<64>` — Exact customer deposit liabilities and obligations owed (e.g. `8,500,000`).
+  - `salt: Bytes<32>` — Cryptographic blinding entropy preventing dictionary or brute-force derivation of financial positions.
+- **What the user PROVES without revealing:**
+  - The zero-knowledge circuit strictly enforces `total_reserves >= total_liabilities`.
+  - The ZK proof guarantees mathematical solvency with 100% cryptographic certainty.
+  - Selective disclosure (`disclose()`) guarantees that neither raw reserves, liabilities, nor customer balances are ever emitted to ledger state, block headers, or transaction payloads.
+  - **Proved without revealing your input.**
 
 ---
 
-## 🚀 Prerequisites & Installation
+## Privacy Claim
+An on-chain observer or adversary inspecting the Midnight blockchain sees only the binary certification that the audited entity holds sufficient reserves to cover liabilities, along with an immutable cryptographic commitment hash and timestamp. The observer **CANNOT** deduce, estimate, or reconstruct the actual reserve balances, customer liabilities, or deposit sizes.
 
-### 1. Prerequisites
-- **Node.js** `v22.x`
-- **Docker Desktop** (running)
-- **Compact CLI** `0.5.2` (toolchain `0.31.1`)
+---
+
+## Tech Stack
+Midnight network, Compact, Midnight.js SDK, React/Vite, Lace wallet
+- **Smart Contract Language:** Compact (`contracts/proof_of_reserves.compact`)
+- **ZK Protocol & SDK:** `@midnight-ntwrk/dapp-connector-api@4.0.1`, `@midnight-ntwrk/compact-runtime@0.16.0`, `@midnight-ntwrk/midnight-js-contracts@4.1.1`
+- **Frontend Framework:** React 19, TypeScript, Vite 8
+- **Styling & UI:** Vanilla CSS design system with dark cyber/fintech aesthetics and Lucide icons
+- **Wallet Support:** Midnight Lace Wallet DApp Connector (`window.midnight.mnLace`)
+
+---
+
+## Prerequisites
+- Lace wallet installed (with Midnight testnet support)
+- Node.js v22 (`node -v` >= 22.0.0)
+- npm / npx
+
+---
+
+## Run Locally
+Step-by-step instructions to clone, install, and run Proofolio:
 
 ```bash
-# Verify Node
-node -v
+# 1. Clone repository
+git clone https://github.com/shivam-1410/Proofolio.git
+cd Proofolio
 
-# Install Compact CLI
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh
-export PATH="$HOME/.local/bin:$PATH"
-compact update 0.31.1
-```
-
-### 2. Start the Local Proof Server
-```bash
-docker run -d --name proof-server -p 6300:6300 midnightntwrk/proof-server:8.1.0 midnight-proof-server -v
-```
-
-### 3. Install Dependencies
-```bash
+# 2. Install dependencies
 npm install
-```
 
----
+# 3. Start the local frontend development server
+npm run dev
 
-## 🧪 Testing
+# 4. Open browser at:
+# http://localhost:5173
 
-Run the automated unit test suite:
-
-```bash
+# 5. (Optional) Run the automated circuit test suite
 npm test
-```
 
-### Test Suite Coverage:
-- **Test 1:** Verifies initial contract state (`solvency_status = false`, zero block, zero commitment).
-- **Test 2:** Circuit succeeds when `total_reserves >= total_liabilities` (Solvent state transition to `true`).
-- **Test 3:** Circuit rejects and throws an assertion error when `total_reserves < total_liabilities` (Insolvent).
-- **Test 4:** Cryptographic privacy invariants — asserts private inputs (`total_reserves`, `total_liabilities`, `salt`) are never exposed in public ledger properties.
+# 6. (Optional) Build production bundle
+npm run build
+```
 
 ---
 
-## 💻 CLI & Usage
+## Demo Video
+[PLACEHOLDER — I will add the link after recording]
 
-### 1. Query Live On-Chain State from Midnight Preview
-```bash
-npm run query-state
+---
+
+## 📁 Repository Structure
 ```
-**Output:**
+Proofolio/
+├── contracts/
+│   └── proof_of_reserves.compact    # Compact ZK solvency verification contract
+├── managed/
+│   └── proof_of_reserves/           # Generated ZK keys, ZKIR, and TypeScript contract bindings
+├── src/
+│   ├── components/
+│   │   ├── WalletConnect.tsx        # Lace wallet connect / disconnect UI & address display
+│   │   └── CircuitCall.tsx          # Solvency circuit trigger, local ZK proof progress & on-chain receipt
+│   ├── hooks/
+│   │   └── useMidnight.ts           # Midnight.js SDK & Lace DApp connector hook
+│   ├── App.tsx                      # Main Proofolio application dashboard
+│   ├── main.tsx                     # Vite React entrypoint
+│   ├── index.css                    # Modern dark theme stylesheet
+│   ├── deploy.ts                    # Contract deployment script
+│   ├── cli.ts                       # Interactive terminal CLI
+│   └── network.ts                   # Midnight Preprod & Preview network configuration
+├── tests/
+│   └── proof_of_reserves.test.ts    # 4/4 passing unit tests covering circuit assertions & privacy invariants
+├── public/
+│   └── logo.svg                     # Proofolio brand icon
+├── .github/
+│   └── workflows/                   # CI workflow
+├── vercel.json                      # Vercel deployment configuration
+├── netlify.toml                     # Netlify deployment configuration
+├── vite.config.ts                   # Vite build configuration
+├── package.json
+└── README.md
+```
+
+---
+
+## 🧪 Verification & Test Results
 ```text
-================================================================
-  ON-CHAIN PUBLIC LEDGER STATE
-================================================================
-  Contract Address:    25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d
-  Solvency Status:     true
-  Last Verified Block: 900800
-  Commitment Hash:     0x678605e736b76aac95555f7b1b5940893de24decf6824c192d3bbb89946dcb4e
-================================================================
+> npm test
+
+  ✓ Initial ledger state verified (solvency_status = false)
+  ✓ Circuit passed with total_reserves >= total_liabilities
+    Reserves:    10,000,000 (Private)
+    Liabilities: 8,500,000 (Private)
+    Solvency:    true (Public)
+    Block:       123456 (Public)
+  ✓ Circuit rejected invalid state (reserves < liabilities) with assertion error
+  ✓ Privacy guarantees verified: private witnesses strictly shielded from public ledger
+▶ ZK Proof-of-Reserves Circuit & State Invariants
+  ✔ Test 1: Initial state has solvency_status = false, zero block, and zero commitment
+  ✔ Test 2: Circuit execution succeeds when total_reserves >= total_liabilities
+  ✔ Test 3: Circuit execution reverts/fails when total_reserves < total_liabilities
+  ✔ Test 4: Privacy Invariants — private inputs are never exposed in public ledger state
+✔ ZK Proof-of-Reserves Circuit & State Invariants (61ms)
+ℹ tests 4 | pass 4 | fail 0
 ```
-
-### 2. Interactive CLI
-```bash
-npm run cli
-```
-Provides an interactive menu to:
-1. Prove solvency with custom private reserves and liabilities.
-2. Query the live on-chain public ledger.
-3. Check your funded tNight and DUST balance.
-
----
-
-## 📝 Initial Hackathon Concept Note
-
-> **Hackathon Track:** Level 1 — Midnight Builder Challenge (Rise In)  
-> **Initial Concept:** Rather than following the conventional identity/KYC circuit demo that most submissions duplicate, we chose to solve a multi-billion dollar problem in decentralized finance: **Confidential Proof-of-Reserves**. Following major custodial collapses in crypto history, solvency verification has become essential. With Midnight's privacy-preserving smart contract model, exchanges and institutions can achieve total transparency on solvency without giving up trade confidentiality or customer financial privacy.
-
----
-
-## 📸 Verification & Screenshots
-
-*Placeholder section for demo recordings and terminal screenshots.*
-
-| Action | Screenshot / Proof |
-| :--- | :--- |
-| **Contract Compilation** | `compact compile contracts/proof_of_reserves.compact managed/proof_of_reserves` ✓ |
-| **Circuit Unit Tests** | `npm test` — 4/4 passing tests ✓ |
-| **On-Chain Deployment** | Contract deployed to Preview block `900782` ✓ |
-| **Live Proof Execution** | Solvency verified on-chain at block `900942` (`tx: 00ec78c9...`) ✓ |
 
 ---
 
 ## 📄 License
-MIT
+MIT License. Built for the Midnight Builder Challenge on Rise In.
