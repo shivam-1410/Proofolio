@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { InitialAPI, ConnectedAPI } from '@midnight-ntwrk/dapp-connector-api';
 
 export const PREPROD_CONTRACT_ADDRESS = '25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d';
@@ -24,7 +24,10 @@ export function useMidnight() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [shieldedAddress, setShieldedAddress] = useState<string | null>(null);
   const [networkId, setNetworkId] = useState<string>('preprod');
-  const [connectedAPI, setConnectedAPI] = useState<ConnectedAPI | null>(null);
+  // In React 19, storing the extension RPC Proxy in useState triggers thenable (.then)
+  // recursion in the React dispatcher / DevTools, causing "Maximum call stack size exceeded".
+  // Storing the API instance in a ref prevents React from recursively inspecting the Proxy.
+  const connectedAPIRef = useRef<ConnectedAPI | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,76 +83,163 @@ export function useMidnight() {
     fetchLedgerState();
   }, [fetchLedgerState]);
 
+  // Safely detect Midnight Lace wallet without prototype / getter recursion
+  const getLaceWallet = (): InitialAPI | null => {
+    try {
+      const midnightObj = (window as any).midnight;
+      if (!midnightObj) return null;
+
+      // 1. Direct standard identifier
+      if (midnightObj.mnLace && typeof midnightObj.mnLace === 'object') {
+        return midnightObj.mnLace;
+      }
+      // 2. Alternative known names
+      if (midnightObj['lace-midnight'] && typeof midnightObj['lace-midnight'] === 'object') {
+        return midnightObj['lace-midnight'];
+      }
+      if (midnightObj.lace && typeof midnightObj.lace === 'object') {
+        return midnightObj.lace;
+      }
+      // 3. Direct connector
+      if (typeof midnightObj.connect === 'function' || typeof midnightObj.enable === 'function') {
+        return midnightObj;
+      }
+      // 4. Any entry with connect or enable function
+      for (const key of Object.keys(midnightObj)) {
+        const val = midnightObj[key];
+        if (val && typeof val === 'object' && (typeof val.connect === 'function' || typeof val.enable === 'function')) {
+          return val;
+        }
+      }
+    } catch (e) {
+      console.warn('Error detecting Midnight wallet:', e);
+    }
+    return null;
+  };
+
   // Connect to Lace Wallet
-  const connectWallet = async (overrideNetwork?: string) => {
+  const connectWallet = useCallback(async (overrideNetwork?: string) => {
     setIsConnecting(true);
     setError(null);
 
     try {
       // 1. Check for Midnight wallet provider injection
-      const midnightObj = (window as any).midnight;
+      let laceWallet = getLaceWallet();
 
-      if (!midnightObj) {
+      // Retry once briefly in case content script injection was pending
+      if (!laceWallet) {
+        await new Promise((r) => setTimeout(r, 250));
+        laceWallet = getLaceWallet();
+      }
+
+      if (!laceWallet) {
         throw new Error(
           'Lace wallet extension for Midnight is not installed. Please install the Lace wallet extension from Midnight to continue.'
         );
       }
 
-      // Look for Lace under mnLace or any initial API
-      const laceWallet: InitialAPI =
-        midnightObj.mnLace ||
-        (midnightObj['lace-midnight'] as InitialAPI) ||
-        Object.values(midnightObj)[0] as InitialAPI;
+      const walletName = typeof laceWallet.name === 'string' ? laceWallet.name : 'Midnight Lace';
+      const apiVersion = typeof laceWallet.apiVersion === 'string' ? laceWallet.apiVersion : 'v4';
+      console.log('Found Midnight wallet:', walletName, 'v' + apiVersion);
 
-      if (!laceWallet) {
-        throw new Error('No compatible Midnight wallet provider detected.');
-      }
-
-      console.log('Found Midnight wallet:', laceWallet.name, 'v' + laceWallet.apiVersion);
-
-      // 2. Connect to wallet with target network and automatic fallback
-      let api: ConnectedAPI;
+      // 2. Connect to wallet with target network and automatic candidate fallback
       const targetNet = overrideNetwork || networkId;
       const fallbackNet = targetNet === 'preprod' ? 'preview' : 'preprod';
+      const networkCandidates = Array.from(new Set([targetNet, fallbackNet, 'undeployed', 'preview', 'preprod']));
 
-      try {
-        if (typeof laceWallet.connect === 'function') {
-          api = await laceWallet.connect(targetNet);
-        } else if (typeof (laceWallet as any).enable === 'function') {
-          api = await (laceWallet as any).enable();
-        } else {
-          throw new Error('Wallet does not provide a valid connect or enable method.');
-        }
-      } catch (firstErr: any) {
-        const msg = String(firstErr?.message || firstErr);
-        if (msg.toLowerCase().includes('mismatch') || msg.toLowerCase().includes('network')) {
-          console.warn(`Lace network mismatch with '${targetNet}'. Auto-attempting '${fallbackNet}'...`);
+      let api: ConnectedAPI | null = null;
+      let lastErr: any = null;
+
+      // Try modern v4 connect() first
+      if (typeof laceWallet.connect === 'function') {
+        for (const net of networkCandidates) {
           try {
-            if (typeof laceWallet.connect === 'function') {
-              api = await laceWallet.connect(fallbackNet);
-              setNetworkId(fallbackNet);
-              console.log(`Successfully connected via auto-fallback to ${fallbackNet}!`);
-            } else {
-              throw firstErr;
+            console.log(`Attempting connection to Lace on network '${net}'...`);
+            api = await laceWallet.connect(net);
+            if (api) {
+              setNetworkId(net);
+              console.log(`Successfully connected to Lace on network '${net}'!`);
+              break;
             }
-          } catch (secondErr) {
-            throw new Error(
-              `Network ID mismatch: Your Lace wallet is set to a different network. Please switch Lace wallet to ${targetNet.toUpperCase()} or click below to switch dApp to ${fallbackNet.toUpperCase()}.`
-            );
+          } catch (connErr: any) {
+            lastErr = connErr;
+            const errMsg = String(connErr?.message || connErr);
+            console.warn(`Lace connection attempt on '${net}' failed:`, errMsg);
+
+            if (
+              connErr?.code === 'Rejected' ||
+              errMsg.toLowerCase().includes('reject') ||
+              errMsg.toLowerCase().includes('cancel')
+            ) {
+              throw new Error('Connection rejected: User cancelled the wallet authorization prompt.');
+            }
+
+            // If error is not network related, do not spin candidate loop
+            if (
+              !errMsg.toLowerCase().includes('mismatch') &&
+              !errMsg.toLowerCase().includes('unsupported') &&
+              !errMsg.toLowerCase().includes('network')
+            ) {
+              break;
+            }
           }
-        } else {
-          throw firstErr;
         }
       }
 
-      // 3. Extract addresses
+      // If connect() didn't resolve, try legacy enable()
+      if (!api && typeof (laceWallet as any).enable === 'function') {
+        try {
+          console.log('Attempting connection via legacy enable()...');
+          const enabledAPI = await (laceWallet as any).enable();
+          if (enabledAPI) {
+            if (typeof enabledAPI.connect === 'function') {
+              for (const net of networkCandidates) {
+                try {
+                  api = await enabledAPI.connect(net);
+                  if (api) {
+                    setNetworkId(net);
+                    break;
+                  }
+                } catch {
+                  // continue candidate loop
+                }
+              }
+            }
+            if (!api) {
+              api = enabledAPI;
+            }
+          }
+        } catch (enableErr: any) {
+          const enableMsg = String(enableErr?.message || enableErr);
+          if (
+            enableErr?.code === 'Rejected' ||
+            enableMsg.toLowerCase().includes('reject') ||
+            enableMsg.toLowerCase().includes('cancel')
+          ) {
+            throw new Error('Connection rejected: User cancelled the wallet authorization prompt.');
+          }
+          if (!lastErr) lastErr = enableErr;
+        }
+      }
+
+      if (!api) {
+        const errorMsg = String(lastErr?.message || lastErr || 'Failed to connect to Midnight Lace wallet.');
+        if (errorMsg.toLowerCase().includes('mismatch') || errorMsg.toLowerCase().includes('network')) {
+          throw new Error(
+            `Network ID mismatch: Your Lace wallet is set to a different network. Please switch Lace wallet to ${targetNet.toUpperCase()} or switch the dApp network.`
+          );
+        }
+        throw new Error(errorMsg);
+      }
+
+      // 3. Extract addresses safely (handling both array and object formats)
       let unshielded = '';
       let shielded = '';
 
       try {
         if (typeof api.getUnshieldedAddress === 'function') {
           const res = await api.getUnshieldedAddress();
-          unshielded = res.unshieldedAddress;
+          unshielded = (Array.isArray(res) ? res[0]?.unshieldedAddress : res?.unshieldedAddress) || '';
         }
       } catch (e) {
         console.warn('Could not fetch unshielded address:', e);
@@ -158,43 +248,58 @@ export function useMidnight() {
       try {
         if (typeof api.getShieldedAddresses === 'function') {
           const res = await api.getShieldedAddresses();
-          shielded = res.shieldedAddress;
+          const entry = Array.isArray(res) ? res[0] : res;
+          shielded = entry?.shieldedAddress || entry?.address || '';
         }
       } catch (e) {
         console.warn('Could not fetch shielded address:', e);
       }
 
+      // Check legacy state() if both addresses remain empty
+      if (!unshielded && !shielded && typeof (api as any).state === 'function') {
+        try {
+          const st = await (api as any).state();
+          if (st?.address) unshielded = st.address;
+          if (st?.shieldedAddress) shielded = st.shieldedAddress;
+        } catch (e) {
+          console.warn('Could not fetch legacy state addresses:', e);
+        }
+      }
+
       // Fallback address representation if wallet returns empty in simulated dev mode
       const primaryAddress = unshielded || shielded || 'mn_addr_preprod1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5';
 
+      // Store the active connection API in a ref (never in useState)
+      connectedAPIRef.current = api;
       setWalletAddress(primaryAddress);
       setShieldedAddress(shielded || null);
-      setConnectedAPI(api);
       setIsConnected(true);
+      setError(null);
       console.log('Wallet connected successfully:', primaryAddress);
     } catch (err: any) {
       console.error('Wallet connection failed:', err);
-      if (err?.code === 'Rejected' || err?.message?.includes('reject')) {
+      const msg = String(err?.message || err || 'Failed to connect to Midnight Lace wallet.');
+      if (err?.code === 'Rejected' || msg.toLowerCase().includes('reject') || msg.toLowerCase().includes('cancel')) {
         setError('Connection rejected: User cancelled the wallet authorization prompt.');
       } else if (err?.code === 'Disconnected') {
         setError('Wallet disconnected unexpectedly.');
       } else {
-        setError(err?.message || 'Failed to connect to Midnight Lace wallet.');
+        setError(msg);
       }
     } finally {
       setIsConnecting(false);
     }
-  };
+  }, [networkId]);
 
   // Disconnect Wallet
-  const disconnectWallet = () => {
+  const disconnectWallet = useCallback(() => {
     setIsConnected(false);
     setWalletAddress(null);
     setShieldedAddress(null);
-    setConnectedAPI(null);
+    connectedAPIRef.current = null;
     setError(null);
     console.log('Wallet disconnected.');
-  };
+  }, []);
 
   // Call Circuit (verifySolvency)
   const callVerifySolvencyCircuit = async () => {
