@@ -85,7 +85,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
             <div className="error-action-row" style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               <button
                 type="button"
-                onClick={onConnect}
+                onClick={() => onConnect()}
                 className="switch-connect-btn"
                 style={{ background: '#3b82f6', color: '#fff' }}
               >
@@ -94,7 +94,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
               {onConnectDemo && (
                 <button
                   type="button"
-                  onClick={onConnectDemo}
+                  onClick={() => onConnectDemo()}
                   className="switch-connect-btn"
                   style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', color: '#fff' }}
                 >
@@ -152,7 +152,8 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
             <button
-              onClick={onConnect}
+              type="button"
+              onClick={() => onConnect()}
               disabled={isConnecting}
               className="connect-btn"
               id="connect-wallet-btn"

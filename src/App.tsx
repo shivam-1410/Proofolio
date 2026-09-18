@@ -4,6 +4,8 @@ import { WalletConnect } from './components/WalletConnect';
 import { CircuitCall } from './components/CircuitCall';
 import { ObservablePrivacyInspector } from './components/ObservablePrivacyInspector';
 import { BackgroundAnimation } from './components/BackgroundAnimation';
+import { SolvencySimulator } from './components/SolvencySimulator';
+import { CompactCodeViewer } from './components/CompactCodeViewer';
 import {
   Shield,
   Layers,
@@ -15,6 +17,10 @@ import {
   Activity,
   Terminal,
   Lock,
+  Sparkles,
+  Cpu,
+  Hash,
+  Scale,
 } from 'lucide-react';
 import './index.css';
 
@@ -84,7 +90,7 @@ export const App: React.FC = () => {
             </a>
 
             <a
-              href="https://github.com"
+              href="https://github.com/shivam-1410/Proofolio"
               target="_blank"
               rel="noreferrer"
               className="nav-icon-link"
@@ -103,14 +109,34 @@ export const App: React.FC = () => {
         <section className="hero-section">
           <div className="hero-tag">
             <Lock className="w-3.5 h-3.5 text-cyan-400 mr-1.5" />
-            <span>Confidential Solvency Verifier</span>
+            <span>Confidential Solvency &amp; Eligibility Verifier</span>
           </div>
           <h1 className="hero-title">
             Verify Solvency with <span className="gradient-text">Zero-Knowledge</span>
           </h1>
           <p className="hero-description">
-            Proofolio enables custodians, exchanges, and funds to mathematically prove that reserve assets exceed customer obligations without ever publishing proprietary balance sheets or customer balances.
+            Proofolio empowers custodians, exchanges, and DeFi protocols to mathematically certify that reserve assets exceed customer obligations without ever publishing proprietary balance sheets or customer deposits.
           </p>
+
+          {/* Hero Metrics Ribbon */}
+          <div className="hero-metrics-ribbon">
+            <div className="metric-pill">
+              <EyeOff className="w-3.5 h-3.5 text-purple-400" />
+              <span><strong>100% Confidential:</strong> Client-side witnesses</span>
+            </div>
+            <div className="metric-pill">
+              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+              <span><strong>Halo2 / Plonk:</strong> ZK-SNARK circuit</span>
+            </div>
+            <div className="metric-pill">
+              <Hash className="w-3.5 h-3.5 text-emerald-400" />
+              <span><strong>Audit Commitments:</strong> Cryptographic anchors</span>
+            </div>
+            <div className="metric-pill">
+              <Scale className="w-3.5 h-3.5 text-amber-400" />
+              <span><strong>Level 3 Track:</strong> Confidential Eligibility Gate</span>
+            </div>
+          </div>
         </section>
 
         {/* Live On-Chain Contract Ledger Banner */}
@@ -179,11 +205,11 @@ export const App: React.FC = () => {
               networkId={networkId}
               isConnecting={isConnecting}
               error={error}
-              onConnect={connectWallet}
-              onConnectDemo={connectDemoWallet}
+              onConnect={() => connectWallet()}
+              onConnectDemo={() => connectDemoWallet()}
               onDisconnect={disconnectWallet}
               onClearError={() => setError(null)}
-              onSwitchNetwork={setNetworkId}
+              onSwitchNetwork={(net) => setNetworkId(net)}
             />
           </div>
 
@@ -204,9 +230,19 @@ export const App: React.FC = () => {
           </div>
         </section>
 
+        {/* Interactive Zero-Knowledge Solvency Sandbox */}
+        <section className="simulator-section">
+          <SolvencySimulator />
+        </section>
+
         {/* Observable Privacy Behavior Demo */}
         <section className="observable-privacy-section">
           <ObservablePrivacyInspector />
+        </section>
+
+        {/* Midnight Smart Contract Source Code Explorer */}
+        <section className="contract-code-section">
+          <CompactCodeViewer />
         </section>
 
         {/* Privacy Architecture & Model Breakdown */}
@@ -279,10 +315,10 @@ export const App: React.FC = () => {
             </div>
             <div className="cli-code-block">
               <code>
-                git clone &lt;repo&gt; &amp;&amp; cd Proofolio<br />
+                git clone https://github.com/shivam-1410/Proofolio.git &amp;&amp; cd Proofolio<br />
                 npm install<br />
                 npm run dev &nbsp;&nbsp;# Launches frontend at http://localhost:5173<br />
-                npm test &nbsp;&nbsp;&nbsp;&nbsp;# Runs Midnight Compact circuit unit test suite
+                npm test &nbsp;&nbsp;&nbsp;&nbsp;# Runs Midnight Compact circuit unit test suite (7/7 passing)
               </code>
             </div>
           </div>
@@ -292,7 +328,10 @@ export const App: React.FC = () => {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
-          <p>© 2026 Proofolio — Midnight Builder Challenge Level 3 (Rise In)</p>
+          <div>
+            <p>© 2026 Proofolio — Midnight Builder Challenge Level 3 (Rise In)</p>
+            <p className="text-xs text-slate-500 mt-0.5">Track: Confidential Solvency &amp; Eligibility Gate</p>
+          </div>
           <div className="footer-links">
             <a
               href="https://midnight.network"
@@ -309,7 +348,16 @@ export const App: React.FC = () => {
               rel="noreferrer"
               className="footer-link"
             >
-              Midnight Docs MCP <ExternalLink className="w-3 h-3 inline ml-0.5" />
+              Midnight Docs <ExternalLink className="w-3 h-3 inline ml-0.5" />
+            </a>
+            <span className="dot-divider">•</span>
+            <a
+              href="https://github.com/shivam-1410/Proofolio"
+              target="_blank"
+              rel="noreferrer"
+              className="footer-link"
+            >
+              GitHub <ExternalLink className="w-3 h-3 inline ml-0.5" />
             </a>
           </div>
         </div>

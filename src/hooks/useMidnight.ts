@@ -118,7 +118,7 @@ export function useMidnight() {
   };
 
   // Connect to Lace Wallet
-  const connectWallet = useCallback(async (overrideNetwork?: string) => {
+  const connectWallet = useCallback(async (overrideNetworkParam?: unknown) => {
     setIsConnecting(true);
     setError(null);
     let currentStep = 'initializing';
@@ -144,7 +144,15 @@ export function useMidnight() {
       const apiVersion = typeof laceWallet.apiVersion === 'string' ? laceWallet.apiVersion : 'v4';
       console.log('Found Midnight wallet:', walletName, 'v' + apiVersion);
 
-      const targetNet = overrideNetwork || networkId;
+      // Sanitize overrideNetwork: if a React MouseEvent or non-string object is passed, discard it
+      const cleanOverride =
+        typeof overrideNetworkParam === 'string' &&
+        overrideNetworkParam.trim().length > 0 &&
+        !overrideNetworkParam.includes('[object')
+          ? overrideNetworkParam.trim()
+          : undefined;
+
+      const targetNet = cleanOverride || (typeof networkId === 'string' ? networkId : 'preprod');
       let api: ConnectedAPI | null = null;
       let lastErr: any = null;
 
@@ -153,11 +161,11 @@ export function useMidnight() {
       // avoiding extension internal network-switch recursive message loops.
       if (typeof laceWallet.connect === 'function') {
         try {
-          currentStep = 'laceWallet.connect(default)';
+          currentStep = 'laceWallet.connect()';
           console.log('Attempting Lace connection on active network...');
           api = await (laceWallet.connect as any)();
           if (api) {
-            console.log('Successfully connected to Lace via connect()!');
+            console.log('Successfully connected to Lace via connect() without arguments!');
           }
         } catch (e: any) {
           lastErr = e;
@@ -165,10 +173,14 @@ export function useMidnight() {
         }
       }
 
-      // Strategy B: Try explicit network candidate list
+      // Strategy B: Try explicit string network candidates
       if (!api && typeof laceWallet.connect === 'function') {
+        const validNetworks = ['preprod', 'preview', 'undeployed'];
         const fallbackNet = targetNet === 'preprod' ? 'preview' : 'preprod';
-        const networkCandidates = Array.from(new Set([targetNet, fallbackNet, 'undeployed', 'preview', 'preprod']));
+        const candidateList = [targetNet, fallbackNet, 'preprod', 'preview', 'undeployed'];
+        const networkCandidates = Array.from(new Set(candidateList)).filter(
+          (net): net is string => typeof net === 'string' && validNetworks.includes(net)
+        );
 
         for (const net of networkCandidates) {
           try {
@@ -313,6 +325,12 @@ export function useMidnight() {
         setError('Connection rejected: User cancelled the wallet authorization prompt.');
       } else if (err?.code === 'Disconnected') {
         setError('Wallet disconnected unexpectedly.');
+      } else if (rawMsg.includes('Maximum call stack size exceeded')) {
+        setError(
+          `Lace Extension Alert: Internal call stack limit reached in browser extension.\n` +
+          `• Recommendation: Click '⚡ Connect Demo Wallet' below to proceed with testing the ZK Solvency circuit.\n` +
+          `• Or open Lace extension settings, switch to Preprod, and refresh the page.`
+        );
       } else {
         const stackLine = err?.stack ? `\n(Source: ${err.stack.split('\n')[1]?.trim() || 'extension'})` : '';
         setError(`${rawMsg} [Step: ${currentStep}]${stackLine}`);
