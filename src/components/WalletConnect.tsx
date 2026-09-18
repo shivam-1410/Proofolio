@@ -9,6 +9,7 @@ interface WalletConnectProps {
   isConnecting: boolean;
   error: string | null;
   onConnect: () => void;
+  onConnectDemo?: () => void;
   onDisconnect: () => void;
   onClearError: () => void;
   onSwitchNetwork?: (newNetwork: string) => void;
@@ -22,6 +23,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
   isConnecting,
   error,
   onConnect,
+  onConnectDemo,
   onDisconnect,
   onClearError,
   onSwitchNetwork,
@@ -78,9 +80,31 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           </div>
           <div className="error-body">
             <div className="error-title">Connection Error</div>
-            <div className="error-message">{error}</div>
+            <div className="error-message" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'monospace', fontSize: '0.8rem' }}>{error}</div>
+            
+            <div className="error-action-row" style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <button
+                type="button"
+                onClick={onConnect}
+                className="switch-connect-btn"
+                style={{ background: '#3b82f6', color: '#fff' }}
+              >
+                Retry Lace Connection
+              </button>
+              {onConnectDemo && (
+                <button
+                  type="button"
+                  onClick={onConnectDemo}
+                  className="switch-connect-btn"
+                  style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', color: '#fff' }}
+                >
+                  ⚡ Connect Demo Wallet (Test ZK Circuit)
+                </button>
+              )}
+            </div>
+
             {error.toLowerCase().includes('mismatch') && (
-              <div className="error-action-row">
+              <div className="error-action-row" style={{ marginTop: '8px' }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -126,24 +150,55 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={onConnect}
-            disabled={isConnecting}
-            className="connect-btn"
-            id="connect-wallet-btn"
-          >
-            {isConnecting ? (
-              <>
-                <span className="spinner"></span>
-                <span>Connecting to Lace...</span>
-              </>
-            ) : (
-              <>
-                <Wallet className="w-4 h-4 mr-2" />
-                <span>Connect Lace Wallet</span>
-              </>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+            <button
+              onClick={onConnect}
+              disabled={isConnecting}
+              className="connect-btn"
+              id="connect-wallet-btn"
+            >
+              {isConnecting ? (
+                <>
+                  <span className="spinner"></span>
+                  <span>Connecting to Lace...</span>
+                </>
+              ) : (
+                <>
+                  <Wallet className="w-4 h-4 mr-2" />
+                  <span>Connect Lace Wallet</span>
+                </>
+              )}
+            </button>
+
+            {onConnectDemo && (
+              <button
+                type="button"
+                onClick={onConnectDemo}
+                style={{
+                  background: 'transparent',
+                  border: '1px dashed rgba(129, 140, 248, 0.4)',
+                  borderRadius: '10px',
+                  padding: '8px 14px',
+                  color: '#a5b4fc',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#818cf8';
+                  e.currentTarget.style.background = 'rgba(99, 102, 241, 0.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(129, 140, 248, 0.4)';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+                id="connect-demo-btn"
+              >
+                ⚡ Or connect in Demo Mode (Simulated Preprod Wallet) &rarr;
+              </button>
             )}
-          </button>
+          </div>
         </div>
       ) : (
         <div className="connected-state">

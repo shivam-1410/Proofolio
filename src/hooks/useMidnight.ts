@@ -121,12 +121,14 @@ export function useMidnight() {
   const connectWallet = useCallback(async (overrideNetwork?: string) => {
     setIsConnecting(true);
     setError(null);
+    let currentStep = 'initializing';
 
     try {
       // 1. Check for Midnight wallet provider injection
+      currentStep = 'detecting_wallet_provider';
       let laceWallet = getLaceWallet();
 
-      // Retry once briefly in case content script injection was pending
+      // Retry briefly in case content script injection was pending
       if (!laceWallet) {
         await new Promise((r) => setTimeout(r, 250));
         laceWallet = getLaceWallet();
@@ -142,18 +144,35 @@ export function useMidnight() {
       const apiVersion = typeof laceWallet.apiVersion === 'string' ? laceWallet.apiVersion : 'v4';
       console.log('Found Midnight wallet:', walletName, 'v' + apiVersion);
 
-      // 2. Connect to wallet with target network and automatic candidate fallback
       const targetNet = overrideNetwork || networkId;
-      const fallbackNet = targetNet === 'preprod' ? 'preview' : 'preprod';
-      const networkCandidates = Array.from(new Set([targetNet, fallbackNet, 'undeployed', 'preview', 'preprod']));
-
       let api: ConnectedAPI | null = null;
       let lastErr: any = null;
 
-      // Try modern v4 connect() first
+      // Strategy A: Try connect() with NO arguments first
+      // In Lace v4, connect() without parameters connects to the wallet's currently active network,
+      // avoiding extension internal network-switch recursive message loops.
       if (typeof laceWallet.connect === 'function') {
+        try {
+          currentStep = 'laceWallet.connect(default)';
+          console.log('Attempting Lace connection on active network...');
+          api = await (laceWallet.connect as any)();
+          if (api) {
+            console.log('Successfully connected to Lace via connect()!');
+          }
+        } catch (e: any) {
+          lastErr = e;
+          console.warn('connect() default failed:', e?.message || e);
+        }
+      }
+
+      // Strategy B: Try explicit network candidate list
+      if (!api && typeof laceWallet.connect === 'function') {
+        const fallbackNet = targetNet === 'preprod' ? 'preview' : 'preprod';
+        const networkCandidates = Array.from(new Set([targetNet, fallbackNet, 'undeployed', 'preview', 'preprod']));
+
         for (const net of networkCandidates) {
           try {
+            currentStep = `laceWallet.connect('${net}')`;
             console.log(`Attempting connection to Lace on network '${net}'...`);
             api = await laceWallet.connect(net);
             if (api) {
@@ -174,7 +193,6 @@ export function useMidnight() {
               throw new Error('Connection rejected: User cancelled the wallet authorization prompt.');
             }
 
-            // If error is not network related, do not spin candidate loop
             if (
               !errMsg.toLowerCase().includes('mismatch') &&
               !errMsg.toLowerCase().includes('unsupported') &&
@@ -186,26 +204,20 @@ export function useMidnight() {
         }
       }
 
-      // If connect() didn't resolve, try legacy enable()
+      // Strategy C: If connect() didn't resolve, try legacy enable()
       if (!api && typeof (laceWallet as any).enable === 'function') {
         try {
+          currentStep = 'laceWallet.enable()';
           console.log('Attempting connection via legacy enable()...');
           const enabledAPI = await (laceWallet as any).enable();
           if (enabledAPI) {
             if (typeof enabledAPI.connect === 'function') {
-              for (const net of networkCandidates) {
-                try {
-                  api = await enabledAPI.connect(net);
-                  if (api) {
-                    setNetworkId(net);
-                    break;
-                  }
-                } catch {
-                  // continue candidate loop
-                }
+              try {
+                api = await enabledAPI.connect(targetNet);
+              } catch {
+                api = enabledAPI;
               }
-            }
-            if (!api) {
+            } else {
               api = enabledAPI;
             }
           }
@@ -232,7 +244,25 @@ export function useMidnight() {
         throw new Error(errorMsg);
       }
 
+      // Query connection status or config to align networkId if supported
+      try {
+        if (typeof api.getConnectionStatus === 'function') {
+          const status = await api.getConnectionStatus();
+          if (status?.networkId) {
+            setNetworkId(status.networkId);
+          }
+        } else if (typeof api.getConfiguration === 'function') {
+          const config = await api.getConfiguration();
+          if (config?.networkId) {
+            setNetworkId(config.networkId);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not inspect connection status/config:', e);
+      }
+
       // 3. Extract addresses safely (handling both array and object formats)
+      currentStep = 'extracting_addresses';
       let unshielded = '';
       let shielded = '';
 
@@ -266,7 +296,7 @@ export function useMidnight() {
         }
       }
 
-      // Fallback address representation if wallet returns empty in simulated dev mode
+      currentStep = 'finalizing_state';
       const primaryAddress = unshielded || shielded || 'mn_addr_preprod1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5';
 
       // Store the active connection API in a ref (never in useState)
@@ -277,19 +307,32 @@ export function useMidnight() {
       setError(null);
       console.log('Wallet connected successfully:', primaryAddress);
     } catch (err: any) {
-      console.error('Wallet connection failed:', err);
-      const msg = String(err?.message || err || 'Failed to connect to Midnight Lace wallet.');
-      if (err?.code === 'Rejected' || msg.toLowerCase().includes('reject') || msg.toLowerCase().includes('cancel')) {
+      console.error(`Wallet connection failed [at step: ${currentStep}]:`, err);
+      const rawMsg = String(err?.message || err || 'Failed to connect to Midnight Lace wallet.');
+      if (err?.code === 'Rejected' || rawMsg.toLowerCase().includes('reject') || rawMsg.toLowerCase().includes('cancel')) {
         setError('Connection rejected: User cancelled the wallet authorization prompt.');
       } else if (err?.code === 'Disconnected') {
         setError('Wallet disconnected unexpectedly.');
       } else {
-        setError(msg);
+        const stackLine = err?.stack ? `\n(Source: ${err.stack.split('\n')[1]?.trim() || 'extension'})` : '';
+        setError(`${rawMsg} [Step: ${currentStep}]${stackLine}`);
       }
     } finally {
       setIsConnecting(false);
     }
   }, [networkId]);
+
+  // Connect Demo / Simulation Wallet (Fallback if extension has internal crash)
+  const connectDemoWallet = useCallback(() => {
+    connectedAPIRef.current = null;
+    const demoAddr = 'mn_addr_preprod1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5';
+    const demoShielded = 'mn_shield_preprod1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9y4e2w';
+    setWalletAddress(demoAddr);
+    setShieldedAddress(demoShielded);
+    setIsConnected(true);
+    setError(null);
+    console.log('Demo wallet connected for simulated solvency proof testing.');
+  }, []);
 
   // Disconnect Wallet
   const disconnectWallet = useCallback(() => {
@@ -384,6 +427,7 @@ export function useMidnight() {
     error,
     setError,
     connectWallet,
+    connectDemoWallet,
     disconnectWallet,
     contractAddress: PREPROD_CONTRACT_ADDRESS,
     ledgerState,

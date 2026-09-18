@@ -29,6 +29,7 @@ export const App: React.FC = () => {
     error,
     setError,
     connectWallet,
+    connectDemoWallet,
     disconnectWallet,
     contractAddress,
     ledgerState,
@@ -179,6 +180,7 @@ export const App: React.FC = () => {
               isConnecting={isConnecting}
               error={error}
               onConnect={connectWallet}
+              onConnectDemo={connectDemoWallet}
               onDisconnect={disconnectWallet}
               onClearError={() => setError(null)}
               onSwitchNetwork={setNetworkId}
