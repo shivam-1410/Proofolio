@@ -282,7 +282,7 @@ export const SolvencySimulator: React.FC = () => {
           <div className="audit-guarantee-note">
             <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
             <span className="text-xs text-slate-300">
-              <strong>Level 3 Guarantee:</strong> Even if an adversary monitors the blockchain 24/7, they only observe <code>solvency_status: true</code> and a cryptographic hash. The institution's financial magnitude remains completely concealed.
+              <strong>Zero-Knowledge Guarantee:</strong> Even if an adversary monitors the blockchain 24/7, they only observe <code>solvency_status: true</code> and a cryptographic hash. The institution's financial magnitude remains completely concealed.
             </span>
           </div>
         </div>

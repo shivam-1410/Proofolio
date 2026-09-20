@@ -24,6 +24,13 @@
 
 body {
   background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 85% 65%, rgba(6, 182, 212, 0.08), transparent),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.5;
@@ -55,25 +62,6 @@ body {
   background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%);
   bottom: 50px;
   right: 10%;
-}
-
-/* Background Celestial Figure Animation */
-.background-animation-wrapper {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: 0.85;
-  transition: opacity 0.5s ease;
-}
-
-.background-animation-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 
 /* App Container */

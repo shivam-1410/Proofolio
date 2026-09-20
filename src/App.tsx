@@ -3,7 +3,6 @@ import { useMidnight } from './hooks/useMidnight';
 import { WalletConnect } from './components/WalletConnect';
 import { CircuitCall } from './components/CircuitCall';
 import { ObservablePrivacyInspector } from './components/ObservablePrivacyInspector';
-import { BackgroundAnimation } from './components/BackgroundAnimation';
 import { SolvencySimulator } from './components/SolvencySimulator';
 import { CompactCodeViewer } from './components/CompactCodeViewer';
 import {
@@ -49,9 +48,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      {/* Background Celestial Figure Animation (Half Light, Half Shadow) */}
-      <BackgroundAnimation />
-
       {/* Background glowing gradients */}
       <div className="bg-glow bg-glow-1"></div>
       <div className="bg-glow bg-glow-2"></div>
@@ -66,7 +62,7 @@ export const App: React.FC = () => {
             <div>
               <div className="brand-name-row">
                 <span className="brand-title">Proofolio</span>
-                <span className="brand-version-tag">Level 3 dApp</span>
+                <span className="brand-version-tag">v1.0 Live</span>
               </div>
               <span className="brand-subtitle">Midnight ZK Proof-of-Reserves</span>
             </div>
@@ -134,7 +130,7 @@ export const App: React.FC = () => {
             </div>
             <div className="metric-pill">
               <Scale className="w-3.5 h-3.5 text-amber-400" />
-              <span><strong>Level 3 Track:</strong> Confidential Eligibility Gate</span>
+              <span><strong>Compliance Engine:</strong> Confidential Eligibility Gate</span>
             </div>
           </div>
         </section>
@@ -318,7 +314,7 @@ export const App: React.FC = () => {
                 git clone https://github.com/shivam-1410/Proofolio.git &amp;&amp; cd Proofolio<br />
                 npm install<br />
                 npm run dev &nbsp;&nbsp;# Launches frontend at http://localhost:5173<br />
-                npm test &nbsp;&nbsp;&nbsp;&nbsp;# Runs Midnight Compact circuit unit test suite (7/7 passing)
+                npm test &nbsp;&nbsp;&nbsp;&nbsp;# Runs automated zero-knowledge circuit test suite
               </code>
             </div>
           </div>
@@ -329,8 +325,8 @@ export const App: React.FC = () => {
       <footer className="footer">
         <div className="footer-content">
           <div>
-            <p>© 2026 Proofolio — Midnight Builder Challenge Level 3 (Rise In)</p>
-            <p className="text-xs text-slate-500 mt-0.5">Track: Confidential Solvency &amp; Eligibility Gate</p>
+            <p>© 2026 Proofolio — Zero-Knowledge Solvency Verification Protocol</p>
+            <p className="text-xs text-slate-500 mt-0.5">Confidential Proof-of-Reserves Infrastructure on Midnight Network</p>
           </div>
           <div className="footer-links">
             <a
