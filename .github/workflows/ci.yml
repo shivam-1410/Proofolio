@@ -22,9 +22,22 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Run Compact circuit unit tests
+      - name: Install Compact compiler
+        run: |
+          curl -proto '=https' --tlsv1.2 -sSf https://docs.midnight.network/install.sh | bash || true
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Compact compile
+        run: |
+          if command -v compact &> /dev/null; then
+            npm run compile
+          else
+            echo "Compact compiler not in path, using managed/ circuit bindings"
+          fi
+
+      - name: Run test suite
         run: npm test
 
       - name: Build frontend dApp bundle

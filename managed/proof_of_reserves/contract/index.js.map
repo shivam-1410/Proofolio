@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../",
+  "sources": ["contracts/proof_of_reserves.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoCA;;;;;;;;;;MAoBA,AAAA,cAiBC;;;;;cAhBC,gBAAwB;cACxB,mBAA2B;cAC3B,MAAe;cACf,cAAsB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;yCAHtB,gBAAwB,+BACxB,mBAA2B,+BAC3B,MAAe,+BACf,cAAsB;;;;;;;;;gDAHtB,gBAAwB;gDACxB,mBAA2B;gDAC3B,MAAe;gDACf,cAAsB;;;OAavB;;;;GACA;EAtCD;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAKA;;;;;;;;;yEAAuC;IACvC;;;;;;;;;yEAA4C;IAC5C;;;;;;;;;yEAAyC;;;;;;;GA+BxC;EC1ED,AAAA,kBAAA;oEAAA;;;EDwDA,AAAA,iBAiBC;;oBAhBC,gBAAwB;oBACxB,mBAA2B;oBAC3B,MAAe;oBACf,cAAsB;;4BAGf,gBAAc,IAAI,mBAAiB;;UAIpC,YAA4C,0BAAL,MAAI;IAGjD;;;;;;;;;yEAAe;IACf;;;;;;;2HAA2B,YAAU;;yEAAtB;IACf;;;;;;;2HAA+B,cAAY;;yEAAxB;;GACpB;;;;;;;;;;;;;;;;IAhCD;qCAAA;;;;;;;;;;;0GAAuC;KAAA;IACvC;qCAAA;;;;;;;;;;;0GAA4C;KAAA;IAC5C;qCAAA;;;;;;;;;;;0GAAyC;KAAA;;;;;;;;;;"
+}
