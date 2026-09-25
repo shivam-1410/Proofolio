@@ -259,12 +259,12 @@ export function useMidnight() {
       // Query connection status or config to align networkId if supported
       try {
         if (typeof api.getConnectionStatus === 'function') {
-          const status = await api.getConnectionStatus();
-          if (status?.networkId) {
+          const status: any = await api.getConnectionStatus();
+          if (status?.status === 'connected' && status?.networkId) {
             setNetworkId(status.networkId);
           }
         } else if (typeof api.getConfiguration === 'function') {
-          const config = await api.getConfiguration();
+          const config: any = await api.getConfiguration();
           if (config?.networkId) {
             setNetworkId(config.networkId);
           }

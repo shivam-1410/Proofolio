@@ -3,9 +3,8 @@
 > Zero-Knowledge Proof-of-Reserves & Solvency Gate protocol built on Midnight Network that mathematically certifies asset backing without disclosing balance sheets or customer deposits.
 
 ## Live Demo
-[https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/)
-
-*(Production build ready; also deployable to Vercel and Netlify via included `vercel.json` & `netlify.toml`)*
+- **Primary Production URL (Vercel):** [https://proofolio-ochre.vercel.app](https://proofolio-ochre.vercel.app)
+- **GitHub Pages Mirror:** [https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/)
 
 ## Contract Address
 | Network | Address |
