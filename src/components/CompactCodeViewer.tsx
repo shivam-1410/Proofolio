@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { Copy, Check, Code, ShieldCheck } from 'lucide-react';
 
 const COMPACT_CODE = `/**
  * ZK Proof-of-Reserves: Confidential Solvency Verifier
- * Midnight Network : Compact Language (v0.23+)
+ * Midnight Network - Compact Language (v0.23+)
  */
 pragma language_version >= 0.23;
 
@@ -43,36 +44,8 @@ export circuit verifySolvency(
   last_verified_block = disclose(block_number);
 }`;
 
-const EXPLANATIONS = [
-  {
-    title: 'export ledger (Public On-Chain State)',
-    desc: 'Public fields visible to anyone querying the Midnight blockchain. Only the Boolean solvency flag, timestamp block, and commitment hash are published.',
-    badge: 'On-Chain Public',
-    badgeColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
-  },
-  {
-    title: 'Private Witness Parameters (Client Memory)',
-    desc: 'total_reserves, total_liabilities, and salt are private witnesses. They stay in the user\'s local browser/node memory and are never transmitted over the network.',
-    badge: 'Private Witness',
-    badgeColor: 'text-slate-200 border-border-color bg-surface-subtle',
-  },
-  {
-    title: 'assert() (Zero-Knowledge Constraint)',
-    desc: 'Evaluated inside the Halo2/Plonk zk-SNARK prover. If reserves < liabilities, the proof cannot mathematically be generated, causing the transaction to revert.',
-    badge: 'ZK Constraint',
-    badgeColor: 'text-accent-blue border-accent-blue/30 bg-accent-blue/10',
-  },
-  {
-    title: 'disclose() (Selective Disclosure)',
-    desc: 'In Compact, private variables cannot write to ledger state unless explicitly wrapped in disclose(). This compiler-enforced invariant prevents accidental data leakage.',
-    badge: 'Privacy Invariant',
-    badgeColor: 'text-slate-200 border-border-color bg-surface-subtle',
-  },
-];
-
 export const CompactCodeViewer: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'code' | 'specs'>('code');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(COMPACT_CODE);
@@ -81,88 +54,40 @@ export const CompactCodeViewer: React.FC = () => {
   };
 
   return (
-    <div className="compact-viewer-card">
-      <div className="compact-viewer-header">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs font-semibold px-2 py-0.5 border border-primary/40 bg-primary/10 text-primary">
-            [COMPACT]
-          </span>
-          <div>
-            <h3 className="compact-viewer-title">Midnight Smart Contract Source</h3>
-            <p className="compact-viewer-sub">
-              <code>contracts/proof_of_reserves.compact</code> (Compact v0.23)
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="tab-pill-group">
-            <button
-              onClick={() => setActiveTab('code')}
-              className={`tab-pill ${activeTab === 'code' ? 'tab-pill-active' : ''}`}
-            >
-              <span className="font-mono text-xs mr-1.5">&lt;/&gt;</span>
-              Contract Code
-            </button>
-            <button
-              onClick={() => setActiveTab('specs')}
-              className={`tab-pill ${activeTab === 'specs' ? 'tab-pill-active' : ''}`}
-            >
-              <span className="font-mono text-xs mr-1.5">[SPEC]</span>
-              Compiler Invariants
-            </button>
-          </div>
-
-          <button
-            onClick={handleCopy}
-            className="copy-action-btn"
-            title="Copy Compact source code"
-          >
-            {copied ? (
-              <>
-                <span className="font-mono text-xs mr-1 text-emerald-400">[COPIED]</span>
-                <span>Copied</span>
-              </>
-            ) : (
-              <>
-                <span className="font-mono text-xs mr-1">[COPY]</span>
-                <span>Copy Code</span>
-              </>
-            )}
-          </button>
-        </div>
+    <div className="section-container" id="smart-contract">
+      <div className="section-heading-group">
+        <span className="section-tag">Smart Contract Implementation</span>
+        <h2 className="section-title">Compact Zero-Knowledge Circuit</h2>
+        <p className="section-desc">
+          Formal circuit specification written in Midnight's Compact language, enforcing mathematical solvency with zero data leakage.
+        </p>
       </div>
 
-      {activeTab === 'code' ? (
-        <div className="code-container">
-          <pre className="code-content">
-            <code>{COMPACT_CODE}</code>
-          </pre>
-        </div>
-      ) : (
-        <div className="invariants-grid">
-          {EXPLANATIONS.map((exp, i) => (
-            <div key={i} className="invariant-card">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="invariant-card-title">{exp.title}</h4>
-                <span className={`badge-pill ${exp.badgeColor}`}>{exp.badge}</span>
-              </div>
-              <p className="invariant-card-desc">{exp.desc}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="code-card">
+        <div className="code-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Code className="w-4 h-4 text-blue-400" />
+            <span className="code-path">contracts/proof_of_reserves.compact</span>
+          </div>
 
-      <div className="compact-viewer-footer">
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <span className="font-mono text-xs text-accent-blue font-bold shrink-0">[FORMAL]</span>
-          <span>
-            Verified by Midnight Compact Compiler &amp; Halo2 Prover: Formal mathematical privacy guarantees by design.
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Compact v0.23</span>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="code-copy-btn"
+              title="Copy Smart Contract Code"
+            >
+              {copied ? 'Copied' : 'Copy Code'}
+            </button>
+          </div>
         </div>
+
+        <pre className="code-pre">
+          <code>{COMPACT_CODE}</code>
+        </pre>
       </div>
     </div>
   );
 };
 export default CompactCodeViewer;
-

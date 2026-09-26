@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Award, CheckCircle2, Copy, Check, Printer, X, ShieldCheck } from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface AuditCertificateModalProps {
@@ -20,12 +21,12 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
 
   const certificateId = txResult
     ? `CERT-PROOF-${txResult.txHash.slice(0, 10).toUpperCase()}`
-    : 'CERT-PROOF-900942-PREPROD';
-  const blockHeight = txResult?.blockHeight || 900942;
+    : 'CERT-PROOF-901430-PREPROD';
+  const blockHeight = txResult?.blockHeight || 901430;
   const commitment =
     txResult?.commitment ||
     '0x678605e736b76aac95555f7b1b5940893de24decf6824c192d3bbb89946dcb4e';
-  const timestamp = txResult?.timestamp || '2026-09-24 11:45:00 UTC';
+  const timestamp = txResult?.timestamp || '2026-09-27 12:00:00 UTC';
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -39,138 +40,143 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
 
   return (
     <div className="modal-backdrop">
-      <div className="certificate-modal-card">
-        {/* Modal Close Button */}
+      <div className="modal-dialog" style={{ maxWidth: '640px', padding: '2rem' }}>
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="modal-close-btn"
+          className="modal-close"
           aria-label="Close certificate modal"
         >
-          <span className="font-mono text-sm text-slate-400 hover:text-white leading-none">✕</span>
+          <X className="w-5 h-5" />
         </button>
 
-        {/* Certificate Frame */}
-        <div className="certificate-frame">
-          <div className="certificate-watermark">PROOF-OF-RESERVES</div>
-
-          {/* Header */}
-          <div className="certificate-header">
-            <div className="certificate-badge">
-              <span className="font-mono text-sm font-bold text-accent-blue border border-accent-blue/40 bg-accent-blue/10 px-2 py-1">
-                [SEAL]
-              </span>
-            </div>
-            <div>
-              <span className="certificate-meta-label">MIDNIGHT NETWORK ZERO-KNOWLEDGE AUDIT</span>
-              <h2 className="certificate-title">Certificate of Mathematical Solvency</h2>
-              <p className="certificate-subtitle">Confidential Eligibility Gate Verification</p>
-            </div>
+        {/* Certificate Card Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid #1e293b', paddingBottom: '1.25rem' }}>
+          <div
+            style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '8px',
+              background: 'rgba(37, 99, 235, 0.12)',
+              border: '1px solid rgba(37, 99, 235, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#60a5fa',
+            }}
+          >
+            <Award className="w-6 h-6" />
           </div>
-
-          {/* Divider */}
-          <div className="certificate-divider"></div>
-
-          {/* Main Statement */}
-          <div className="certificate-statement-box">
-            <p className="certificate-statement">
-              This certifies that on-chain smart contract validation has executed on the{' '}
-              <strong>Midnight Network Preprod</strong> testnet. The cryptographic zero-knowledge circuit{' '}
-              <code className="text-accent-blue font-mono">verifySolvency()</code> mathematically verified that:
-            </p>
-            <div className="certificate-formula-box">
-              <span className="text-emerald-400 font-bold font-mono text-base">
-                total_reserves &gt;= total_liabilities (100% Backed)
-              </span>
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Midnight Network &bull; Zero-Knowledge Attestation
             </div>
-            <p className="certificate-disclaimer">
-              *Proved without revealing input balances: Zero private asset holdings, liability amounts, or
-              customer numbers were exposed or recorded on the public ledger.
-            </p>
-          </div>
-
-          {/* Verification Details Grid */}
-          <div className="certificate-details-grid">
-            <div className="cert-detail-item">
-              <span className="cert-detail-label">Certificate ID</span>
-              <span className="cert-detail-value font-mono text-slate-200">{certificateId}</span>
-            </div>
-
-            <div className="cert-detail-item">
-              <span className="cert-detail-label">Verification Status</span>
-              <span className="cert-detail-value text-emerald-400 flex items-center gap-1 font-bold font-mono">
-                [STATUS: VERIFIED SOLVENT]
-              </span>
-            </div>
-
-            <div className="cert-detail-item">
-              <span className="cert-detail-label">Midnight Preprod Block</span>
-              <span className="cert-detail-value font-mono text-accent-blue">#{blockHeight}</span>
-            </div>
-
-            <div className="cert-detail-item">
-              <span className="cert-detail-label">Verification Timestamp</span>
-              <span className="cert-detail-value font-mono text-slate-300">{timestamp}</span>
-            </div>
-
-            <div className="cert-detail-item cert-detail-full">
-              <span className="cert-detail-label">Preprod Contract Address</span>
-              <span className="cert-detail-value font-mono text-slate-300 text-xs truncate" title={contractAddress}>
-                {contractAddress}
-              </span>
-            </div>
-
-            <div className="cert-detail-item cert-detail-full">
-              <span className="cert-detail-label">Cryptographic Audit Commitment</span>
-              <span className="cert-detail-value font-mono text-slate-300 text-xs truncate" title={commitment}>
-                {commitment}
-              </span>
-            </div>
-          </div>
-
-          {/* Certificate Footer */}
-          <div className="certificate-seal-row">
-            <div className="flex items-center gap-3">
-              <div className="qr-box flex flex-col items-center justify-center font-mono text-[9px] text-accent-blue border border-border-color bg-surface-subtle p-2 text-center leading-tight">
-                <span>[ZK-AUDIT]</span>
-                <span>0x900942</span>
-                <span>VERIFIED</span>
-              </div>
-              <div className="text-left">
-                <p className="text-xs font-semibold text-slate-300">Cryptographically Sealed</p>
-                <p className="text-[11px] text-slate-400">Midnight Compact ZK-Proof Engine</p>
-                <p className="text-[11px] text-accent-blue font-mono">Halo2 / Plonk Polynomial Commitment</p>
-              </div>
-            </div>
-
-            <div className="certificate-seal-stamp">
-              <span className="font-mono text-xs font-bold text-emerald-400 block">[SEAL]</span>
-              <span className="seal-text">VERIFIED SOLVENT</span>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#f8fafc', margin: '0.1rem 0' }}>
+              Certificate of Mathematical Solvency
+            </h2>
+            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+              Confidential Proof-of-Reserves Verification
             </div>
           </div>
         </div>
 
-        {/* Modal Action Controls */}
-        <div className="certificate-actions-bar">
+        {/* Mathematical Assertion Statement */}
+        <div
+          style={{
+            background: '#0b1120',
+            border: '1px solid #1e293b',
+            borderRadius: '8px',
+            padding: '1.25rem',
+            marginBottom: '1.5rem',
+          }}
+        >
+          <p style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+            This certifies that on-chain cryptographic verification has executed on the <strong>Midnight Network Preprod</strong> testnet. The zero-knowledge circuit mathematically verified that:
+          </p>
+          <div
+            style={{
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              borderRadius: '6px',
+              padding: '0.65rem',
+              textAlign: 'center',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              color: '#34d399',
+            }}
+          >
+            total_reserves &gt;= total_liabilities (100% Backed)
+          </div>
+          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.75rem', lineHeight: 1.4 }}>
+            *Confidential Witness Guarantee: Neither raw asset quantities, client deposit amounts, nor balance sheet positions were revealed or recorded on the public blockchain.
+          </p>
+        </div>
+
+        {/* Verification Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <div style={{ background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Certificate ID</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#f8fafc', fontWeight: 600 }}>{certificateId}</div>
+          </div>
+
+          <div style={{ background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Verification Status</div>
+            <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Verified Solvent</span>
+            </div>
+          </div>
+
+          <div style={{ background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Block Height</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#60a5fa' }}>#{blockHeight}</div>
+          </div>
+
+          <div style={{ background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Timestamp</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#cbd5e1' }}>{timestamp}</div>
+          </div>
+
+          <div style={{ gridColumn: 'span 2', background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Smart Contract Address</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#cbd5e1', wordBreak: 'break-all' }}>
+              {contractAddress}
+            </div>
+          </div>
+
+          <div style={{ gridColumn: 'span 2', background: '#0b1120', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.65rem 0.85rem' }}>
+            <div style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Cryptographic Audit Commitment</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#cbd5e1', wordBreak: 'break-all' }}>
+              {commitment}
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Actions */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button
             type="button"
             onClick={() => handleCopy(window.location.href)}
-            className="cert-action-btn"
+            className="receipt-btn"
+            style={{ padding: '0.65rem 1rem' }}
           >
-            <span className="font-mono text-xs mr-1.5">[COPY]</span>
-            <span>{copied ? 'Link Copied' : 'Copy Verifier URL'}</span>
+            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            <span>{copied ? 'Link Copied' : 'Copy Verification URL'}</span>
           </button>
 
           <button
             type="button"
             onClick={handlePrint}
-            className="cert-action-btn cert-action-btn-primary"
+            className="receipt-btn receipt-btn-primary"
+            style={{ padding: '0.65rem 1rem' }}
           >
-            <span className="font-mono text-xs mr-1.5">[PRINT]</span>
-            <span>Export / Print Certificate</span>
+            <Printer className="w-4 h-4" />
+            <span>Print / Export PDF</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
-
+export default AuditCertificateModal;

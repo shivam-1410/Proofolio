@@ -1,4 +1,15 @@
 import React, { useState } from 'react';
+import {
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  Copy,
+  Check,
+  ExternalLink,
+  Lock,
+  ArrowRight,
+  FileCheck,
+} from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface SolvencyGateProps {
@@ -14,7 +25,7 @@ interface SolvencyGateProps {
 interface ScenarioPreset {
   id: string;
   name: string;
-  tag: string;
+  category: string;
   reserves: number;
   liabilities: number;
   description: string;
@@ -23,27 +34,27 @@ interface ScenarioPreset {
 const PRESETS: ScenarioPreset[] = [
   {
     id: 'custodian-prime',
-    name: 'Tier-1 Exchange Custody',
-    tag: '[CUSTODY]',
+    name: 'Exchange Custody',
+    category: 'Exchange',
     reserves: 12500000,
     liabilities: 9800000,
-    description: 'Proves 127.5% backing ratio across retail and institutional spot deposits.',
+    description: 'Proves 127.5% backing ratio across retail and spot client deposits.',
   },
   {
     id: 'lending-pool',
-    name: 'DeFi Overcollateralized Vault',
-    tag: '[LENDING]',
+    name: 'DeFi Lending Vault',
+    category: 'DeFi',
     reserves: 45000000,
     liabilities: 38200000,
-    description: 'Verifies continuous debt solvency without exposing collateral liquidation limits.',
+    description: 'Verifies overcollateralized debt solvency without disclosing liquidation limits.',
   },
   {
     id: 'dao-treasury',
-    name: 'Protocol DAO Runway Reserve',
-    tag: '[TREASURY]',
+    name: 'DAO Treasury',
+    category: 'Treasury',
     reserves: 8200000,
     liabilities: 5100000,
-    description: 'Certifies 160.8% multi-year operational runway without exposing asset distribution.',
+    description: 'Certifies 160.8% multi-year operational runway without exposing asset allocation.',
   },
 ];
 
@@ -60,6 +71,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
   const [customReserves, setCustomReserves] = useState<number>(12500000);
   const [customLiabilities, setCustomLiabilities] = useState<number>(9800000);
   const [copiedTx, setCopiedTx] = useState(false);
+  const [copiedContract, setCopiedContract] = useState(false);
 
   const handlePresetSelect = (preset: ScenarioPreset) => {
     setSelectedPreset(preset.id);
@@ -67,296 +79,295 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
     setCustomLiabilities(preset.liabilities);
   };
 
-  const handleCopy = (text: string) => {
+  const handleCopy = (text: string, type: 'tx' | 'contract') => {
     navigator.clipboard.writeText(text);
-    setCopiedTx(true);
-    setTimeout(() => setCopiedTx(false), 2000);
+    if (type === 'tx') {
+      setCopiedTx(true);
+      setTimeout(() => setCopiedTx(false), 2000);
+    } else {
+      setCopiedContract(true);
+      setTimeout(() => setCopiedContract(false), 2000);
+    }
   };
 
   const isSolvent = customReserves >= customLiabilities;
   const reserveRatio =
     customLiabilities > 0 ? ((customReserves / customLiabilities) * 100).toFixed(1) : '100.0';
 
+  const truncate = (val: string, start = 12, end = 8) => {
+    if (!val || val.length <= start + end) return val;
+    return `${val.slice(0, start)}...${val.slice(-end)}`;
+  };
+
   return (
-    <div className="solvency-gate-card">
-      {/* Header */}
-      <div className="circuit-card-header">
-        <div className="flex items-center gap-3">
-          <div className="icon-badge">
-            <span className="font-mono text-xs text-blue-400 font-bold">[ZK]</span>
+    <div className="prover-card" id="prover-app">
+      {/* Card Header & Presets */}
+      <div className="prover-header">
+        <div className="prover-title-group">
+          <h2>Solvency Verifier Terminal</h2>
+          <p>Configure confidential balance sheet parameters and generate zero-knowledge proof</p>
+        </div>
+
+        <div className="presets-bar">
+          <span className="presets-label">Presets:</span>
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => handlePresetSelect(preset)}
+              className={`preset-chip ${selectedPreset === preset.id ? 'active' : ''}`}
+            >
+              {preset.name}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => setSelectedPreset('custom')}
+            className={`preset-chip ${selectedPreset === 'custom' ? 'active' : ''}`}
+          >
+            Custom
+          </button>
+        </div>
+      </div>
+
+      {/* Two Column Grid */}
+      <div className="prover-grid">
+        {/* Left Column: Private Witness Configuration */}
+        <div className="prover-col">
+          <div className="prover-col-header">
+            <div>
+              <span className="col-step-title">Step 1 &bull; Private Inputs</span>
+              <h3 className="col-heading">Balance Sheet Configuration</h3>
+            </div>
+            <div className="badge-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: '#94a3b8' }}>
+              <Lock className="w-3.5 h-3.5 text-blue-400" />
+              <span>Private Witness</span>
+            </div>
           </div>
-          <div>
-            <h3 className="circuit-heading">Confidential Solvency Gate</h3>
-            <p className="circuit-subheading">
-              Compact Circuit: <code className="circuit-code">verifySolvency()</code> | Midnight Preprod
-            </p>
-          </div>
-        </div>
-        <div className="badge-pill">
-          <span className="font-mono text-xs text-slate-300">[CONFIDENTIAL GATE]</span>
-        </div>
-      </div>
 
-      {/* Target Contract Address Box */}
-      <div className="contract-ref-box">
-        <span className="contract-ref-label">Target Preprod Contract:</span>
-        <code className="contract-address-text" title={contractAddress}>
-          {contractAddress}
-        </code>
-      </div>
-
-      {/* Cryptographic Privacy Disclosure Box */}
-      <div className="privacy-assurance-box">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="tag-confidential">[CONFIDENTIAL WITNESS INVARIANT]</span>
-        </div>
-        <p className="privacy-assurance-text">
-          The Compact zero-knowledge circuit enforces the mathematical constraint{' '}
-          <code>assert(total_reserves &gt;= total_liabilities)</code>. All asset and liability numbers are
-          evaluated strictly within browser memory via private witnesses. Raw balances never leave this device
-          and are never broadcast to the network.
-        </p>
-      </div>
-
-      {/* Preset Scenarios */}
-      <div className="presets-container mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-            Institution Scenario Presets
-          </span>
-          <span className="text-xs text-slate-400 font-mono">Select Baseline Model</span>
-        </div>
-
-        <div className="preset-cards-grid">
-          {PRESETS.map((preset) => {
-            const isSelected = selectedPreset === preset.id;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handlePresetSelect(preset)}
-                className={`preset-select-btn ${isSelected ? 'preset-select-btn-active' : ''}`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-xs text-slate-200">{preset.name}</span>
-                  <span className="font-mono text-[10px] text-slate-400">{preset.tag}</span>
-                </div>
-                <p className="text-[11px] text-slate-400 text-left line-clamp-2">{preset.description}</p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Client-Side Witness Formulation (Private Inputs) */}
-      <div className="witness-builder-box mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
-            Client-Side Witness Formulation (Private Inputs)
-          </span>
-          <span className="badge-private-witness">[PRIVATE WITNESS: LOCAL RAM]</span>
-        </div>
-
-        <div className="witness-inputs-grid">
-          <div className="witness-input-group">
-            <label className="witness-label">
-              <span>Confidential Total Reserves</span>
-              <span className="text-xs text-slate-300 font-mono">
+          {/* Reserve Assets Input */}
+          <div className="balance-field">
+            <div className="balance-field-top">
+              <span className="balance-field-label">Total Reserve Assets</span>
+              <span className="balance-field-amount text-slate-100">
                 ${customReserves.toLocaleString()}
               </span>
-            </label>
+            </div>
             <input
               type="range"
               min="1000000"
               max="50000000"
-              step="500000"
+              step="250000"
               value={customReserves}
               onChange={(e) => {
                 setCustomReserves(Number(e.target.value));
                 setSelectedPreset('custom');
               }}
-              className="witness-range-slider"
+              className="balance-slider"
             />
           </div>
 
-          <div className="witness-input-group">
-            <label className="witness-label">
-              <span>Confidential Customer Liabilities</span>
-              <span className="text-xs text-slate-300 font-mono">
+          {/* Customer Liabilities Input */}
+          <div className="balance-field">
+            <div className="balance-field-top">
+              <span className="balance-field-label">Customer Deposit Liabilities</span>
+              <span className="balance-field-amount text-slate-100">
                 ${customLiabilities.toLocaleString()}
               </span>
-            </label>
+            </div>
             <input
               type="range"
               min="1000000"
               max="50000000"
-              step="500000"
+              step="250000"
               value={customLiabilities}
               onChange={(e) => {
                 setCustomLiabilities(Number(e.target.value));
                 setSelectedPreset('custom');
               }}
-              className="witness-range-slider"
+              className="balance-slider"
             />
           </div>
-        </div>
 
-        {/* Real-time Constraint Evaluation Preview */}
-        <div className="constraint-eval-banner mt-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className={`font-mono text-xs font-bold ${isSolvent ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {isSolvent ? '[PASS]' : '[REVERT]'}
-              </span>
-              <span className="text-xs text-slate-300 font-mono">
-                Constraint:{' '}
-                <code className="text-slate-100">
-                  {customReserves} &gt;= {customLiabilities}
-                </code>
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">Backing Ratio:</span>
-              <span
-                className={`text-xs font-bold font-mono ${isSolvent ? 'text-emerald-400' : 'text-rose-400'}`}
-              >
+          {/* Live Solvency Ratio Card */}
+          <div className="solvency-ratio-card">
+            <div className="ratio-value-group">
+              <span className="ratio-label">Backing Ratio</span>
+              <span className={`ratio-number ${isSolvent ? 'solvent' : 'insolvent'}`}>
                 {reserveRatio}%
               </span>
             </div>
+            <div>
+              <span className={`status-badge ${isSolvent ? 'solvent' : 'insolvent'}`}>
+                {isSolvent ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Solvent (100%+ Backed)</span>
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="w-4 h-4" />
+                    <span>Insolvent (Deficit)</span>
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* Privacy Guarantee Note */}
+          <div className="privacy-banner">
+            <strong>Client-Side Zero Disclosure:</strong> Balances are processed strictly inside local browser WebAssembly memory. Raw figures never leave this device and are never submitted to the ledger or indexer.
           </div>
         </div>
-      </div>
 
-      {/* Action Row */}
-      <div className="action-row">
-        <button
-          onClick={onCallCircuit}
-          disabled={!isConnected || isProving || !isSolvent}
-          className={`prove-btn ${!isConnected || !isSolvent ? 'prove-btn-disabled' : ''} ${isProving ? 'prove-btn-loading' : ''}`}
-          id="call-circuit-btn"
-        >
-          {isProving ? (
-            <div className="flex items-center justify-center gap-2">
-              <span className="spinner"></span>
-              <span>Executing Client-Side ZK Prover in Browser...</span>
+        {/* Right Column: Execution & On-Chain Confirmation */}
+        <div className="prover-col">
+          <div className="prover-col-header">
+            <div>
+              <span className="col-step-title">Step 2 &bull; Verification</span>
+              <h3 className="col-heading">On-Chain Proof Execution</h3>
             </div>
-          ) : !isSolvent ? (
-            <div className="flex items-center justify-center gap-2 text-rose-300">
-              <span className="font-mono font-bold">[FAIL]</span>
-              <span>Insolvent State: Reserves Must Exceed Liabilities</span>
+            <div className="badge-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: '#94a3b8' }}>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Midnight Preprod</span>
             </div>
-          ) : (
-            <div className="flex items-center justify-center gap-2">
-              <span>Generate ZK Proof &amp; Submit to Preprod</span>
-              <span>&rarr;</span>
+          </div>
+
+          {/* Target Contract Card */}
+          <div className="contract-meta-card">
+            <div>
+              <span className="contract-meta-label">Contract Address</span>
+              <div className="contract-meta-address" title={contractAddress}>
+                {truncate(contractAddress, 16, 8)}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCopy(contractAddress, 'contract')}
+              className="nav-btn"
+              style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+              title="Copy Contract Address"
+            >
+              {copiedContract ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedContract ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
+
+          {/* Action Trigger */}
+          <div style={{ marginTop: 'auto' }}>
+            <button
+              onClick={onCallCircuit}
+              disabled={!isConnected || isProving || !isSolvent}
+              className="cta-button cta-button-primary"
+            >
+              {isProving ? (
+                <span>Generating ZK Proof in Browser...</span>
+              ) : !isConnected ? (
+                <span>Connect Wallet Above to Prove</span>
+              ) : !isSolvent ? (
+                <span>Cannot Prove: Insolvent Balance Sheet</span>
+              ) : (
+                <>
+                  <span>Generate ZK Proof &amp; Verify Solvency</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Proving In Progress Indicator */}
+          {isProving && (
+            <div className="proving-card">
+              <div className="proving-header">
+                <span className="text-xs font-semibold text-slate-200">Local zk-SNARK Execution</span>
+                <span className="proving-step-text">Proving in WebAssembly</span>
+              </div>
+              <div className="progress-bar-bg">
+                <div className="progress-bar-active"></div>
+              </div>
+              <p className="text-xs text-slate-400 font-mono">
+                {provingStep || 'Computing Halo2 polynomial commitments...'}
+              </p>
             </div>
           )}
-        </button>
-      </div>
 
-      {!isConnected && (
-        <p className="connect-hint-text font-mono text-xs">
-          [PROVIDER REQUIRED] Connect Lace wallet above to enable circuit execution.
-        </p>
-      )}
-
-      {/* Proving Progress State */}
-      {isProving && (
-        <div className="proving-progress-card mt-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="proving-title">Computing Zero-Knowledge Proof</span>
-            <span className="proving-tag">Halo2 Prover Engine</span>
-          </div>
-          <div className="progress-bar-container">
-            <div className="progress-bar-fill"></div>
-          </div>
-          <p className="proving-step-desc font-mono">
-            {provingStep || 'Formulating constraint polynomial and computing witness commitments...'}
-          </p>
-          <div className="proving-note">
-            <span className="font-mono text-xs text-emerald-400 mr-1">[PRIVATE]</span>
-            <span>Private inputs are never transmitted to the blockchain or remote servers.</span>
-          </div>
-        </div>
-      )}
-
-      {/* Transaction Result Display */}
-      {txResult && (
-        <div className="tx-result-card mt-4" id="tx-result-display">
-          <div className="tx-result-header">
-            <div className="flex items-center gap-2">
-              <span className="status-indicator-dot dot-emerald"></span>
-              <span className="tx-success-title font-mono">[TRANSACTION VERIFIED ON-CHAIN]</span>
-            </div>
-            <span className="tx-time-tag font-mono">{txResult.timestamp}</span>
-          </div>
-
-          <div className="label-badge-success mb-3">
-            <span className="font-mono text-xs mr-1">[SEAL]</span>
-            <span>Cryptographic assertion verified without balance sheet disclosure</span>
-          </div>
-
-          <div className="result-field-grid">
-            <div className="result-field">
-              <span className="field-name">On-Chain Solvency Status:</span>
-              <span className="field-value font-mono font-bold text-emerald-400">
-                {txResult.verifiedSolvent ? '[STATUS: VERIFIED SOLVENT]' : '[STATUS: UNVERIFIED]'}
-              </span>
-            </div>
-
-            <div className="result-field">
-              <span className="field-name">Confirmed Block Height:</span>
-              <span className="field-value text-slate-100 font-mono">
-                #{txResult.blockHeight}
-              </span>
-            </div>
-
-            <div className="result-field result-field-full">
-              <div className="flex items-center justify-between">
-                <span className="field-name">Transaction Hash:</span>
-                <button
-                  onClick={() => handleCopy(txResult.txHash)}
-                  className="copy-mini-btn"
-                  title="Copy Tx Hash"
-                >
-                  <span className="font-mono text-xs mr-1">[COPY]</span>
-                  <span>{copiedTx ? 'Copied' : 'Copy'}</span>
-                </button>
+          {/* Verified On-Chain Receipt */}
+          {txResult && (
+            <div className="receipt-card">
+              <div className="receipt-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span className="receipt-title">Verified On-Chain &bull; 100% Backed</span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">{txResult.timestamp}</span>
               </div>
-              <code className="field-code">{txResult.txHash}</code>
+
+              <div className="receipt-grid">
+                <div className="receipt-item">
+                  <div className="receipt-label">Status</div>
+                  <div className="receipt-val text-emerald-400 font-semibold">
+                    {txResult.verifiedSolvent ? 'Solvent' : 'Unverified'}
+                  </div>
+                </div>
+
+                <div className="receipt-item">
+                  <div className="receipt-label">Confirmed Block</div>
+                  <div className="receipt-val text-blue-400 font-mono">
+                    #{txResult.blockHeight}
+                  </div>
+                </div>
+
+                <div className="receipt-item receipt-item-full">
+                  <div className="receipt-label">Transaction Hash</div>
+                  <div className="receipt-val text-xs truncate font-mono">
+                    {txResult.txHash}
+                  </div>
+                </div>
+
+                <div className="receipt-item receipt-item-full">
+                  <div className="receipt-label">Audit Commitment Hash</div>
+                  <div className="receipt-val text-xs truncate font-mono text-slate-300">
+                    {txResult.commitment}
+                  </div>
+                </div>
+              </div>
+
+              <div className="receipt-actions">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(txResult.txHash, 'tx')}
+                  className="receipt-btn"
+                >
+                  {copiedTx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedTx ? 'Copied' : 'Copy Tx Hash'}</span>
+                </button>
+
+                {onOpenCertificateModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenCertificateModal}
+                    className="receipt-btn receipt-btn-primary"
+                  >
+                    <FileCheck className="w-3.5 h-3.5" />
+                    <span>View Audit Certificate</span>
+                  </button>
+                )}
+
+                <a
+                  href="https://indexer.preprod.midnight.network"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="receipt-btn"
+                >
+                  <span>Explorer</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
-
-            <div className="result-field result-field-full">
-              <span className="field-name">Audit Commitment Hash:</span>
-              <code className="field-code text-slate-300">{txResult.commitment}</code>
-            </div>
-          </div>
-
-          <div className="result-actions-row mt-3 flex items-center justify-between flex-wrap gap-2">
-            <a
-              href="https://indexer.preprod.midnight.network"
-              target="_blank"
-              rel="noreferrer"
-              className="explorer-link font-mono"
-            >
-              <span>Midnight Preprod Explorer</span>
-              <span className="ml-1">&rarr;</span>
-            </a>
-
-            {onOpenCertificateModal && (
-              <button
-                type="button"
-                onClick={onOpenCertificateModal}
-                className="certificate-open-btn"
-              >
-                <span className="font-mono text-xs text-emerald-400 mr-1">[CERTIFICATE]</span>
-                <span>View Verifiable Certificate</span>
-              </button>
-            )}
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
+export default SolvencyGate;
