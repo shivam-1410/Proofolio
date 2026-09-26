@@ -1,15 +1,4 @@
 import React, { useState } from 'react';
-import {
-  MessageSquare,
-  Users,
-  CheckCircle2,
-  X,
-  ExternalLink,
-  Send,
-  Star,
-  ShieldCheck,
-  TrendingUp,
-} from 'lucide-react';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -38,13 +27,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     <div className="modal-backdrop">
       <div className="feedback-modal-card">
         <button onClick={onClose} className="modal-close-btn" aria-label="Close feedback modal">
-          <X className="w-5 h-5 text-slate-400 hover:text-white" />
+          <span className="font-mono text-sm text-slate-400 hover:text-white leading-none">✕</span>
         </button>
 
         <div className="feedback-modal-header">
-          <div className="icon-badge icon-badge-cyan">
-            <MessageSquare className="w-5 h-5 text-cyan-400" />
-          </div>
+          <span className="font-mono text-xs font-semibold px-2 py-0.5 border border-primary/40 bg-primary/10 text-primary">
+            [FEEDBACK]
+          </span>
           <div>
             <h3 className="text-lg font-bold text-slate-100">User Validation &amp; Feedback Hub</h3>
             <p className="text-xs text-slate-400">Level 5 / Level 6 Preprod User Validation</p>
@@ -57,31 +46,31 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             <span className="val-stat-label">Level 5 Preprod Users</span>
           </div>
           <div className="val-stat-box">
-            <span className="val-stat-num text-cyan-400">20 / 20</span>
+            <span className="val-stat-num text-accent-blue">20 / 20</span>
             <span className="val-stat-label">Level 6 Launch Testers</span>
           </div>
           <div className="val-stat-box">
-            <span className="val-stat-num text-purple-400">100%</span>
+            <span className="val-stat-num text-slate-200">100%</span>
             <span className="val-stat-label">Mathematical Backing</span>
           </div>
         </div>
 
         <div className="level6-improvements-card mt-4">
           <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2 font-mono">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-emerald-400 font-bold">[VERIFIED]</span>
             <span>Implemented Level 6 Validation Enhancements</span>
           </span>
           <ul className="improvement-list">
             <li className="flex items-start gap-2 text-xs text-slate-300">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+              <span className="font-mono text-emerald-400 shrink-0 mt-0.5">[1]</span>
               <span><strong>1-Click Institution Presets:</strong> Rapid testing of exchanges, DeFi vaults, and DAOs.</span>
             </li>
             <li className="flex items-start gap-2 text-xs text-slate-300">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+              <span className="font-mono text-emerald-400 shrink-0 mt-0.5">[2]</span>
               <span><strong>Verifiable Solvency Certificate:</strong> Exportable cryptographic audit certificate for depositors and regulators.</span>
             </li>
             <li className="flex items-start gap-2 text-xs text-slate-300">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+              <span className="font-mono text-emerald-400 shrink-0 mt-0.5">[3]</span>
               <span><strong>Simulated Preprod Wallet Mode:</strong> Seamless evaluation even without Lace browser extension installed.</span>
             </li>
           </ul>
@@ -89,7 +78,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
 
         {submitted ? (
           <div className="feedback-success-banner mt-4">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 mr-2" />
+            <span className="font-mono text-sm font-bold text-emerald-400 mr-2">[RECORDED]</span>
             <span className="text-sm font-semibold text-emerald-300">Thank you! Your feedback has been recorded.</span>
           </div>
         ) : (
@@ -122,18 +111,16 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             </div>
 
             <div className="mb-3">
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Rate ZK Experience</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">Rate ZK Experience (1 to 5 Score)</label>
               <div className="flex items-center gap-1.5">
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map((score) => (
                   <button
-                    key={star}
+                    key={score}
                     type="button"
-                    onClick={() => setRating(star)}
-                    className="star-btn"
+                    onClick={() => setRating(score)}
+                    className={`rating-score-btn ${rating === score ? 'active' : ''}`}
                   >
-                    <Star
-                      className={`w-5 h-5 ${star <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`}
-                    />
+                    {score}/5
                   </button>
                 ))}
               </div>
@@ -156,15 +143,15 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 href="https://github.com/shivam-1410/Proofolio/blob/main/docs/FEEDBACK.md"
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-cyan-400 hover:underline flex items-center"
+                className="text-xs text-accent-blue hover:underline flex items-center"
               >
                 <span>View docs/FEEDBACK.md</span>
-                <ExternalLink className="w-3 h-3 ml-1" />
+                <span className="font-mono text-xs ml-1">&nearr;</span>
               </a>
 
               <button type="submit" className="submit-feedback-btn">
-                <Send className="w-3.5 h-3.5 mr-1.5" />
-                <span>Submit Feedback</span>
+                <span className="font-mono text-xs mr-1.5">[SUBMIT]</span>
+                <span>Send Feedback</span>
               </button>
             </div>
           </form>
@@ -173,3 +160,4 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     </div>
   );
 };
+

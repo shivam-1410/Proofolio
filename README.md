@@ -25,13 +25,13 @@ Traditional third-party accounting audits fail to solve this dilemma: they are s
 
 ## Privacy Model
 - **What is PUBLIC (on-chain, visible to anyone):**
-  - `solvency_status: Boolean` — On-chain flag indicating whether the institution has satisfied the mathematical solvency constraint (`reserves >= liabilities`).
-  - `last_verified_block: Uint<64>` — Block height / timestamp recording when the proof was verified on-chain.
-  - `commitment_hash: Bytes<32>` — Cryptographic audit commitment binding the proof to a specific balance sheet snapshot.
+  - `solvency_status: Boolean`: On-chain flag indicating whether the institution has satisfied the mathematical solvency constraint (`reserves >= liabilities`).
+  - `last_verified_block: Uint<64>`: Block height / timestamp recording when the proof was verified on-chain.
+  - `commitment_hash: Bytes<32>`: Cryptographic audit commitment binding the proof to a specific balance sheet snapshot.
 - **What is PRIVATE (private witness, never on-chain):**
-  - `total_reserves: Uint<64>` — Exact reserve assets held and controlled by the institution (e.g. `$12,500,000`).
-  - `total_liabilities: Uint<64>` — Exact customer deposit liabilities and obligations owed (e.g. `$9,800,000`).
-  - `salt: Bytes<32>` — Cryptographic blinding entropy preventing brute-force deduction of financial positions.
+  - `total_reserves: Uint<64>`: Exact reserve assets held and controlled by the institution (e.g. `$12,500,000`).
+  - `total_liabilities: Uint<64>`: Exact customer deposit liabilities and obligations owed (e.g. `$9,800,000`).
+  - `salt: Bytes<32>`: Cryptographic blinding entropy preventing brute-force deduction of financial positions.
 - **What the user PROVES without revealing:**
   - The zero-knowledge circuit strictly enforces `assert(total_reserves >= total_liabilities)`.
   - The ZK proof guarantees mathematical solvency with 100% cryptographic certainty.
@@ -103,9 +103,9 @@ npm test
 ```
 
 Suite includes:
-1. `tests/counter.test.ts` — Tests circuit logic, state transitions, and privacy invariants.
-2. `tests/proof_of_reserves.test.ts` — Tests initial ledger state, valid solvency execution, insolvency revert assertion, and selective disclosure.
-3. `tests/eligibility_gate.test.ts` — Tests exact boundary conditions, blinding salt uniqueness, and surplus zero-knowledge protection.
+1. `tests/counter.test.ts`: Tests circuit logic, state transitions, and privacy invariants.
+2. `tests/proof_of_reserves.test.ts`: Tests initial ledger state, valid solvency execution, insolvency revert assertion, and selective disclosure.
+3. `tests/eligibility_gate.test.ts`: Tests exact boundary conditions, blinding salt uniqueness, and surplus zero-knowledge protection.
 
 ## CI/CD
 The automated GitHub Actions pipeline is configured in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
@@ -130,7 +130,7 @@ Summary of top changes made from user feedback:
 - **Exportable Verifiable Audit Certificate:** Printable, cryptographically sealed solvency certificate containing block height, transaction ID, and commitment hash for depositors and auditors.
 - **Simulated Demo Wallet Mode:** Instant zero-friction onboarding allowing users and evaluators to test client-side ZK proving immediately without needing the Lace extension pre-installed.
 
-## Level 5 — User Validation
+## Level 5: User Validation
 - Target: 50 Preprod users
 - Current: 50 / 50 verified wallet addresses
 - See [USERS.md](USERS.md) for full list of verified wallet addresses

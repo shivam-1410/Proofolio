@@ -328,7 +328,7 @@ export function useMidnight() {
       } else if (rawMsg.includes('Maximum call stack size exceeded')) {
         setError(
           `Lace Extension Alert: Internal call stack limit reached in browser extension.\n` +
-          `• Recommendation: Click '⚡ Connect Demo Wallet' below to proceed with testing the ZK Solvency circuit.\n` +
+          `• Recommendation: Click '[DEMO] Connect Simulated Wallet' below to proceed with testing the ZK Solvency circuit.\n` +
           `• Or open Lace extension settings, switch to Preprod, and refresh the page.`
         );
       } else {

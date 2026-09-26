@@ -19,7 +19,7 @@ Before interacting with Proofolio on Midnight Preprod, ensure you have:
 3. **Node.js (for local execution):**
    - Node.js v22+ (`node -v >= 22.0.0`) and npm.
 
-*(Note: If you do not have the Lace extension installed right now, Proofolio features a built-in **⚡ Simulated Demo Wallet Mode** allowing you to test client-side zero-knowledge proof generation immediately in your browser.)*
+*(Note: If you do not have the Lace extension installed right now, Proofolio features a built-in **Simulated Demo Wallet Mode** allowing you to test client-side zero-knowledge proof generation immediately in your browser.)*
 
 ---
 
@@ -48,7 +48,7 @@ Follow these simple steps to perform an institutional zero-knowledge solvency ve
   - **DeFi Overcollateralized Vault:** $45,000,000 Reserves / $38,200,000 Liabilities (117.8% Backing).
   - **Protocol DAO Runway Reserve:** $8,200,000 Reserves / $5,100,000 Liabilities (160.8% Backing).
   - *Or adjust the sliders manually to formulate your private witness.*
-- Notice the badge: `🔒 Private Witness — Never On-Chain`. These figures exist solely within client browser memory.
+- Notice the badge: `[PRIVATE WITNESS] Never On-Chain`. These figures exist solely within client browser memory.
 
 ### Step 2: Validate the Mathematical Constraint
 - The client-side circuit checks that `total_reserves >= total_liabilities`.
@@ -65,7 +65,7 @@ Follow these simple steps to perform an institutional zero-knowledge solvency ve
 
 ### Step 5: View On-Chain Confirmation & Audit Certificate
 - The transaction receipt displays:
-  - **On-Chain Solvency Status:** `✅ SOLVENT (VERIFIED)`
+  - **On-Chain Solvency Status:** `[STATUS: VERIFIED SOLVENT]`
   - **Confirmed Block Height:** (e.g. `#900942`)
   - **Transaction Hash:** Direct link to Midnight Preprod Explorer
   - **Cryptographic Audit Commitment:** 32-byte sha256 commitment binding the proof to the balance sheet snapshot.
@@ -91,7 +91,7 @@ npm run dev
 ```
 
 1. Open `http://localhost:5173` in your browser.
-2. Click **⚡ Connect Demo Wallet (Test ZK Circuit)** if you want an instant zero-configuration walkthrough, or **Connect Lace Wallet** for live Preprod signing.
+2. Click **Connect Demo Wallet (Test ZK Circuit)** if you want an instant zero-configuration walkthrough, or **Connect Lace Wallet** for live Preprod signing.
 3. Click **Generate ZK Proof & Submit to Preprod**.
 4. Within seconds, your proof is computed, validated, and verified!
 

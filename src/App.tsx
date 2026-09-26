@@ -9,23 +9,6 @@ import { SolvencySimulator } from './components/SolvencySimulator';
 import { CompactCodeViewer } from './components/CompactCodeViewer';
 import { AuditCertificateModal } from './components/AuditCertificateModal';
 import { FeedbackModal } from './components/FeedbackModal';
-import {
-  Shield,
-  Layers,
-  EyeOff,
-  CheckCircle2,
-  ExternalLink,
-  Code2,
-  BookOpen,
-  Activity,
-  Lock,
-  Cpu,
-  Hash,
-  Scale,
-  Award,
-  Users,
-  Terminal,
-} from 'lucide-react';
 import './index.css';
 
 export const App: React.FC = () => {
@@ -111,7 +94,7 @@ export const App: React.FC = () => {
                 className="certificate-quick-btn"
                 title="View Verifiable Audit Certificate"
               >
-                <Award className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+                <span className="font-mono text-emerald-400 text-xs mr-1">[SEAL]</span>
                 <span>Certificate</span>
               </button>
               <button

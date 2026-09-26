@@ -1,4 +1,4 @@
-# Level 6 Users — Preprod
+# Level 6 Users: Preprod
 
 Target: 20 verified wallet addresses
 

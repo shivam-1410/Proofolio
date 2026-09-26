@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Code2, Copy, Check, Shield, FileCode, Layers, Info } from 'lucide-react';
 
 const COMPACT_CODE = `/**
  * ZK Proof-of-Reserves: Confidential Solvency Verifier
- * Midnight Network — Compact Language (v0.23+)
+ * Midnight Network : Compact Language (v0.23+)
  */
 pragma language_version >= 0.23;
 
@@ -55,19 +54,19 @@ const EXPLANATIONS = [
     title: 'Private Witness Parameters (Client Memory)',
     desc: 'total_reserves, total_liabilities, and salt are private witnesses. They stay in the user\'s local browser/node memory and are never transmitted over the network.',
     badge: 'Private Witness',
-    badgeColor: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+    badgeColor: 'text-slate-200 border-border-color bg-surface-subtle',
   },
   {
     title: 'assert() (Zero-Knowledge Constraint)',
     desc: 'Evaluated inside the Halo2/Plonk zk-SNARK prover. If reserves < liabilities, the proof cannot mathematically be generated, causing the transaction to revert.',
     badge: 'ZK Constraint',
-    badgeColor: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
+    badgeColor: 'text-accent-blue border-accent-blue/30 bg-accent-blue/10',
   },
   {
     title: 'disclose() (Selective Disclosure)',
     desc: 'In Compact, private variables cannot write to ledger state unless explicitly wrapped in disclose(). This compiler-enforced invariant prevents accidental data leakage.',
     badge: 'Privacy Invariant',
-    badgeColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
+    badgeColor: 'text-slate-200 border-border-color bg-surface-subtle',
   },
 ];
 
@@ -85,9 +84,9 @@ export const CompactCodeViewer: React.FC = () => {
     <div className="compact-viewer-card">
       <div className="compact-viewer-header">
         <div className="flex items-center gap-3">
-          <div className="icon-badge icon-badge-cyan">
-            <FileCode className="w-5 h-5 text-cyan-400" />
-          </div>
+          <span className="font-mono text-xs font-semibold px-2 py-0.5 border border-primary/40 bg-primary/10 text-primary">
+            [COMPACT]
+          </span>
           <div>
             <h3 className="compact-viewer-title">Midnight Smart Contract Source</h3>
             <p className="compact-viewer-sub">
@@ -102,14 +101,14 @@ export const CompactCodeViewer: React.FC = () => {
               onClick={() => setActiveTab('code')}
               className={`tab-pill ${activeTab === 'code' ? 'tab-pill-active' : ''}`}
             >
-              <Code2 className="w-3.5 h-3.5 mr-1" />
+              <span className="font-mono text-xs mr-1.5">&lt;/&gt;</span>
               Contract Code
             </button>
             <button
               onClick={() => setActiveTab('specs')}
               className={`tab-pill ${activeTab === 'specs' ? 'tab-pill-active' : ''}`}
             >
-              <Layers className="w-3.5 h-3.5 mr-1" />
+              <span className="font-mono text-xs mr-1.5">[SPEC]</span>
               Compiler Invariants
             </button>
           </div>
@@ -121,12 +120,12 @@ export const CompactCodeViewer: React.FC = () => {
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+                <span className="font-mono text-xs mr-1 text-emerald-400">[COPIED]</span>
                 <span>Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5 mr-1" />
+                <span className="font-mono text-xs mr-1">[COPY]</span>
                 <span>Copy Code</span>
               </>
             )}
@@ -156,9 +155,9 @@ export const CompactCodeViewer: React.FC = () => {
 
       <div className="compact-viewer-footer">
         <div className="flex items-center gap-2 text-xs text-slate-400">
-          <Shield className="w-4 h-4 text-cyan-400 shrink-0" />
+          <span className="font-mono text-xs text-accent-blue font-bold shrink-0">[FORMAL]</span>
           <span>
-            Verified by Midnight Compact Compiler & Halo2 Prover — Formal mathematical privacy guarantees by design.
+            Verified by Midnight Compact Compiler &amp; Halo2 Prover: Formal mathematical privacy guarantees by design.
           </span>
         </div>
       </div>
@@ -166,3 +165,4 @@ export const CompactCodeViewer: React.FC = () => {
   );
 };
 export default CompactCodeViewer;
+

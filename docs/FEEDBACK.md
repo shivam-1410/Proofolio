@@ -1,4 +1,4 @@
-# User Feedback — Level 5 & Level 6
+# User Feedback: Level 5 & Level 6
 
 This document chronicles user feedback, testing sessions, stakeholder interviews, and iterative engineering improvements implemented for **Proofolio** across Level 5 (User Validation) and Level 6 (Mainnet Launch Preparation).
 
@@ -18,10 +18,10 @@ Feedback was collected through three primary structured channels from March 2026
 | # | User | Feedback Summary | Date |
 |---|------|-----------------|------|
 | 1 | `@alex_defi` | Proving flow was super fast, but typing out 8-digit balance sheet numbers by hand was tedious. Would love 1-click test scenarios for exchanges and lending pools. | 2026-04-12 |
-| 2 | `mn_addr_preprod1...9z` | Verified solvency on-chain! However, depositors need something official to show their board or users—like an exportable audit certificate. | 2026-04-18 |
+| 2 | `mn_addr_preprod1...9z` | Verified solvency on-chain! However, depositors need something official to show their board or users: like an exportable audit certificate. | 2026-04-18 |
 | 3 | `@crypto_auditor_k` | Privacy claim is solid. Love that raw reserves don't leave the browser. Can we see the exact cryptographic commitment hash rendered clearly on the receipt? | 2026-04-25 |
 | 4 | `mn_addr_preprod1...4f` | When Lace extension was locked, the error message was vague. Please add direct retry buttons and troubleshooting links. | 2026-05-02 |
-| 5 | `@midnight_builder` | Tested on mobile Safari—layout was slightly cramped on smaller screens around the comparison table. Mobile drawer needed. | 2026-05-15 |
+| 5 | `@midnight_builder` | Tested on mobile Safari: layout was slightly cramped on smaller screens around the comparison table. Mobile drawer needed. | 2026-05-15 |
 | 6 | `mn_addr_preprod1...88` | Amazing that it proves without revealing inputs. Wanted an option to test even before installing Lace extension on new machines. | 2026-05-28 |
 | 7 | `@treasury_dao_lead` | We manage a DAO treasury. We need to prove continuous multi-year runway without competitors knowing our exact liquid stablecoin reserves. Proofolio fits this perfectly! | 2026-06-10 |
 | 8 | `mn_addr_preprod1...2b` | Solvency status updated instantly on-chain. Would be great to have a live network indicator showing node connectivity and block freshness. | 2026-06-22 |

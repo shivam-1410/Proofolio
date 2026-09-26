@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { X, Shield, FileText, CheckCircle2 } from 'lucide-react';
 
 interface LegalModalProps {
   isOpen: boolean;
@@ -33,7 +32,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             className="modal-close-btn"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5 text-slate-400 hover:text-white" />
+            <span className="font-mono text-sm text-slate-400 hover:text-white leading-none">✕</span>
           </button>
         </div>
 
@@ -43,7 +42,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             className={`legal-tab-btn ${activeTab === 'terms' ? 'active' : ''}`}
             onClick={() => setActiveTab('terms')}
           >
-            <FileText className="w-3.5 h-3.5 mr-1.5 inline" />
+            <span className="font-mono text-xs mr-1.5">[TERMS]</span>
             Terms of Service
           </button>
           <button
@@ -51,7 +50,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             className={`legal-tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
             onClick={() => setActiveTab('privacy')}
           >
-            <Shield className="w-3.5 h-3.5 mr-1.5 inline" />
+            <span className="font-mono text-xs mr-1.5">[PRIVACY]</span>
             Zero-Knowledge Privacy Policy
           </button>
         </div>
@@ -90,8 +89,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             <div className="legal-section-content">
               <h4 className="legal-heading">1. Zero-Knowledge Witness Secrecy</h4>
               <p className="legal-text">
-                Proofolio enforces absolute confidentiality. Private financial values—including raw reserve amounts, customer deposit
-                liabilities, and blinding entropy (salt)—are processed exclusively in local client memory (RAM) via Midnight Compact
+                Proofolio enforces absolute confidentiality. Private financial values (including raw reserve amounts, customer deposit
+                liabilities, and blinding entropy salt) are processed exclusively in local client memory (RAM) via Midnight Compact
                 witness bindings. These values are never broadcast, logged to analytics servers, or recorded on the blockchain ledger.
               </p>
 
@@ -130,3 +129,4 @@ export const LegalModal: React.FC<LegalModalProps> = ({
     </div>
   );
 };
+

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Wallet, LogOut, CheckCircle2, AlertTriangle, Copy, ExternalLink, ShieldCheck } from 'lucide-react';
 
 interface WalletConnectProps {
   isConnected: boolean;
@@ -47,7 +46,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
       <div className="wallet-card-header">
         <div className="wallet-title-row">
           <div className="icon-badge">
-            <Wallet className="w-5 h-5 text-indigo-400" />
+            <span className="font-mono text-xs text-blue-400 font-bold">[W3]</span>
           </div>
           <div>
             <h3 className="wallet-heading">Midnight Lace Wallet</h3>
@@ -76,7 +75,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
       {error && (
         <div className="error-alert">
           <div className="error-icon-wrapper">
-            <AlertTriangle className="w-5 h-5 text-rose-400" />
+            <span className="font-mono text-xs text-rose-400 font-bold">[ERR]</span>
           </div>
           <div className="error-body">
             <div className="error-title">Connection Error</div>
@@ -87,7 +86,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 type="button"
                 onClick={() => onConnect()}
                 className="switch-connect-btn"
-                style={{ background: '#3b82f6', color: '#fff' }}
+                style={{ background: '#2563eb', color: '#fff', border: '1px solid #1d4ed8', borderRadius: '3px' }}
               >
                 Retry Lace Connection
               </button>
@@ -96,7 +95,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                   type="button"
                   onClick={() => onConnectDemo()}
                   className="switch-connect-btn"
-                  style={{ background: '#2563eb', color: '#fff' }}
+                  style={{ background: '#1e293b', color: '#fff', border: '1px solid #334155', borderRadius: '3px' }}
                 >
                   Connect Demo Wallet (Test ZK Circuit)
                 </button>
@@ -113,6 +112,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                     onConnect();
                   }}
                   className="switch-connect-btn"
+                  style={{ borderRadius: '3px' }}
                 >
                   Switch to {networkId === 'preprod' ? 'Preview' : 'Preprod'} &amp; Reconnect
                 </button>
@@ -128,7 +128,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 rel="noreferrer"
                 className="error-link"
               >
-                Download Midnight Lace Extension <ExternalLink className="w-3.5 h-3.5 inline ml-1" />
+                Download Midnight Lace Extension &rarr;
               </a>
             )}
           </div>
@@ -142,7 +142,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
         <div className="disconnected-state">
           <div className="disconnected-hero">
             <div className="disconnected-icon-ring">
-              <ShieldCheck className="w-8 h-8 text-cyan-400 opacity-80" />
+              <span className="font-mono text-xs text-slate-300 font-bold">[ZK-GATE]</span>
             </div>
             <h4 className="disconnected-title">Wallet Not Connected</h4>
             <p className="disconnected-desc">
@@ -164,10 +164,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                   <span>Connecting to Lace...</span>
                 </>
               ) : (
-                <>
-                  <Wallet className="w-4 h-4 mr-2" />
-                  <span>Connect Lace Wallet</span>
-                </>
+                <span>Connect Lace Wallet</span>
               )}
             </button>
 
@@ -177,22 +174,24 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 onClick={onConnectDemo}
                 style={{
                   background: 'transparent',
-                  border: '1px dashed rgba(129, 140, 248, 0.4)',
-                  borderRadius: '10px',
+                  border: '1px dashed #334155',
+                  borderRadius: '3px',
                   padding: '8px 14px',
-                  color: '#a5b4fc',
+                  color: '#94a3b8',
                   fontSize: '0.8rem',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.15s ease',
                   textAlign: 'center',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#818cf8';
-                  e.currentTarget.style.background = 'rgba(99, 102, 241, 0.08)';
+                  e.currentTarget.style.borderColor = '#64748b';
+                  e.currentTarget.style.background = '#1e293b';
+                  e.currentTarget.style.color = '#f8fafc';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(129, 140, 248, 0.4)';
+                  e.currentTarget.style.borderColor = '#334155';
                   e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#94a3b8';
                 }}
                 id="connect-demo-btn"
               >
@@ -205,7 +204,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
         <div className="connected-state">
           <div className="connected-banner">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span className="status-indicator-dot dot-emerald"></span>
               <span className="connected-label">Wallet Connected</span>
             </div>
             <button
@@ -214,7 +213,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
               id="disconnect-wallet-btn"
               title="Disconnect Wallet"
             >
-              <LogOut className="w-4 h-4 mr-1" />
+              <span className="font-mono text-xs mr-1">[&times;]</span>
               <span>Disconnect</span>
             </button>
           </div>
@@ -227,8 +226,8 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 className="copy-btn"
                 title="Copy Address"
               >
-                <Copy className="w-3.5 h-3.5 mr-1" />
-                <span>{copied ? 'Copied!' : 'Copy'}</span>
+                <span className="font-mono text-xs mr-1">[COPY]</span>
+                <span>{copied ? 'Copied' : 'Copy'}</span>
               </button>
             </div>
             <div className="address-code" title={walletAddress || ''}>
@@ -239,9 +238,9 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           {shieldedAddress && (
             <div className="address-display-box shielded-box">
               <div className="address-label-row">
-                <span className="address-type-label text-purple-400">Shielded Address (ZK):</span>
+                <span className="address-type-label text-slate-400">Shielded Address (ZK):</span>
               </div>
-              <div className="address-code text-purple-200" title={shieldedAddress}>
+              <div className="address-code text-slate-200" title={shieldedAddress}>
                 {truncateAddress(shieldedAddress)}
               </div>
             </div>

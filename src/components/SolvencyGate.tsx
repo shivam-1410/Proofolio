@@ -1,19 +1,4 @@
 import React, { useState } from 'react';
-import {
-  ShieldCheck,
-  Cpu,
-  CheckCircle2,
-  Lock,
-  ArrowRight,
-  ExternalLink,
-  Copy,
-  Sliders,
-  AlertCircle,
-  FileCheck,
-  Building2,
-  Vault,
-  WalletCards,
-} from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface SolvencyGateProps {
@@ -29,8 +14,7 @@ interface SolvencyGateProps {
 interface ScenarioPreset {
   id: string;
   name: string;
-  category: string;
-  icon: typeof Building2;
+  tag: string;
   reserves: number;
   liabilities: number;
   description: string;
@@ -40,8 +24,7 @@ const PRESETS: ScenarioPreset[] = [
   {
     id: 'custodian-prime',
     name: 'Tier-1 Exchange Custody',
-    category: 'Centralized Custody',
-    icon: Building2,
+    tag: '[CUSTODY]',
     reserves: 12500000,
     liabilities: 9800000,
     description: 'Proves 127.5% backing ratio across retail and institutional spot deposits.',
@@ -49,8 +32,7 @@ const PRESETS: ScenarioPreset[] = [
   {
     id: 'lending-pool',
     name: 'DeFi Overcollateralized Vault',
-    category: 'Lending Protocol',
-    icon: Vault,
+    tag: '[LENDING]',
     reserves: 45000000,
     liabilities: 38200000,
     description: 'Verifies continuous debt solvency without exposing collateral liquidation limits.',
@@ -58,11 +40,10 @@ const PRESETS: ScenarioPreset[] = [
   {
     id: 'dao-treasury',
     name: 'Protocol DAO Runway Reserve',
-    category: 'DAO Governance',
-    icon: WalletCards,
+    tag: '[TREASURY]',
     reserves: 8200000,
     liabilities: 5100000,
-    description: 'Proves multi-year operating runway without revealing active token accumulation.',
+    description: 'Certifies 160.8% multi-year operational runway without exposing asset distribution.',
   },
 ];
 
@@ -101,8 +82,8 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       {/* Header */}
       <div className="circuit-card-header">
         <div className="flex items-center gap-3">
-          <div className="icon-badge icon-badge-slate">
-            <Cpu className="w-5 h-5 text-slate-300" />
+          <div className="icon-badge">
+            <span className="font-mono text-xs text-blue-400 font-bold">[ZK]</span>
           </div>
           <div>
             <h3 className="circuit-heading">Confidential Solvency Gate</h3>
@@ -111,9 +92,8 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             </p>
           </div>
         </div>
-        <div className="badge-pill badge-pill-slate">
-          <Lock className="w-3.5 h-3.5 mr-1" />
-          <span>Zero-Knowledge Gate</span>
+        <div className="badge-pill">
+          <span className="font-mono text-xs text-slate-300">[CONFIDENTIAL GATE]</span>
         </div>
       </div>
 
@@ -141,16 +121,14 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       {/* Preset Scenarios */}
       <div className="presets-container mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-            <Sliders className="w-3.5 h-3.5 text-slate-400" />
-            <span>Institution Scenario Presets</span>
+          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            Institution Scenario Presets
           </span>
           <span className="text-xs text-slate-400 font-mono">Select Baseline Model</span>
         </div>
 
         <div className="preset-cards-grid">
           {PRESETS.map((preset) => {
-            const Icon = preset.icon;
             const isSelected = selectedPreset === preset.id;
             return (
               <button
@@ -159,9 +137,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 onClick={() => handlePresetSelect(preset)}
                 className={`preset-select-btn ${isSelected ? 'preset-select-btn-active' : ''}`}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon className={`w-4 h-4 ${isSelected ? 'text-slate-100' : 'text-slate-400'}`} />
+                <div className="flex items-center justify-between mb-1">
                   <span className="font-semibold text-xs text-slate-200">{preset.name}</span>
+                  <span className="font-mono text-[10px] text-slate-400">{preset.tag}</span>
                 </div>
                 <p className="text-[11px] text-slate-400 text-left line-clamp-2">{preset.description}</p>
               </button>
@@ -173,13 +151,10 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       {/* Client-Side Witness Formulation (Private Inputs) */}
       <div className="witness-builder-box mb-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Lock className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
-              Client-Side Witness Formulation (Private Inputs)
-            </span>
-          </div>
-          <span className="badge-private-witness">[PRIVATE WITNESS: LOCAL RAM ONLY]</span>
+          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
+            Client-Side Witness Formulation (Private Inputs)
+          </span>
+          <span className="badge-private-witness">[PRIVATE WITNESS: LOCAL RAM]</span>
         </div>
 
         <div className="witness-inputs-grid">
@@ -230,11 +205,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
         <div className="constraint-eval-banner mt-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isSolvent ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              ) : (
-                <AlertCircle className="w-4 h-4 text-rose-400" />
-              )}
+              <span className={`font-mono text-xs font-bold ${isSolvent ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {isSolvent ? '[PASS]' : '[REVERT]'}
+              </span>
               <span className="text-xs text-slate-300 font-mono">
                 Constraint:{' '}
                 <code className="text-slate-100">
@@ -265,19 +238,18 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
         >
           {isProving ? (
             <div className="flex items-center justify-center gap-2">
-              <span className="spinner spinner-slate"></span>
+              <span className="spinner"></span>
               <span>Executing Client-Side ZK Prover in Browser...</span>
             </div>
           ) : !isSolvent ? (
             <div className="flex items-center justify-center gap-2 text-rose-300">
-              <AlertCircle className="w-5 h-5 text-rose-400" />
+              <span className="font-mono font-bold">[FAIL]</span>
               <span>Insolvent State: Reserves Must Exceed Liabilities</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-slate-100" />
               <span>Generate ZK Proof &amp; Submit to Preprod</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <span>&rarr;</span>
             </div>
           )}
         </button>
@@ -303,7 +275,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             {provingStep || 'Formulating constraint polynomial and computing witness commitments...'}
           </p>
           <div className="proving-note">
-            <Lock className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+            <span className="font-mono text-xs text-emerald-400 mr-1">[PRIVATE]</span>
             <span>Private inputs are never transmitted to the blockchain or remote servers.</span>
           </div>
         </div>
@@ -314,14 +286,14 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
         <div className="tx-result-card mt-4" id="tx-result-display">
           <div className="tx-result-header">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span className="status-indicator-dot dot-emerald"></span>
               <span className="tx-success-title font-mono">[TRANSACTION VERIFIED ON-CHAIN]</span>
             </div>
             <span className="tx-time-tag font-mono">{txResult.timestamp}</span>
           </div>
 
           <div className="label-badge-success mb-3">
-            <ShieldCheck className="w-4 h-4 mr-1 inline" />
+            <span className="font-mono text-xs mr-1">[SEAL]</span>
             <span>Cryptographic assertion verified without balance sheet disclosure</span>
           </div>
 
@@ -348,7 +320,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                   className="copy-mini-btn"
                   title="Copy Tx Hash"
                 >
-                  <Copy className="w-3 h-3 mr-1" />
+                  <span className="font-mono text-xs mr-1">[COPY]</span>
                   <span>{copiedTx ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
@@ -369,7 +341,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
               className="explorer-link font-mono"
             >
               <span>Midnight Preprod Explorer</span>
-              <ExternalLink className="w-3.5 h-3.5 ml-1" />
+              <span className="ml-1">&rarr;</span>
             </a>
 
             {onOpenCertificateModal && (
@@ -378,7 +350,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 onClick={onOpenCertificateModal}
                 className="certificate-open-btn"
               >
-                <FileCheck className="w-4 h-4 mr-1 text-emerald-400" />
+                <span className="font-mono text-xs text-emerald-400 mr-1">[CERTIFICATE]</span>
                 <span>View Verifiable Certificate</span>
               </button>
             )}

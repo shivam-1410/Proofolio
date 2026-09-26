@@ -1,16 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Shield,
-  BookOpen,
-  Code2,
-  ExternalLink,
-  MessageSquare,
-  Activity,
-  Award,
-  Menu,
-  X,
-  FileText,
-} from 'lucide-react';
 import { LegalModal } from './LegalModal';
 
 interface LayoutProps {
@@ -44,7 +32,7 @@ export const Layout: React.FC<LayoutProps> = ({
         <div className="nav-content">
           <div className="brand-group">
             <div className="brand-logo-container">
-              <Shield className="w-5 h-5 text-slate-200" />
+              <img src="/logo.svg" alt="Proofolio" className="w-5 h-5" />
             </div>
             <div>
               <div className="brand-name-row">
@@ -69,8 +57,8 @@ export const Layout: React.FC<LayoutProps> = ({
                 className="nav-action-pill-btn"
                 title="View Verifiable Audit Certificate"
               >
-                <Award className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="hidden md:inline">Audit Certificate</span>
+                <span className="font-mono text-xs text-emerald-400 mr-1">[AUDIT]</span>
+                <span className="hidden md:inline">Certificate</span>
               </button>
             )}
 
@@ -81,8 +69,8 @@ export const Layout: React.FC<LayoutProps> = ({
                 className="nav-action-pill-btn"
                 title="Community & Preprod Feedback Log"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
-                <span className="hidden md:inline">Validation Log</span>
+                <span className="font-mono text-xs text-slate-300 mr-1">[LOG]</span>
+                <span className="hidden md:inline">Validation</span>
               </button>
             )}
 
@@ -93,7 +81,7 @@ export const Layout: React.FC<LayoutProps> = ({
               className="nav-icon-link"
               title="Midnight Developer Documentation"
             >
-              <BookOpen className="w-3.5 h-3.5 mr-1" />
+              <span className="font-mono text-xs text-accent-blue mr-1">&sect;</span>
               <span className="hidden sm:inline">Docs</span>
             </a>
 
@@ -104,18 +92,18 @@ export const Layout: React.FC<LayoutProps> = ({
               className="nav-icon-link"
               title="GitHub Repository"
             >
-              <Code2 className="w-3.5 h-3.5 mr-1" />
+              <span className="font-mono text-xs text-slate-300 mr-1">&lt;/&gt;</span>
               <span className="hidden sm:inline">Repo</span>
             </a>
 
             {/* Mobile menu toggle */}
             <button
               type="button"
-              className="mobile-menu-btn sm:hidden"
+              className="mobile-menu-btn sm:hidden font-mono text-xs font-bold"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-slate-300" /> : <Menu className="w-5 h-5 text-slate-300" />}
+              {mobileMenuOpen ? '[✕]' : '[MENU]'}
             </button>
           </div>
         </div>
@@ -124,9 +112,8 @@ export const Layout: React.FC<LayoutProps> = ({
         {mobileMenuOpen && (
           <div className="mobile-nav-drawer sm:hidden">
             <div className="mobile-nav-items">
-              <div className="mobile-nav-stat">
-                <Activity className="w-4 h-4 text-slate-300 inline mr-2" />
-                <span>Connected: Midnight {networkId.toUpperCase()}</span>
+              <div className="mobile-nav-stat font-mono text-xs">
+                <span>[NETWORK] Midnight {networkId.toUpperCase()}</span>
               </div>
               {onOpenCertificate && (
                 <button
@@ -137,7 +124,7 @@ export const Layout: React.FC<LayoutProps> = ({
                   }}
                   className="mobile-nav-link"
                 >
-                  <Award className="w-4 h-4 text-emerald-400 mr-2" />
+                  <span className="font-mono text-xs text-emerald-400 mr-2">[AUDIT]</span>
                   <span>Audit Certificate</span>
                 </button>
               )}
@@ -150,7 +137,7 @@ export const Layout: React.FC<LayoutProps> = ({
                   }}
                   className="mobile-nav-link"
                 >
-                  <MessageSquare className="w-4 h-4 text-slate-300 mr-2" />
+                  <span className="font-mono text-xs text-slate-300 mr-2">[LOG]</span>
                   <span>Validation Log</span>
                 </button>
               )}
@@ -160,7 +147,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 rel="noreferrer"
                 className="mobile-nav-link"
               >
-                <BookOpen className="w-4 h-4 mr-2" />
+                <span className="font-mono text-xs text-accent-blue mr-2">&sect;</span>
                 <span>Midnight Docs</span>
               </a>
               <a
@@ -169,7 +156,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 rel="noreferrer"
                 className="mobile-nav-link"
               >
-                <Code2 className="w-4 h-4 mr-2" />
+                <span className="font-mono text-xs text-slate-300 mr-2">&lt;/&gt;</span>
                 <span>GitHub Repository</span>
               </a>
             </div>
@@ -185,7 +172,7 @@ export const Layout: React.FC<LayoutProps> = ({
         <div className="footer-content">
           <div className="footer-brand-col">
             <div className="flex items-center gap-2 mb-1">
-              <Shield className="w-4 h-4 text-slate-300" />
+              <img src="/logo.svg" alt="Proofolio" className="w-4 h-4" />
               <span className="font-semibold text-slate-200 tracking-wide text-sm">Proofolio Protocol</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
@@ -204,7 +191,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 rel="noreferrer"
                 className="footer-link"
               >
-                Midnight Network <ExternalLink className="w-3 h-3 inline ml-0.5" />
+                Midnight Network <span className="font-mono text-xs">&nearr;</span>
               </a>
               <span className="dot-divider">•</span>
               <a
@@ -213,7 +200,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 rel="noreferrer"
                 className="footer-link"
               >
-                Midnight MCP &amp; Docs <ExternalLink className="w-3 h-3 inline ml-0.5" />
+                Midnight MCP &amp; Docs <span className="font-mono text-xs">&nearr;</span>
               </a>
               <span className="dot-divider">•</span>
               <a
@@ -222,7 +209,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 rel="noreferrer"
                 className="footer-link"
               >
-                GitHub <ExternalLink className="w-3 h-3 inline ml-0.5" />
+                GitHub <span className="font-mono text-xs">&nearr;</span>
               </a>
             </div>
 
@@ -258,3 +245,4 @@ export const Layout: React.FC<LayoutProps> = ({
 };
 
 export default Layout;
+

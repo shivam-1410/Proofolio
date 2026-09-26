@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Shield, ShieldCheck, Lock, Check, AlertCircle } from 'lucide-react';
 
 export const ObservablePrivacyInspector: React.FC = () => {
   const [showSecretWitnesses, setShowSecretWitnesses] = useState(false);
@@ -12,17 +11,16 @@ export const ObservablePrivacyInspector: React.FC = () => {
     <div className="privacy-inspector-card">
       <div className="inspector-header">
         <div className="flex items-center gap-2">
-          <div className="icon-badge icon-badge-slate">
-            <Shield className="w-5 h-5 text-slate-300" />
+          <div className="icon-badge">
+            <span className="font-mono text-xs text-blue-400 font-bold">[ZK]</span>
           </div>
           <div>
             <h3 className="inspector-title">Observable Privacy Boundary Inspection</h3>
             <p className="inspector-subtitle">Deterministic Zero-Knowledge Invariant Verification</p>
           </div>
         </div>
-        <div className="badge-pill badge-pill-slate">
-          <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-          <span>Cryptographic Boundary</span>
+        <div className="badge-pill">
+          <span className="font-mono text-xs text-slate-300">[CRYPTOGRAPHIC BOUNDARY]</span>
         </div>
       </div>
 
@@ -37,7 +35,7 @@ export const ObservablePrivacyInspector: React.FC = () => {
         <div className="comparison-box private-box">
           <div className="comparison-box-header">
             <div className="flex items-center gap-1.5">
-              <Lock className="w-4 h-4 text-slate-400" />
+              <span className="font-mono text-xs text-slate-400">[PRIVATE]</span>
               <span className="box-header-title text-slate-200">Client Memory Space (Private Witness)</span>
             </div>
             <button
@@ -45,17 +43,8 @@ export const ObservablePrivacyInspector: React.FC = () => {
               className="witness-toggle-btn"
               title="Toggle private witness visibility for local demonstration"
             >
-              {showSecretWitnesses ? (
-                <>
-                  <EyeOff className="w-3.5 h-3.5 mr-1 text-slate-300" />
-                  <span>Mask Secret Values</span>
-                </>
-              ) : (
-                <>
-                  <Eye className="w-3.5 h-3.5 mr-1 text-slate-300" />
-                  <span>Inspect Local Witnesses</span>
-                </>
-              )}
+              <span className="font-mono text-xs mr-1">{showSecretWitnesses ? '[HIDE]' : '[VIEW]'}</span>
+              <span>{showSecretWitnesses ? 'Mask Secret Values' : 'Inspect Local Witnesses'}</span>
             </button>
           </div>
 
@@ -99,7 +88,7 @@ export const ObservablePrivacyInspector: React.FC = () => {
         <div className="comparison-box public-box">
           <div className="comparison-box-header">
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="font-mono text-xs text-emerald-400">[LEDGER]</span>
               <span className="box-header-title text-slate-200">Public Ledger (Midnight Preprod State)</span>
             </div>
             <span className="public-live-tag font-mono">[PUBLIC RECORD]</span>
@@ -109,8 +98,7 @@ export const ObservablePrivacyInspector: React.FC = () => {
             <div className="witness-field">
               <span className="witness-field-name">Solvency Assertion Status:</span>
               <span className="witness-field-val font-bold text-emerald-400 flex items-center gap-1 font-mono">
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>{isSolvent ? 'true (VERIFIED SOLVENT)' : 'false (UNVERIFIED)'}</span>
+                <span>{isSolvent ? '[STATUS: VERIFIED SOLVENT]' : '[STATUS: UNVERIFIED]'}</span>
               </span>
             </div>
 
@@ -138,7 +126,7 @@ export const ObservablePrivacyInspector: React.FC = () => {
 
       <div className="inspector-footer-banner">
         <div className="flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+          <span className="font-mono text-xs text-slate-400 mt-0.5">[NOTE]</span>
           <div className="text-xs text-slate-300 leading-relaxed font-mono">
             <strong>Security Assertion:</strong> Observers receive mathematical certainty that the audited entity holds assets equal to or exceeding liabilities, with zero information leakage regarding absolute balance sheet magnitude.
           </div>

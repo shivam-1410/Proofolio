@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Cpu, CheckCircle2, Lock, ArrowRight, ExternalLink, Copy } from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface CircuitCallProps {
@@ -31,17 +30,17 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
     <div className="circuit-card">
       <div className="circuit-card-header">
         <div className="flex items-center gap-3">
-          <div className="icon-badge icon-badge-purple">
-            <Cpu className="w-5 h-5 text-purple-400" />
-          </div>
+          <span className="font-mono text-xs font-semibold px-2 py-0.5 border border-primary/40 bg-primary/10 text-primary">
+            [CIRCUIT]
+          </span>
           <div>
             <h3 className="circuit-heading">Proof-of-Reserves Circuit</h3>
             <p className="circuit-subheading">Compact Circuit: <code className="circuit-code">verifySolvency()</code></p>
           </div>
         </div>
-        <div className="badge-pill badge-pill-purple">
-          <Lock className="w-3.5 h-3.5 mr-1" />
-          <span>Zero-Knowledge Proof</span>
+        <div className="badge-pill">
+          <span className="font-mono text-xs text-primary mr-1.5">[ZK-SNARK]</span>
+          <span>Constrained Execution</span>
         </div>
       </div>
 
@@ -54,7 +53,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
 
       <div className="privacy-assurance-box">
         <div className="flex items-center gap-2 mb-1">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span className="font-mono text-xs text-emerald-400 font-bold">[VERIFIED]</span>
           <span className="privacy-highlight-label">
             Proved without revealing confidential inputs
           </span>
@@ -80,9 +79,9 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-cyan-300" />
-              <span>Call Solvency Circuit & Submit Proof</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <span className="font-mono text-xs font-bold text-accent-blue">[EXECUTE]</span>
+              <span>Call Solvency Circuit &amp; Submit Proof</span>
+              <span className="font-mono text-xs ml-1">&rarr;</span>
             </div>
           )}
         </button>
@@ -106,8 +105,8 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
           </div>
           <p className="proving-step-desc font-mono">{provingStep || 'Processing zero-knowledge constraints...'}</p>
           <div className="proving-note">
-            <Lock className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
-            <span>Witness privacy preserved: Private inputs are NEVER sent to the network.</span>
+            <span className="font-mono text-xs text-emerald-400 mr-1">[WITNESS PRIVACY]</span>
+            <span>Private inputs are NEVER sent to the network.</span>
           </div>
         </div>
       )}
@@ -117,14 +116,14 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
         <div className="tx-result-card" id="tx-result-display">
           <div className="tx-result-header">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              <span className="tx-success-title font-mono">[PROOF CONFIRMED ON-CHAIN]</span>
+              <span className="font-mono text-xs text-emerald-400 font-bold">[ON-CHAIN CONFIRMED]</span>
+              <span className="tx-success-title font-mono">[PROOF VERIFIED]</span>
             </div>
             <span className="tx-time-tag font-mono">{txResult.timestamp}</span>
           </div>
 
           <div className="label-badge-success mb-3">
-            <ShieldCheck className="w-4 h-4 mr-1 inline" />
+            <span className="font-mono text-xs mr-1">[CONFIDENTIAL]</span>
             <span>Proved without revealing confidential inputs</span>
           </div>
 
@@ -138,7 +137,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
 
             <div className="result-field">
               <span className="field-name">Confirmed Block Height:</span>
-              <span className="field-value text-cyan-300 font-mono">
+              <span className="field-value text-accent-blue font-mono">
                 #{txResult.blockHeight}
               </span>
             </div>
@@ -151,7 +150,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
                   className="copy-mini-btn"
                   title="Copy Tx Hash"
                 >
-                  <Copy className="w-3 h-3 mr-1" />
+                  <span className="font-mono text-xs mr-1">[COPY]</span>
                   <span>{copiedTx ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
@@ -160,7 +159,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
 
             <div className="result-field result-field-full">
               <span className="field-name">Audit Commitment Hash:</span>
-              <code className="field-code text-purple-300">{txResult.commitment}</code>
+              <code className="field-code text-slate-300">{txResult.commitment}</code>
             </div>
           </div>
 
@@ -172,7 +171,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
               className="explorer-link"
             >
               <span>View On Midnight Preprod Explorer</span>
-              <ExternalLink className="w-3.5 h-3.5 ml-1" />
+              <span className="font-mono text-xs ml-1">&nearr;</span>
             </a>
           </div>
         </div>
