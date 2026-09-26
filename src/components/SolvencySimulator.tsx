@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Sliders, ShieldCheck, AlertOctagon, EyeOff, CheckCircle2, Lock, ArrowRight, RefreshCw, Sparkles, Building, Landmark, AlertTriangle } from 'lucide-react';
+import { Sliders, ShieldCheck, AlertOctagon, EyeOff, CheckCircle2, Lock, RefreshCw, Building, Landmark, AlertTriangle } from 'lucide-react';
 
 interface ScenarioPreset {
   id: string;
@@ -28,7 +28,7 @@ const PRESETS: ScenarioPreset[] = [
     reserves: 480000000,
     liabilities: 475000000,
     description: 'Tight collateralization margin (101.1%) backing circulating synthetic tokens.',
-    icon: <Building className="w-4 h-4 text-cyan-400" />,
+    icon: <Building className="w-4 h-4 text-slate-300" />,
   },
   {
     id: 'insolvent',
@@ -89,21 +89,20 @@ export const SolvencySimulator: React.FC = () => {
     <div className="simulator-card">
       <div className="simulator-header">
         <div className="flex items-center gap-3">
-          <div className="icon-badge icon-badge-cyan">
-            <Sliders className="w-5 h-5 text-cyan-400" />
+          <div className="icon-badge icon-badge-slate">
+            <Sliders className="w-5 h-5 text-slate-300" />
           </div>
           <div>
             <h3 className="simulator-title">Zero-Knowledge Solvency Sandbox</h3>
             <p className="simulator-sub">
-              Test how Midnight verifies balance sheets in zero-knowledge without leaking confidential financial figures.
+              Interactive simulation of browser witness evaluation versus public Midnight consensus state.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="badge-pill badge-pill-cyan">
-            <Sparkles className="w-3.5 h-3.5 mr-1" />
-            Interactive ZK Simulator
+          <span className="badge-pill badge-pill-slate">
+            <span>[SIMULATOR: CLIENT PROVER]</span>
           </span>
         </div>
       </div>
@@ -130,18 +129,18 @@ export const SolvencySimulator: React.FC = () => {
       <div className="simulator-grid">
         {/* Left Side: Client-Side Input & Secret Witnesses */}
         <div className="simulator-col simulator-col-private">
-          <div className="col-header text-purple-300">
+          <div className="col-header text-slate-200">
             <div className="flex items-center gap-2">
-              <EyeOff className="w-4 h-4 text-purple-400" />
-              <span className="col-title">Client-Side Private Memory (CONFIDENTIAL)</span>
+              <EyeOff className="w-4 h-4 text-slate-400" />
+              <span className="col-title font-mono">[CONFIDENTIAL] Client Witness Memory</span>
             </div>
-            <span className="badge-shield">Never Leaves Your Device</span>
+            <span className="badge-shield font-mono">[LOCAL ONLY]</span>
           </div>
 
           <div className="control-group">
             <div className="control-label-row">
               <label htmlFor="reserves-range">Total Reserve Assets (Private Witness):</label>
-              <span className="control-val font-mono text-cyan-300">{formatUSD(reserves)}</span>
+              <span className="control-val font-mono text-slate-100">{formatUSD(reserves)}</span>
             </div>
             <input
               id="reserves-range"
@@ -151,14 +150,14 @@ export const SolvencySimulator: React.FC = () => {
               step={25000000}
               value={reserves}
               onChange={(e) => setReserves(Number(e.target.value))}
-              className="slider-input slider-cyan"
+              className="slider-input slider-slate"
             />
           </div>
 
           <div className="control-group">
             <div className="control-label-row">
               <label htmlFor="liabilities-range">Customer Liabilities (Private Witness):</label>
-              <span className="control-val font-mono text-purple-300">{formatUSD(liabilities)}</span>
+              <span className="control-val font-mono text-slate-100">{formatUSD(liabilities)}</span>
             </div>
             <input
               id="liabilities-range"
@@ -168,7 +167,7 @@ export const SolvencySimulator: React.FC = () => {
               step={25000000}
               value={liabilities}
               onChange={(e) => setLiabilities(Number(e.target.value))}
-              className="slider-input slider-purple"
+              className="slider-input slider-slate"
             />
           </div>
 
@@ -184,7 +183,7 @@ export const SolvencySimulator: React.FC = () => {
                 Reroll Salt
               </button>
             </div>
-            <code className="salt-code truncate font-mono text-xs text-purple-300">
+            <code className="salt-code truncate font-mono text-xs text-slate-300">
               0x{saltEntropy}
             </code>
           </div>
@@ -202,20 +201,20 @@ export const SolvencySimulator: React.FC = () => {
                 {surplus >= 0 ? `+${formatUSD(surplus)}` : `-${formatUSD(Math.abs(surplus))}`}
               </span>
             </div>
-            <p className="math-hint">
-              🔒 Neither the reserve ratio ({ratio}%) nor the exact surplus figure is ever revealed to anyone.
+            <p className="math-hint font-mono text-[11px]">
+              [PRIVACY INVARIANT] Neither the reserve ratio ({ratio}%) nor the exact surplus figure is ever revealed to on-chain observers.
             </p>
           </div>
         </div>
 
         {/* Right Side: What Midnight Public Blockchain Sees */}
         <div className="simulator-col simulator-col-public">
-          <div className="col-header text-emerald-300">
+          <div className="col-header text-slate-200">
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-emerald-400" />
-              <span className="col-title">Public Midnight Ledger (ON-CHAIN STATE)</span>
+              <Lock className="w-4 h-4 text-slate-400" />
+              <span className="col-title font-mono">[PUBLIC RECORD] On-Chain Ledger State</span>
             </div>
-            <span className="badge-public">Zero-Knowledge Certified</span>
+            <span className="badge-public font-mono">[CONSENSUS BOUND]</span>
           </div>
 
           <div className="circuit-evaluation-box">
@@ -227,20 +226,20 @@ export const SolvencySimulator: React.FC = () => {
             <div className={`eval-banner ${isSolvent ? 'eval-solvent' : 'eval-insolvent'}`}>
               {isSolvent ? (
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                   <div>
-                    <div className="font-bold text-emerald-300 text-sm">CIRCUIT PASSED: SOLVENT</div>
-                    <div className="text-xs text-emerald-400/90">
-                      Zero-knowledge proof successfully generated. Proof satisfies all constraints.
+                    <div className="font-bold text-emerald-300 text-sm font-mono">[CIRCUIT PASSED: SOLVENT]</div>
+                    <div className="text-xs text-slate-300">
+                      Zero-knowledge proof satisfies all polynomial constraints. State transition authorized.
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <AlertOctagon className="w-6 h-6 text-rose-400 shrink-0" />
+                  <AlertOctagon className="w-5 h-5 text-rose-400 shrink-0" />
                   <div>
-                    <div className="font-bold text-rose-300 text-sm">CIRCUIT REVERTED: INSOLVENT</div>
-                    <div className="text-xs text-rose-400/90">
+                    <div className="font-bold text-rose-300 text-sm font-mono">[CIRCUIT REVERTED: INSOLVENT]</div>
+                    <div className="text-xs text-slate-300">
                       Assertion violated: Reserves do not cover liabilities. Proof cannot be forged.
                     </div>
                   </div>
@@ -253,36 +252,36 @@ export const SolvencySimulator: React.FC = () => {
             <div className="ledger-field-item">
               <span className="field-key">solvency_status (Public Ledger):</span>
               <span className={`field-value font-mono font-bold ${isSolvent ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {isSolvent ? 'true' : 'false (Proof Reverts)'}
+                {isSolvent ? 'true [PASS]' : 'false [REVERT]'}
               </span>
             </div>
 
             <div className="ledger-field-item">
               <span className="field-key">commitment_hash (Audit Anchor):</span>
-              <span className="field-value font-mono text-cyan-300 text-xs truncate" title={simulatedCommitment}>
+              <span className="field-value font-mono text-slate-200 text-xs truncate" title={simulatedCommitment}>
                 {simulatedCommitment}
               </span>
             </div>
 
             <div className="ledger-field-item">
               <span className="field-key">total_reserves on-chain:</span>
-              <span className="field-value font-mono text-slate-500">
-                [NOT PUBLISHED — ZERO KNOWLEDGE]
+              <span className="field-value font-mono text-slate-400">
+                [NOT PUBLISHED | ZERO KNOWLEDGE]
               </span>
             </div>
 
             <div className="ledger-field-item">
               <span className="field-key">total_liabilities on-chain:</span>
-              <span className="field-value font-mono text-slate-500">
-                [NOT PUBLISHED — ZERO KNOWLEDGE]
+              <span className="field-value font-mono text-slate-400">
+                [NOT PUBLISHED | ZERO KNOWLEDGE]
               </span>
             </div>
           </div>
 
           <div className="audit-guarantee-note">
-            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span className="text-xs text-slate-300">
-              <strong>Zero-Knowledge Guarantee:</strong> Even if an adversary monitors the blockchain 24/7, they only observe <code>solvency_status: true</code> and a cryptographic hash. The institution's financial magnitude remains completely concealed.
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="text-xs text-slate-300 font-mono">
+              [OBSERVER GUARANTEE] Even continuous ledger inspection reveals only the binary verification status and commitment digest.
             </span>
           </div>
         </div>
@@ -290,4 +289,5 @@ export const SolvencySimulator: React.FC = () => {
     </div>
   );
 };
+
 export default SolvencySimulator;

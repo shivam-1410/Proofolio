@@ -96,9 +96,9 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                   type="button"
                   onClick={() => onConnectDemo()}
                   className="switch-connect-btn"
-                  style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', color: '#fff' }}
+                  style={{ background: '#2563eb', color: '#fff' }}
                 >
-                  ⚡ Connect Demo Wallet (Test ZK Circuit)
+                  Connect Demo Wallet (Test ZK Circuit)
                 </button>
               )}
             </div>
@@ -196,7 +196,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 }}
                 id="connect-demo-btn"
               >
-                ⚡ Or connect in Demo Mode (Simulated Preprod Wallet) &rarr;
+                Connect Demo Mode (Simulated Preprod Provider) &rarr;
               </button>
             )}
           </div>

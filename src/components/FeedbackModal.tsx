@@ -3,7 +3,6 @@ import {
   MessageSquare,
   Users,
   CheckCircle2,
-  Sparkles,
   X,
   ExternalLink,
   Send,
@@ -68,9 +67,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
         </div>
 
         <div className="level6-improvements-card mt-4">
-          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Implemented Level 6 Feedback Improvements</span>
+          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2 font-mono">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Implemented Level 6 Validation Enhancements</span>
           </span>
           <ul className="improvement-list">
             <li className="flex items-start gap-2 text-xs text-slate-300">

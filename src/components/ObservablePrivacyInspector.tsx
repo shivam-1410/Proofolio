@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Shield, ShieldCheck, Lock, ArrowRight, Check, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Shield, ShieldCheck, Lock, Check, AlertCircle } from 'lucide-react';
 
 export const ObservablePrivacyInspector: React.FC = () => {
   const [showSecretWitnesses, setShowSecretWitnesses] = useState(false);
-  const [mockReserves, setMockReserves] = useState(12500000);
-  const [mockLiabilities, setMockLiabilities] = useState(8750000);
+  const [mockReserves] = useState(12500000);
+  const [mockLiabilities] = useState(8750000);
 
   const isSolvent = mockReserves >= mockLiabilities;
 
@@ -12,23 +12,23 @@ export const ObservablePrivacyInspector: React.FC = () => {
     <div className="privacy-inspector-card">
       <div className="inspector-header">
         <div className="flex items-center gap-2">
-          <div className="icon-badge icon-badge-cyan">
-            <Shield className="w-5 h-5 text-cyan-400" />
+          <div className="icon-badge icon-badge-slate">
+            <Shield className="w-5 h-5 text-slate-300" />
           </div>
           <div>
-            <h3 className="inspector-title">Observable Privacy Behavior</h3>
-            <p className="inspector-subtitle">Proof-of-Reserves Invariant: Proven Mathematically Without Disclosure</p>
+            <h3 className="inspector-title">Observable Privacy Boundary Inspection</h3>
+            <p className="inspector-subtitle">Deterministic Zero-Knowledge Invariant Verification</p>
           </div>
         </div>
-        <div className="badge-pill badge-pill-cyan">
+        <div className="badge-pill badge-pill-slate">
           <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-          <span>Zero Knowledge Guarantee</span>
+          <span>Cryptographic Boundary</span>
         </div>
       </div>
 
       <div className="inspector-intro">
         <p>
-          In traditional blockchains, proving you have enough funds requires publishing your balances publicly. On Midnight, the user proves that <code>total_reserves &gt;= total_liabilities</code> <strong>without anyone ever seeing the actual amounts</strong>.
+          Conventional auditing architectures require public disclosure of full balance sheet ledgers. Under Midnight Network&apos;s dual-state model, the mathematical condition <code>total_reserves &gt;= total_liabilities</code> is verified without disclosing underlying balance sheets.
         </p>
       </div>
 
@@ -37,8 +37,8 @@ export const ObservablePrivacyInspector: React.FC = () => {
         <div className="comparison-box private-box">
           <div className="comparison-box-header">
             <div className="flex items-center gap-1.5">
-              <Lock className="w-4 h-4 text-purple-400" />
-              <span className="box-header-title text-purple-300">Client Memory (Private Witness)</span>
+              <Lock className="w-4 h-4 text-slate-400" />
+              <span className="box-header-title text-slate-200">Client Memory Space (Private Witness)</span>
             </div>
             <button
               onClick={() => setShowSecretWitnesses(!showSecretWitnesses)}
@@ -47,13 +47,13 @@ export const ObservablePrivacyInspector: React.FC = () => {
             >
               {showSecretWitnesses ? (
                 <>
-                  <EyeOff className="w-3.5 h-3.5 mr-1 text-purple-300" />
+                  <EyeOff className="w-3.5 h-3.5 mr-1 text-slate-300" />
                   <span>Mask Secret Values</span>
                 </>
               ) : (
                 <>
-                  <Eye className="w-3.5 h-3.5 mr-1 text-purple-300" />
-                  <span>Reveal Local Secrets</span>
+                  <Eye className="w-3.5 h-3.5 mr-1 text-slate-300" />
+                  <span>Inspect Local Witnesses</span>
                 </>
               )}
             </button>
@@ -63,37 +63,36 @@ export const ObservablePrivacyInspector: React.FC = () => {
             <div className="witness-field">
               <span className="witness-field-name">Private Reserves Witness:</span>
               <span className="witness-field-val font-mono">
-                {showSecretWitnesses ? `${mockReserves.toLocaleString()} tNight` : '•••••••••••••••• (Encapsulated)'}
+                {showSecretWitnesses ? `${mockReserves.toLocaleString()} tNight` : '•••••••••••••••• [Witness Encapsulated]'}
               </span>
             </div>
 
             <div className="witness-field">
               <span className="witness-field-name">Private Liabilities Witness:</span>
               <span className="witness-field-val font-mono">
-                {showSecretWitnesses ? `${mockLiabilities.toLocaleString()} tNight` : '•••••••••••••••• (Encapsulated)'}
+                {showSecretWitnesses ? `${mockLiabilities.toLocaleString()} tNight` : '•••••••••••••••• [Witness Encapsulated]'}
               </span>
             </div>
 
             <div className="witness-field">
               <span className="witness-field-name">Blinding Entropy (Salt):</span>
-              <span className="witness-field-val font-mono text-xs text-purple-300 truncate">
+              <span className="witness-field-val font-mono text-xs text-slate-300 truncate">
                 {showSecretWitnesses ? '0x9f8b4c2e1a7d658e3b0c2a5f... (32 bytes)' : '••••••••••••••••••••••••••••••••'}
               </span>
             </div>
           </div>
 
           <div className="witness-status-bar">
-            <span className="status-indicator-dot dot-purple"></span>
-            <span className="text-xs text-purple-300">
-              Never transmitted to the network or written on-chain
+            <span className="status-indicator-dot dot-slate"></span>
+            <span className="text-xs text-slate-400 font-mono">
+              [MEMORY BOUNDARY] Never transmitted or persisted on-chain
             </span>
           </div>
         </div>
 
-        <div className="arrow-divider">
-          <div className="arrow-circle">
-            <ArrowRight className="w-4 h-4 text-cyan-400" />
-          </div>
+        {/* Clean Static Divider */}
+        <div className="protocol-boundary-divider">
+          <span className="boundary-text">ZK SNARK BOUNDARY</span>
         </div>
 
         {/* Right Side: Public On-Chain State */}
@@ -101,37 +100,37 @@ export const ObservablePrivacyInspector: React.FC = () => {
           <div className="comparison-box-header">
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="box-header-title text-emerald-300">On-Chain Ledger (What Observers See)</span>
+              <span className="box-header-title text-slate-200">Public Ledger (Midnight Preprod State)</span>
             </div>
-            <span className="public-live-tag">Globally Verifiable</span>
+            <span className="public-live-tag font-mono">[PUBLIC RECORD]</span>
           </div>
 
           <div className="witness-fields-list">
             <div className="witness-field">
-              <span className="witness-field-name">Public Solvency Assertion:</span>
-              <span className="witness-field-val font-bold text-emerald-400 flex items-center gap-1">
+              <span className="witness-field-name">Solvency Assertion Status:</span>
+              <span className="witness-field-val font-bold text-emerald-400 flex items-center gap-1 font-mono">
                 <Check className="w-4 h-4 text-emerald-400" />
-                <span>{isSolvent ? 'true (SOLVENT)' : 'false (UNVERIFIED)'}</span>
+                <span>{isSolvent ? 'true (VERIFIED SOLVENT)' : 'false (UNVERIFIED)'}</span>
               </span>
             </div>
 
             <div className="witness-field">
-              <span className="witness-field-name">Audit Anchor (Commitment):</span>
-              <span className="witness-field-val font-mono text-xs text-cyan-300 truncate">
+              <span className="witness-field-name">Cryptographic Commitment Hash:</span>
+              <span className="witness-field-val font-mono text-xs text-slate-300 truncate">
                 0x678605e736b76aac95555f7b1b5940893de24decf...
               </span>
             </div>
 
             <div className="witness-field">
-              <span className="witness-field-name">Freshness Block Height:</span>
-              <span className="witness-field-val font-mono text-cyan-300">#900942</span>
+              <span className="witness-field-name">Verified Block Height:</span>
+              <span className="witness-field-val font-mono text-slate-100">#900942</span>
             </div>
           </div>
 
           <div className="witness-status-bar">
             <span className="status-indicator-dot dot-emerald"></span>
-            <span className="text-xs text-emerald-300">
-              Immutable verification: Observers CANNOT determine balance figures
+            <span className="text-xs text-slate-400 font-mono">
+              [ON-CHAIN] Consensus verifier validates Halo2 proof prior to commit
             </span>
           </div>
         </div>
@@ -139,9 +138,9 @@ export const ObservablePrivacyInspector: React.FC = () => {
 
       <div className="inspector-footer-banner">
         <div className="flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-300 leading-relaxed">
-            <strong>Observable Privacy Behavior Verified:</strong> An on-chain observer sees that solvency passed with 100% mathematical certainty, yet has zero knowledge whether reserves were 12.5M, 500M, or 10B. <em>Privacy preserved; solvency guaranteed.</em>
+          <AlertCircle className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-slate-300 leading-relaxed font-mono">
+            <strong>Security Assertion:</strong> Observers receive mathematical certainty that the audited entity holds assets equal to or exceeding liabilities, with zero information leakage regarding absolute balance sheet magnitude.
           </div>
         </div>
       </div>

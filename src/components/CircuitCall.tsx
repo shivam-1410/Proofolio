@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Cpu, CheckCircle2, Lock, ArrowRight, ExternalLink, Sparkles, Copy } from 'lucide-react';
+import { ShieldCheck, Cpu, CheckCircle2, Lock, ArrowRight, ExternalLink, Copy } from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface CircuitCallProps {
@@ -54,9 +54,9 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
 
       <div className="privacy-assurance-box">
         <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="w-4 h-4 text-cyan-400" />
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span className="privacy-highlight-label">
-            Proved without revealing your input
+            Proved without revealing confidential inputs
           </span>
         </div>
         <p className="privacy-assurance-text">
@@ -89,8 +89,8 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
       </div>
 
       {!isConnected && (
-        <p className="connect-hint-text">
-          ⚡ Connect Lace wallet above to enable circuit execution.
+        <p className="connect-hint-text font-mono text-xs">
+          [PROVIDER REQUIRED] Connect Lace wallet above to enable circuit execution.
         </p>
       )}
 
@@ -104,7 +104,7 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
           <div className="progress-bar-container">
             <div className="progress-bar-fill"></div>
           </div>
-          <p className="proving-step-desc">{provingStep || 'Processing zero-knowledge constraints...'}</p>
+          <p className="proving-step-desc font-mono">{provingStep || 'Processing zero-knowledge constraints...'}</p>
           <div className="proving-note">
             <Lock className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
             <span>Witness privacy preserved: Private inputs are NEVER sent to the network.</span>
@@ -118,21 +118,21 @@ export const CircuitCall: React.FC<CircuitCallProps> = ({
           <div className="tx-result-header">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              <span className="tx-success-title">Proof Confirmed On-Chain!</span>
+              <span className="tx-success-title font-mono">[PROOF CONFIRMED ON-CHAIN]</span>
             </div>
-            <span className="tx-time-tag">{txResult.timestamp}</span>
+            <span className="tx-time-tag font-mono">{txResult.timestamp}</span>
           </div>
 
           <div className="label-badge-success mb-3">
             <ShieldCheck className="w-4 h-4 mr-1 inline" />
-            <span>Proved without revealing your input</span>
+            <span>Proved without revealing confidential inputs</span>
           </div>
 
           <div className="result-field-grid">
             <div className="result-field">
               <span className="field-name">On-Chain Solvency Status:</span>
-              <span className="field-value font-bold text-emerald-400">
-                {txResult.verifiedSolvent ? '✅ SOLVENT (VERIFIED)' : '❌ UNVERIFIED'}
+              <span className="field-value font-mono font-bold text-emerald-400">
+                {txResult.verifiedSolvent ? '[STATUS: VERIFIED SOLVENT]' : '[STATUS: UNVERIFIED]'}
               </span>
             </div>
 

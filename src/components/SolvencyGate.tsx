@@ -6,16 +6,13 @@ import {
   Lock,
   ArrowRight,
   ExternalLink,
-  Sparkles,
   Copy,
   Sliders,
   AlertCircle,
   FileCheck,
-  TrendingUp,
   Building2,
   Vault,
   WalletCards,
-  RefreshCw,
 } from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
@@ -104,17 +101,17 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       {/* Header */}
       <div className="circuit-card-header">
         <div className="flex items-center gap-3">
-          <div className="icon-badge icon-badge-purple">
-            <Cpu className="w-5 h-5 text-purple-400" />
+          <div className="icon-badge icon-badge-slate">
+            <Cpu className="w-5 h-5 text-slate-300" />
           </div>
           <div>
             <h3 className="circuit-heading">Confidential Solvency Gate</h3>
             <p className="circuit-subheading">
-              Compact Circuit: <code className="circuit-code">verifySolvency()</code> • Midnight Preprod
+              Compact Circuit: <code className="circuit-code">verifySolvency()</code> | Midnight Preprod
             </p>
           </div>
         </div>
-        <div className="badge-pill badge-pill-purple">
+        <div className="badge-pill badge-pill-slate">
           <Lock className="w-3.5 h-3.5 mr-1" />
           <span>Zero-Knowledge Gate</span>
         </div>
@@ -128,28 +125,27 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
         </code>
       </div>
 
-      {/* Mandatory Privacy Guarantee Label */}
+      {/* Cryptographic Privacy Disclosure Box */}
       <div className="privacy-assurance-box">
         <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span className="privacy-highlight-label">Proved without revealing your input</span>
+          <span className="tag-confidential">[CONFIDENTIAL WITNESS INVARIANT]</span>
         </div>
         <p className="privacy-assurance-text">
           The Compact zero-knowledge circuit enforces the mathematical constraint{' '}
           <code>assert(total_reserves &gt;= total_liabilities)</code>. All asset and liability numbers are
-          evaluated strictly within browser memory via private witnesses:{' '}
-          <strong>raw balances never leave this device and are never broadcast to the network.</strong>
+          evaluated strictly within browser memory via private witnesses. Raw balances never leave this device
+          and are never broadcast to the network.
         </p>
       </div>
 
-      {/* Preset Scenarios (Feedback improvement: quick 1-click evaluation) */}
+      {/* Preset Scenarios */}
       <div className="presets-container mb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-            <Sliders className="w-3.5 h-3.5 text-indigo-400" />
+            <Sliders className="w-3.5 h-3.5 text-slate-400" />
             <span>Institution Scenario Presets</span>
           </span>
-          <span className="text-xs text-slate-400">1-Click Test Scenarios</span>
+          <span className="text-xs text-slate-400 font-mono">Select Baseline Model</span>
         </div>
 
         <div className="preset-cards-grid">
@@ -164,7 +160,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 className={`preset-select-btn ${isSelected ? 'preset-select-btn-active' : ''}`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Icon className={`w-4 h-4 ${isSelected ? 'text-cyan-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isSelected ? 'text-slate-100' : 'text-slate-400'}`} />
                   <span className="font-semibold text-xs text-slate-200">{preset.name}</span>
                 </div>
                 <p className="text-[11px] text-slate-400 text-left line-clamp-2">{preset.description}</p>
@@ -178,19 +174,19 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       <div className="witness-builder-box mb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Lock className="w-3.5 h-3.5 text-purple-400" />
-            <span className="text-xs font-semibold text-purple-300 uppercase tracking-wide">
+            <Lock className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
               Client-Side Witness Formulation (Private Inputs)
             </span>
           </div>
-          <span className="badge-private-witness">🔒 Private Witness — Never On-Chain</span>
+          <span className="badge-private-witness">[PRIVATE WITNESS: LOCAL RAM ONLY]</span>
         </div>
 
         <div className="witness-inputs-grid">
           <div className="witness-input-group">
             <label className="witness-label">
               <span>Confidential Total Reserves</span>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-300 font-mono">
                 ${customReserves.toLocaleString()}
               </span>
             </label>
@@ -211,7 +207,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
           <div className="witness-input-group">
             <label className="witness-label">
               <span>Confidential Customer Liabilities</span>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-300 font-mono">
                 ${customLiabilities.toLocaleString()}
               </span>
             </label>
@@ -239,9 +235,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
               ) : (
                 <AlertCircle className="w-4 h-4 text-rose-400" />
               )}
-              <span className="text-xs text-slate-300">
-                Mathematical Constraint:{' '}
-                <code className="text-cyan-300 font-mono">
+              <span className="text-xs text-slate-300 font-mono">
+                Constraint:{' '}
+                <code className="text-slate-100">
                   {customReserves} &gt;= {customLiabilities}
                 </code>
               </span>
@@ -269,17 +265,17 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
         >
           {isProving ? (
             <div className="flex items-center justify-center gap-2">
-              <span className="spinner spinner-purple"></span>
-              <span>Generating ZK Proof in Browser...</span>
+              <span className="spinner spinner-slate"></span>
+              <span>Executing Client-Side ZK Prover in Browser...</span>
             </div>
           ) : !isSolvent ? (
             <div className="flex items-center justify-center gap-2 text-rose-300">
               <AlertCircle className="w-5 h-5 text-rose-400" />
-              <span>Insolvent: Reserves Must Exceed Liabilities</span>
+              <span>Insolvent State: Reserves Must Exceed Liabilities</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-cyan-300" />
+              <ShieldCheck className="w-5 h-5 text-slate-100" />
               <span>Generate ZK Proof &amp; Submit to Preprod</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </div>
@@ -288,8 +284,8 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       </div>
 
       {!isConnected && (
-        <p className="connect-hint-text">
-          ⚡ Connect Lace wallet above to enable circuit execution.
+        <p className="connect-hint-text font-mono text-xs">
+          [PROVIDER REQUIRED] Connect Lace wallet above to enable circuit execution.
         </p>
       )}
 
@@ -297,18 +293,18 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
       {isProving && (
         <div className="proving-progress-card mt-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="proving-title">Proving Zero-Knowledge Constraints</span>
-            <span className="proving-tag">Halo2 Client Prover</span>
+            <span className="proving-title">Computing Zero-Knowledge Proof</span>
+            <span className="proving-tag">Halo2 Prover Engine</span>
           </div>
           <div className="progress-bar-container">
             <div className="progress-bar-fill"></div>
           </div>
-          <p className="proving-step-desc">
-            {provingStep || 'Computing constraint satisfaction & generating ZK-SNARK witness...'}
+          <p className="proving-step-desc font-mono">
+            {provingStep || 'Formulating constraint polynomial and computing witness commitments...'}
           </p>
           <div className="proving-note">
             <Lock className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
-            <span>Witness privacy preserved: Private inputs are NEVER sent to the network.</span>
+            <span>Private inputs are never transmitted to the blockchain or remote servers.</span>
           </div>
         </div>
       )}
@@ -319,27 +315,27 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
           <div className="tx-result-header">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              <span className="tx-success-title">Proof Verified On-Chain!</span>
+              <span className="tx-success-title font-mono">[TRANSACTION VERIFIED ON-CHAIN]</span>
             </div>
-            <span className="tx-time-tag">{txResult.timestamp}</span>
+            <span className="tx-time-tag font-mono">{txResult.timestamp}</span>
           </div>
 
           <div className="label-badge-success mb-3">
             <ShieldCheck className="w-4 h-4 mr-1 inline" />
-            <span>Proved without revealing your input</span>
+            <span>Cryptographic assertion verified without balance sheet disclosure</span>
           </div>
 
           <div className="result-field-grid">
             <div className="result-field">
               <span className="field-name">On-Chain Solvency Status:</span>
-              <span className="field-value font-bold text-emerald-400">
-                {txResult.verifiedSolvent ? '✅ SOLVENT (VERIFIED)' : '❌ UNVERIFIED'}
+              <span className="field-value font-mono font-bold text-emerald-400">
+                {txResult.verifiedSolvent ? '[STATUS: VERIFIED SOLVENT]' : '[STATUS: UNVERIFIED]'}
               </span>
             </div>
 
             <div className="result-field">
               <span className="field-name">Confirmed Block Height:</span>
-              <span className="field-value text-cyan-300 font-mono">
+              <span className="field-value text-slate-100 font-mono">
                 #{txResult.blockHeight}
               </span>
             </div>
@@ -361,7 +357,7 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
 
             <div className="result-field result-field-full">
               <span className="field-name">Audit Commitment Hash:</span>
-              <code className="field-code text-purple-300">{txResult.commitment}</code>
+              <code className="field-code text-slate-300">{txResult.commitment}</code>
             </div>
           </div>
 
@@ -370,9 +366,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
               href="https://indexer.preprod.midnight.network"
               target="_blank"
               rel="noreferrer"
-              className="explorer-link"
+              className="explorer-link font-mono"
             >
-              <span>View On Midnight Preprod Explorer</span>
+              <span>Midnight Preprod Explorer</span>
               <ExternalLink className="w-3.5 h-3.5 ml-1" />
             </a>
 
