@@ -1,0 +1,156 @@
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{mathptmx} % Times New Roman font
+
+% Page setup
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins to fit on 1 page cleanly
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.0in}
+\addtolength{\topmargin}{-0.55in}
+\addtolength{\textheight}{1.15in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-5pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-1.5pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1.5pt}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textit{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \vspace{-2pt}\item
+    \begin{tabular*}{0.98\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.15in, label={$\bullet$}]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+% Define custom color for Tools
+\definecolor{toolsblue}{RGB}{43, 108, 176}
+
+%--------------------------------------------------------------------------------
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Huge \textbf{Shivam Patel}} \\ \vspace{2pt}
+    \small Surat, India \ $|$ \ +91 94096 80683 \ $|$ \ \href{mailto:shivamrpatel.14105@email.com}{\underline{shivamrpatel.14105@email.com}} \ $|$ \ 
+    \href{https://linkedin.com/in/shivam-patel-178800307}{\underline{linkedin.com/in/shivam-patel-178800307}} \ $|$ \ 
+    \href{https://github.com/shivam-1410}{\underline{github.com/shivam-1410}}
+\end{center}
+
+%-----------PROFILE-----------
+\section{Profile}
+\small{Full-stack and Web3 software engineer specializing in smart contracts, zero-knowledge cryptography, and DeFi systems across Midnight, Solana, and Stellar. Experienced in developing production-grade dApps with client-side ZK-SNARKs, automated AMM discrete bin liquidity management, and high-performance TypeScript/Rust architectures.}
+
+%-----------PROJECTS-----------
+\section{Projects}
+\resumeSubHeadingListStart
+
+    \resumeProjectHeading
+      {Proofolio -- Confidential Solvency \& Zero-Knowledge Eligibility Gate}{}
+      \vspace{1pt}
+      {\small\textit{\color{toolsblue}Tools: Compact, Midnight Network, TypeScript, React 19, Vite, Midnight.js SDK, Halo2/Plonk ZK-SNARKs, Lace Wallet $\cdot$ Deployed on Preprod \& GitHub Pages}}
+      \resumeItemListStart
+        \resumeItem{Built an institutional-grade zero-knowledge Proof-of-Reserves protocol on Midnight Network that mathematically certifies custodian solvency (\texttt{total\_reserves >= total\_liabilities}) without exposing balance sheets or customer numbers.}
+        \resumeItem{Architected dual-state privacy logic using Compact smart contracts, evaluating confidential reserves and blinding entropy client-side via private witnesses while selectively disclosing only binary solvency flags, block freshness timestamps, and SHA-256 audit commitments on-chain.}
+        \resumeItem{Engineered client-side zk-SNARK proof generation with Lace DApp connector and simulated demo wallet fallback, providing real-time constraint validation and exportable, cryptographically sealed audit certificates with QR verification.}
+        \resumeItem{Implemented automated CI/CD with 10 unit and integration tests across 3 suites verifying boundary thresholds (100\% backing ratio), blinding salt uniqueness, and surplus zero-knowledge protection.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {MarketClock -- Schedule-Aware Liquidity Manager for Meteora DLMM}{}
+      \vspace{1pt}
+      {\small\textit{\color{toolsblue}Tools: Solana, Rust/Anchor, Meteora DLMM (lb\_clmm), TypeScript, Next.js 14, Node.js Keeper, Web3.js $\cdot$ Deployed on Solana Devnet}}
+      \resumeItemListStart
+        \resumeItem{Developed an automated, schedule-aware liquidity manager on Meteora DLMM on Solana for tokenized equities (Stocklana), dynamically restructuring discrete bin liquidity around Wall Street market hours (9:30 AM -- 4:00 PM ET) to eliminate off-market adverse selection.}
+        \resumeItem{Engineered a deterministic finite state machine (\texttt{OPEN}, \texttt{PRE\_CLOSE}, \texttt{CLOSED}, \texttt{PRE\_OPEN}, \texttt{COOL\_DOWN}) with full 2026 NYSE trading calendar, DST boundaries, and IANA timezone management, automatically widening bin ranges ($\pm10$ to $\pm80$ bins) before market close.}
+        \resumeItem{Built an off-chain Node/TypeScript keeper service with transaction simulation, atomic DLMM rebalances, and synchronized cool-down delays matching on-chain volatility accumulator ($V_A$) decay periods before tightening spreads.}
+        \resumeItem{Created an interactive analytics dashboard featuring an SVG 24H Radial Dial, live Canvas DLMM bin heatmap, and a simulation engine backtesting fee capture vs. stale-quote arbitrage loss.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {GreenLedger -- Decentralized Carbon-Credit Trading Protocol}{}
+      \vspace{1pt}
+      {\small\textit{\color{toolsblue}Tools: Next.js 15, TypeScript, Rust (Soroban Smart Contracts), Stellar Blockchain $\cdot$ Deployed on Vercel}}
+      \resumeItemListStart
+        \resumeItem{Built an enterprise-grade carbon-credit marketplace on Stellar Soroban with credit minting, atomic XLM-settled trading, and irreversible CO2 retirement backed by SHA-256 certificates.}
+        \resumeItem{Designed a multi-contract architecture where the core green ledger contract performs cross-contract calls into a verifier registry contract to validate accredited issuers (Verra, Gold Standard, ACR) before allowing minting.}
+        \resumeItem{Built a Verifier Governance Portal for registering accredited organizations and querying live cross-contract state, streaming on-chain events via Soroban RPC with multi-wallet support (Freighter, Albedo, xBull, Hana) and CI/CD testing.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {PaintPay -- Contractor Payroll \& Attendance ERP}{}
+      \vspace{1pt}
+      {\small\textit{\color{toolsblue}Tools: React.js, Tailwind CSS, Node.js/Express, MongoDB, JSON $\cdot$ Deployed on Vercel \& Render}}
+      \resumeItemListStart
+        \resumeItem{Built a full-stack web app to track daily labour attendance, wages, advances, and payroll across multiple job sites, replacing manual paper-based tracking for painting contractors.}
+        \resumeItem{Designed a Party Ledger module with financial summary cards, payment-timeline charts (Recharts), and one-click PDF/Excel export (JSPDF, SheetJS) of client-ready statements.}
+        \resumeItem{Improved backend performance by moving filters to the database layer and adding MongoDB indexes, cutting query latency; implemented environment-aware API routing for local/hosted backends.}
+      \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------EDUCATION-----------
+\section{Education}
+\resumeSubHeadingListStart
+    \resumeSubheading
+      {B.TECH, Computer Science \& engineering}{August 2024 -- August 2028}
+      {Vit University, Bhopal}{6.79 / relevant coursework (optional)}
+\resumeSubHeadingListEnd
+
+%-----------SKILLS-----------
+\section{Skills}
+\begin{itemize}[leftmargin=0.0in, label={}]
+    \small{\item{
+     \textbf{Languages:}{ TypeScript, JavaScript, Rust, Python, C++, Java, SQL, Compact, HTML, CSS} \\ \vspace{1.5pt}
+     \textbf{Blockchain \& Web3:}{ Solana (Anchor, Meteora DLMM, Web3.js), Midnight Network (Compact, Midnight.js, ZK-SNARKs/Halo2), Stellar (Soroban), Zero-Knowledge Proofs, Smart Contracts} \\ \vspace{1.5pt}
+     \textbf{Frameworks \& Libraries:}{ React.js, Next.js, Node.js, Express.js, Vite, Tailwind CSS, NumPy, Pandas, PyTorch} \\ \vspace{1.5pt}
+     \textbf{Tools \& Databases:}{ Git, Docker, MongoDB, REST \& RPC APIs, CI/CD (GitHub Actions), Vitest, Cargo} \\ \vspace{1.5pt}
+     \textbf{Other:}{ English, German, Hindi}
+    }}
+\end{itemize}
+
+\end{document}
