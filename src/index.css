@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --bg-canvas: #090d18;
   --bg-surface: #0f172a;
@@ -504,6 +506,143 @@ body {
   outline: none;
   cursor: pointer;
   accent-color: var(--accent-primary);
+}
+
+/* Radix UI Slider Primitives */
+[data-radix-slider-root] {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  user-select: none !important;
+  touch-action: none !important;
+  width: 100% !important;
+  height: 28px !important;
+  cursor: pointer !important;
+}
+
+[data-radix-slider-track] {
+  background-color: #1e293b !important;
+  position: relative !important;
+  flex-grow: 1 !important;
+  border-radius: 9999px !important;
+  height: 8px !important;
+  overflow: hidden !important;
+}
+
+[data-radix-slider-range] {
+  position: absolute !important;
+  background-color: var(--accent-primary) !important;
+  border-radius: 9999px !important;
+  height: 100% !important;
+}
+
+[data-radix-slider-thumb] {
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-color: #ffffff !important;
+  border: 2px solid var(--accent-primary) !important;
+  border-radius: 9999px !important;
+  cursor: grab !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease !important;
+  outline: none !important;
+}
+
+[data-radix-slider-thumb]:hover {
+  transform: scale(1.18) !important;
+  border-color: #60a5fa !important;
+}
+
+[data-radix-slider-thumb]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Dedicated Balance Slider Layout */
+.balance-slider-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.balance-slider-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.balance-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.balance-title-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.balance-witness-badge {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.balance-amount-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  font-family: var(--font-mono);
+}
+
+.balance-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.725rem;
+  font-weight: 500;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.balance-reset-btn:hover:not(:disabled) {
+  background: #334155;
+  color: var(--text-heading);
+  border-color: var(--border-accent);
+}
+
+.balance-reset-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.balance-milestones-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  user-select: none;
+  margin-top: 0.25rem;
 }
 
 /* Solvency Ratio Card */

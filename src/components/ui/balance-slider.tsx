@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Slider } from "@/components/ui/slider";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 import NumberFlow from "@number-flow/react";
 import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface BalanceSliderProps {
   label: string;
@@ -76,68 +75,77 @@ export function BalanceSlider({
   };
 
   return (
-    <div className="w-full space-y-3 py-1">
-      {/* Header — label + price + reset button */}
-      <div className="flex items-start justify-between gap-3">
+    <div className="balance-slider-card">
+      {/* Header — label + amount + reset button */}
+      <div className="balance-slider-header">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              {label}
-            </span>
-            {badge && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                {badge}
-              </span>
-            )}
+          <div className="balance-title-row">
+            <span className="balance-title-text">{label}</span>
+            {badge && <span className="balance-witness-badge">{badge}</span>}
           </div>
-          <div className="flex items-baseline gap-1 text-slate-100 font-bold tabular-nums text-xl">
-            {formatAsCurrency && <span className="text-slate-400 font-normal">$</span>}
+          <div className="balance-amount-display">
+            {formatAsCurrency && <span style={{ color: "#94a3b8", fontWeight: 400 }}>$</span>}
             <NumberFlow value={value} />
           </div>
         </div>
 
         {onReset && defaultValue !== undefined && (
-          <Button
-            variant="outline"
-            size="xs"
+          <button
+            type="button"
             onClick={onReset}
             disabled={isDefault}
-            className="cursor-pointer text-slate-400 hover:text-slate-100 border-slate-700 bg-slate-800/60"
+            className="balance-reset-btn"
             title="Reset to preset default"
           >
-            <RotateCcw className="w-3 h-3 mr-1" />
-            Reset
-          </Button>
+            <RotateCcw style={{ width: "12px", height: "12px" }} />
+            <span>Reset</span>
+          </button>
         )}
       </div>
 
       {/* Slider Track with Ghost Preview */}
-      <div className="space-y-1.5">
+      <div style={{ position: "relative", width: "100%", padding: "4px 0" }}>
         <div
           ref={rootRef}
-          className="relative w-full py-1 cursor-pointer"
+          style={{ position: "relative", width: "100%" }}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setPreview(null)}
         >
-          <Slider
+          <SliderPrimitive.Root
             value={[value]}
             onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
             min={min}
             max={max}
             step={step}
-            className="w-full"
-          />
+            data-radix-slider-root=""
+          >
+            <SliderPrimitive.Track data-radix-slider-track="">
+              <SliderPrimitive.Range data-radix-slider-range="" />
+            </SliderPrimitive.Track>
+            <SliderPrimitive.Thumb data-radix-slider-thumb="" />
+          </SliderPrimitive.Root>
 
           {previewPct !== null && ghostWidth > 0 && (
             <div
-              className="pointer-events-none absolute top-1/2 h-2 -translate-y-1/2 rounded-full bg-blue-500/30 transition-[left,width] duration-75 z-0"
-              style={{ left: `${ghostLeft}%`, width: `${ghostWidth}%` }}
+              style={{
+                position: "absolute",
+                top: "50%",
+                transform: "translateY(-50%)",
+                height: "8px",
+                borderRadius: "9999px",
+                backgroundColor: "rgba(59, 130, 246, 0.35)",
+                left: `${ghostLeft}%`,
+                width: `${ghostWidth}%`,
+                pointerEvents: "none",
+                zIndex: 0,
+                transition: "left 75ms ease, width 75ms ease",
+              }}
             />
           )}
         </div>
 
         {/* Milestone Labels */}
-        <div className="flex justify-between text-[11px] font-mono text-slate-500 select-none">
+        <div className="balance-milestones-row">
           {labels.map((val) => (
             <span key={val}>{formatShort(val)}</span>
           ))}
