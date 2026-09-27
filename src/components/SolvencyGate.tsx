@@ -10,6 +10,7 @@ import {
   ArrowRight,
   FileCheck,
 } from 'lucide-react';
+import { BalanceSlider } from '@/components/ui/balance-slider';
 import type { TxResult } from '../hooks/useMidnight';
 
 interface SolvencyGateProps {
@@ -145,49 +146,43 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             </div>
           </div>
 
-          {/* Reserve Assets Input */}
-          <div className="balance-field">
-            <div className="balance-field-top">
-              <span className="balance-field-label">Total Reserve Assets</span>
-              <span className="balance-field-amount text-slate-100">
-                ${customReserves.toLocaleString()}
-              </span>
-            </div>
-            <input
-              type="range"
-              min="1000000"
-              max="50000000"
-              step="250000"
-              value={customReserves}
-              onChange={(e) => {
-                setCustomReserves(Number(e.target.value));
-                setSelectedPreset('custom');
-              }}
-              className="balance-slider"
-            />
-          </div>
+          {/* Reserve Assets Input via shadcn BalanceSlider */}
+          <BalanceSlider
+            label="Total Reserve Assets"
+            value={customReserves}
+            min={1000000}
+            max={50000000}
+            step={250000}
+            defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.reserves}
+            onChange={(val) => {
+              setCustomReserves(val);
+              setSelectedPreset('custom');
+            }}
+            onReset={() => {
+              const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.reserves;
+              if (defaultVal) setCustomReserves(defaultVal);
+            }}
+            badge="Private Witness"
+          />
 
-          {/* Customer Liabilities Input */}
-          <div className="balance-field">
-            <div className="balance-field-top">
-              <span className="balance-field-label">Customer Deposit Liabilities</span>
-              <span className="balance-field-amount text-slate-100">
-                ${customLiabilities.toLocaleString()}
-              </span>
-            </div>
-            <input
-              type="range"
-              min="1000000"
-              max="50000000"
-              step="250000"
-              value={customLiabilities}
-              onChange={(e) => {
-                setCustomLiabilities(Number(e.target.value));
-                setSelectedPreset('custom');
-              }}
-              className="balance-slider"
-            />
-          </div>
+          {/* Customer Liabilities Input via shadcn BalanceSlider */}
+          <BalanceSlider
+            label="Customer Deposit Liabilities"
+            value={customLiabilities}
+            min={1000000}
+            max={50000000}
+            step={250000}
+            defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.liabilities}
+            onChange={(val) => {
+              setCustomLiabilities(val);
+              setSelectedPreset('custom');
+            }}
+            onReset={() => {
+              const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.liabilities;
+              if (defaultVal) setCustomLiabilities(defaultVal);
+            }}
+            badge="Private Witness"
+          />
 
           {/* Live Solvency Ratio Card */}
           <div className="solvency-ratio-card">
