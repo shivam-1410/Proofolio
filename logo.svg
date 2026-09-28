@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <rect width="100" height="100" rx="4" fill="#090d16" />
+  <rect x="2" y="2" width="96" height="96" rx="2" stroke="#1e293b" stroke-width="1.5" />
+  <!-- Institutional Geometric Shield -->
+  <path d="M50 18 L76 30 V52 C76 66 50 82 50 82 C50 82 24 66 24 52 V30 Z" stroke="#2563eb" stroke-width="2.5" fill="#0e1526"/>
+  <!-- Cryptographic Invariant Mathematical Sigil: ZK Constraint -->
+  <path d="M38 42 L62 42 L42 60 L62 60" stroke="#f8fafc" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <!-- Status Verification Pin -->
+  <rect x="48" y="49" width="4" height="4" fill="#10b981" />
+</svg>
