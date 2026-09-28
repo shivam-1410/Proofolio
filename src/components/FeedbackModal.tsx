@@ -16,12 +16,25 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const existing = JSON.parse(localStorage.getItem('proofolio_user_feedback') || '[]');
+      existing.unshift({
+        role: userRole,
+        rating,
+        comment,
+        timestamp: new Date().toISOString(),
+      });
+      localStorage.setItem('proofolio_user_feedback', JSON.stringify(existing.slice(0, 20)));
+    } catch (err) {
+      console.warn('Could not save feedback to localStorage:', err);
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setComment('');
       onClose();
-    }, 2000);
+    }, 2500);
   };
 
   return (

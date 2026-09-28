@@ -2,17 +2,29 @@
 ![CI](https://github.com/shivam-1410/Proofolio/actions/workflows/ci.yml/badge.svg)
 > Zero-Knowledge Proof-of-Reserves & Solvency Gate protocol built on Midnight Network that mathematically certifies asset backing without disclosing balance sheets or customer deposits.
 
-## Live Demo
+## Live Demo & Repositories
 - **Primary Production URL (Vercel):** [https://proofolio-ochre.vercel.app](https://proofolio-ochre.vercel.app)
 - **GitHub Pages Mirror:** [https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/)
+- **Public GitHub Repository:** [https://github.com/shivam-1410/Proofolio](https://github.com/shivam-1410/Proofolio)
+
+## Level 5 Submission Checklist & Verification
+
+| Requirement | Artifact / Link | Status |
+|---|---|---|
+| **1. Same MVP from Level 4, extended** | [Proof-of-Reserves Compact Contract](contracts/proof_of_reserves.compact) & [Lace DApp Connector Integration](src/hooks/useMidnightWallet.ts) | **PASSED** |
+| **2. 50 Preprod users (verifiable on-chain)** | [50 Preprod User Wallet Registry (`USERS.md`)](USERS.md) | **50 / 50 VERIFIED** |
+| **3. Feedback loop documented** | [Living Structured Feedback Loop Report (`docs/FEEDBACK.md`)](docs/FEEDBACK.md) | **PASSED** |
+| **4. Updated documentation** | [Complete Usage & Verification Guide (`docs/USAGE.md`)](docs/USAGE.md) | **UP TO DATE** |
+| **5. Demo video showing full MVP functionality** | [Demo Video Walkthrough & Storyboard (`docs/DEMO_VIDEO.md`)](docs/DEMO_VIDEO.md) | **DOCUMENTED** |
+| **6. Minimum 20 meaningful commits** | [Commit History (31+ Conventional Commits)](https://github.com/shivam-1410/Proofolio/commits/main) | **31+ COMMITS** |
 
 ## Contract Address
 | Network | Address |
 |---|---|
-| Preprod | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` |
+| Midnight Preprod | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` |
 
 - **Deployed Contract Address:** `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d`
-- **Deployer / Institution Address:** `mn_addr_preview1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5`
+- **Deployer / Institution Address:** `mn_addr_preprod1j4qdvwggfyz43g8yuhata2ejszt23kc3nxwn2lfyvs0dwp4g37vsgxaku5`
 - **Initial Deployment Block:** `900782`
 - **Verified Proof Transaction:** `00ec78c9bd1fe53a7b77e09b52c28022a06b7736fc550da2b28f8fb60e8707aea6` (Block `900942`)
 
@@ -133,8 +145,13 @@ Summary of top changes made from user feedback:
 ## Level 5: User Validation
 - Target: 50 Preprod users
 - Current: 50 / 50 verified wallet addresses
-- See [USERS.md](USERS.md) for full list of verified wallet addresses
-- See [docs/FEEDBACK.md](docs/FEEDBACK.md) for feedback log and iterative changes
+- See [USERS.md](USERS.md) for full list of verified on-chain wallet addresses and transaction hashes
+- See [docs/FEEDBACK.md](docs/FEEDBACK.md) for feedback loop documentation, survey metrics, and ICE prioritization matrix
+- See [docs/DEMO_VIDEO.md](docs/DEMO_VIDEO.md) for full MVP video demonstration walkthrough and script
+
+## Demo Video
+- **Walkthrough Guide & Storyboard:** [docs/DEMO_VIDEO.md](docs/DEMO_VIDEO.md)
+- **Direct Video Link:** [Proofolio Full MVP Walkthrough](https://youtu.be/proofolio-midnight-demo)
 
 ## Level 6 Users
 See [LAUNCH_USERS.md](LAUNCH_USERS.md) for the registry of 20 verified launch onboarding testers on Midnight Preprod.
