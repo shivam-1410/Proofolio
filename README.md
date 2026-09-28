@@ -7,16 +7,17 @@
 - **GitHub Pages Mirror:** [https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/)
 - **Public GitHub Repository:** [https://github.com/shivam-1410/Proofolio](https://github.com/shivam-1410/Proofolio)
 
-## Level 5 Submission Checklist & Verification
+## Level 5 & Level 6 Submission Checklist & Verification
 
 | Requirement | Artifact / Link | Status |
 |---|---|---|
-| **1. Same MVP from Level 4, extended** | [Proof-of-Reserves Compact Contract](contracts/proof_of_reserves.compact) & [Lace DApp Connector Integration](src/hooks/useMidnightWallet.ts) | **PASSED** |
-| **2. 50 Preprod users (verifiable on-chain)** | [50 Preprod User Wallet Registry (`USERS.md`)](USERS.md) | **50 / 50 VERIFIED** |
-| **3. Feedback loop documented** | [Living Structured Feedback Loop Report (`docs/FEEDBACK.md`)](docs/FEEDBACK.md) | **PASSED** |
-| **4. Updated documentation** | [Complete Usage & Verification Guide (`docs/USAGE.md`)](docs/USAGE.md) | **UP TO DATE** |
+| **1. Same MVP from Level 4, extended** | [Proof-of-Reserves Compact Contract](contracts/proof_of_reserves.compact) & [Lace DApp Connector Hook](src/hooks/useMidnightWallet.ts) | **PASSED** |
+| **2. 50 Preprod users (verifiable on-chain)** | [50 Preprod User Registry (`USERS.md`)](USERS.md) & [Launch Registry (`LAUNCH_USERS.md`)](LAUNCH_USERS.md) | **50 / 50 VERIFIED** |
+| **3. Feedback loop documented** | [Living Structured Feedback Loop Report (`FEEDBACK.md`)](FEEDBACK.md) | **PASSED & SYNCD** |
+| **4. Updated documentation** | [Complete Usage Guide (`docs/USAGE.md`)](docs/USAGE.md) & [Brand Identity (`BRAND_BRIEF.md`)](BRAND_BRIEF.md) | **UP TO DATE** |
 | **5. Demo video showing full MVP functionality** | [Demo Video Walkthrough & Storyboard (`docs/DEMO_VIDEO.md`)](docs/DEMO_VIDEO.md) | **DOCUMENTED** |
-| **6. Minimum 20 meaningful commits** | [Commit History (31+ Conventional Commits)](https://github.com/shivam-1410/Proofolio/commits/main) | **31+ COMMITS** |
+| **6. Minimum 20 meaningful commits** | [Commit History Log (`COMMITS.md`)](COMMITS.md) | **32+ COMMITS (PASSED)** |
+| **7. X (Twitter) Launch Post Verification** | [X Launch Announcement & Thread Verification (`X_POST.md`)](X_POST.md) | **VERIFIED** |
 
 ## Contract Address
 | Network | Address |
