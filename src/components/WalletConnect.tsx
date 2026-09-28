@@ -1,35 +1,55 @@
 import React, { useState } from 'react';
-import { Wallet, Copy, Check, LogOut, AlertCircle, RefreshCw } from 'lucide-react';
+import { Wallet, Copy, Check, LogOut, AlertCircle, RefreshCw, ExternalLink } from 'lucide-react';
+import { useMidnightWallet } from '../hooks/useMidnightWallet';
 
-interface WalletConnectProps {
-  isConnected: boolean;
-  walletAddress: string | null;
+export interface WalletConnectProps {
+  isConnected?: boolean;
+  walletAddress?: string | null;
   shieldedAddress?: string | null;
-  networkId: string;
-  isConnecting: boolean;
-  error: string | null;
-  onConnect: () => void;
+  networkId?: string;
+  isConnecting?: boolean;
+  error?: string | null;
+  onConnect?: () => void;
   onConnectDemo?: () => void;
-  onDisconnect: () => void;
-  onClearError: () => void;
+  onDisconnect?: () => void;
+  onClearError?: () => void;
   onSwitchNetwork?: (newNetwork: string) => void;
 }
 
 export const WalletConnect: React.FC<WalletConnectProps> = ({
-  isConnected,
-  walletAddress,
+  isConnected: propIsConnected,
+  walletAddress: propAddress,
   shieldedAddress,
-  networkId,
-  isConnecting,
-  error,
+  networkId = 'preprod',
+  isConnecting: propIsConnecting,
+  error: propError,
   onConnect,
   onConnectDemo,
   onDisconnect,
   onClearError,
   onSwitchNetwork,
 }) => {
+  const hook = useMidnightWallet();
   const [copiedUnshielded, setCopiedUnshielded] = useState(false);
   const [copiedShielded, setCopiedShielded] = useState(false);
+
+  // Derive active states from hook with fallback to optional props (e.g. demo mode)
+  const isConnected = propIsConnected !== undefined ? (propIsConnected || hook.isConnected) : hook.isConnected;
+  const address = propAddress || hook.address;
+  const isConnecting = propIsConnecting !== undefined ? (propIsConnecting || hook.isLoading) : hook.isLoading;
+  const error = propError || hook.error;
+
+  const handleConnect = async () => {
+    if (onConnect) onConnect();
+    await hook.connect();
+  };
+
+  const handleDisconnect = () => {
+    // Note: Midnight DApp Connector API does not provide a remote disconnect() method.
+    // Calling hook.disconnect() resets local connection state in application memory.
+    if (onDisconnect) onDisconnect();
+    hook.disconnect();
+  };
 
   const handleCopy = (text: string, isShielded = false) => {
     navigator.clipboard.writeText(text);
@@ -48,9 +68,12 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     return `${addr.slice(0, 10)}...${addr.slice(-6)}`;
   };
 
+  const isNotDetected = error?.toLowerCase().includes('not detected') || error?.toLowerCase().includes('not installed');
+
   return (
     <div className="wallet-status-box mb-4">
-      {error && (
+      {/* State 4: Error State */}
+      {error && !isConnected && (
         <div
           style={{
             background: 'rgba(239, 68, 68, 0.1)',
@@ -62,37 +85,58 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            marginBottom: '0.75rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
             <AlertCircle className="w-4 h-4 text-rose-400" />
-            <span>Wallet Connection Notice</span>
+            <span>{isNotDetected ? 'Lace Wallet Extension Not Found' : 'Wallet Connection Notice'}</span>
           </div>
-          <p style={{ lineHeight: 1.4 }}>{error}</p>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-            <button
-              type="button"
-              onClick={onConnect}
-              className="nav-btn nav-btn-primary"
-              style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
-            >
-              Retry Connection
-            </button>
+          <p style={{ lineHeight: 1.4 }}>
+            {isNotDetected
+              ? 'Lace wallet extension was not detected on window.midnight.mnLace. Please install or enable the extension to connect.'
+              : error}
+          </p>
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+            {isNotDetected ? (
+              <a
+                href="https://docs.midnight.network/relnotes/lace"
+                target="_blank"
+                rel="noreferrer"
+                className="nav-btn nav-btn-primary"
+                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <span>Install Lace</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={handleConnect}
+                className="nav-btn nav-btn-primary"
+                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+              >
+                Retry Connection
+              </button>
+            )}
             {onConnectDemo && (
               <button
                 type="button"
                 onClick={onConnectDemo}
                 className="nav-btn"
-                style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
               >
                 Use Demo Wallet
               </button>
             )}
             <button
               type="button"
-              onClick={onClearError}
+              onClick={() => {
+                if (onClearError) onClearError();
+                hook.disconnect();
+              }}
               className="nav-btn"
-              style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
             >
               Dismiss
             </button>
@@ -100,6 +144,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
         </div>
       )}
 
+      {/* State 1 (Idle) & State 2 (Connecting) */}
       {!isConnected ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -123,7 +168,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                   Wallet Provider
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                  Connect to submit on-chain proofs
+                  Connect Lace via Midnight DApp Connector API
                 </div>
               </div>
             </div>
@@ -149,18 +194,28 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {/* Connecting State vs Idle State Button */}
             <button
               type="button"
-              onClick={onConnect}
+              onClick={handleConnect}
               disabled={isConnecting}
               className="cta-button cta-button-primary"
               style={{ flex: 1, minWidth: '180px', padding: '0.65rem 1rem', fontSize: '0.85rem' }}
             >
-              <Wallet className="w-4 h-4 mr-1" />
-              <span>{isConnecting ? 'Connecting Lace...' : 'Connect Lace Wallet'}</span>
+              {isConnecting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  <span>Connecting to Lace...</span>
+                </>
+              ) : (
+                <>
+                  <Wallet className="w-4 h-4 mr-1" />
+                  <span>Connect Lace Wallet</span>
+                </>
+              )}
             </button>
 
-            {onConnectDemo && (
+            {onConnectDemo && !isConnecting && (
               <button
                 type="button"
                 onClick={onConnectDemo}
@@ -184,7 +239,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
             <button
               type="button"
-              onClick={onDisconnect}
+              onClick={handleDisconnect}
               className="nav-btn"
               style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', color: '#f87171' }}
             >
@@ -212,12 +267,12 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                   Unshielded Address
                 </span>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#e2e8f0' }}>
-                  {truncate(walletAddress || '')}
+                  {truncate(address || '')}
                 </span>
               </div>
               <button
                 type="button"
-                onClick={() => handleCopy(walletAddress || '', false)}
+                onClick={() => handleCopy(address || '', false)}
                 style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
                 title="Copy Address"
               >

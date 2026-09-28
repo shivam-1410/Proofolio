@@ -12,14 +12,17 @@ import {
 } from 'lucide-react';
 import { BalanceSlider } from '@/components/ui/balance-slider';
 import type { TxResult } from '../hooks/useMidnight';
+import { useMidnightWallet } from '../hooks/useMidnightWallet';
+import { WalletConnect } from './WalletConnect';
 
-interface SolvencyGateProps {
-  contractAddress: string;
-  isConnected: boolean;
-  isProving: boolean;
-  provingStep: string | null;
-  txResult: TxResult | null;
-  onCallCircuit: () => void;
+export interface SolvencyGateProps {
+  contractAddress?: string;
+  isConnected?: boolean;
+  walletAddress?: string | null;
+  isProving?: boolean;
+  provingStep?: string | null;
+  txResult?: TxResult | null;
+  onCallCircuit?: () => void;
   onOpenCertificateModal?: () => void;
 }
 
@@ -60,14 +63,19 @@ const PRESETS: ScenarioPreset[] = [
 ];
 
 export const SolvencyGate: React.FC<SolvencyGateProps> = ({
-  contractAddress,
-  isConnected,
-  isProving,
-  provingStep,
-  txResult,
+  contractAddress = 'preprod_contract_por_001',
+  isConnected: propIsConnected,
+  walletAddress: propAddress,
+  isProving = false,
+  provingStep = null,
+  txResult = null,
   onCallCircuit,
   onOpenCertificateModal,
 }) => {
+  const wallet = useMidnightWallet();
+  const isConnected = propIsConnected !== undefined ? (propIsConnected || wallet.isConnected) : wallet.isConnected;
+  const walletAddress = propAddress || wallet.address;
+
   const [selectedPreset, setSelectedPreset] = useState<string>('custodian-prime');
   const [customReserves, setCustomReserves] = useState<number>(12500000);
   const [customLiabilities, setCustomLiabilities] = useState<number>(9800000);
@@ -146,73 +154,109 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             </div>
           </div>
 
-          {/* Reserve Assets Input via shadcn BalanceSlider */}
-          <BalanceSlider
-            label="Total Reserve Assets"
-            value={customReserves}
-            min={1000000}
-            max={50000000}
-            step={250000}
-            defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.reserves}
-            onChange={(val) => {
-              setCustomReserves(val);
-              setSelectedPreset('custom');
-            }}
-            onReset={() => {
-              const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.reserves;
-              if (defaultVal) setCustomReserves(defaultVal);
-            }}
-            badge="Private Witness"
-          />
-
-          {/* Customer Liabilities Input via shadcn BalanceSlider */}
-          <BalanceSlider
-            label="Customer Deposit Liabilities"
-            value={customLiabilities}
-            min={1000000}
-            max={50000000}
-            step={250000}
-            defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.liabilities}
-            onChange={(val) => {
-              setCustomLiabilities(val);
-              setSelectedPreset('custom');
-            }}
-            onReset={() => {
-              const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.liabilities;
-              if (defaultVal) setCustomLiabilities(defaultVal);
-            }}
-            badge="Private Witness"
-          />
-
-          {/* Live Solvency Ratio Card */}
-          <div className="solvency-ratio-card">
-            <div className="ratio-value-group">
-              <span className="ratio-label">Backing Ratio</span>
-              <span className={`ratio-number ${isSolvent ? 'solvent' : 'insolvent'}`}>
-                {reserveRatio}%
-              </span>
+          {!isConnected ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.25rem', background: '#0b1120', border: '1px solid #1e293b', borderRadius: '8px' }}>
+              <div>
+                <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
+                  Wallet Connection Required
+                </h4>
+                <p style={{ fontSize: '0.78rem', color: '#94a3b8', lineHeight: 1.4 }}>
+                  Connect your Lace wallet to unlock the private balance sheet inputs and verify zero-knowledge solvency on-chain.
+                </p>
+              </div>
+              <WalletConnect />
             </div>
-            <div>
-              <span className={`status-badge ${isSolvent ? 'solvent' : 'insolvent'}`}>
-                {isSolvent ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Solvent (100%+ Backed)</span>
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="w-4 h-4" />
-                    <span>Insolvent (Deficit)</span>
-                  </>
-                )}
-              </span>
-            </div>
-          </div>
+          ) : (
+            <>
+              {/* Display Truncated Connected Wallet Address */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  background: '#0b1120',
+                  border: '1px solid #1e293b',
+                  borderRadius: '6px',
+                  padding: '0.45rem 0.75rem',
+                  marginBottom: '1rem',
+                  fontSize: '0.75rem',
+                }}
+              >
+                <span style={{ color: '#94a3b8' }}>Connected Signer:</span>
+                <span style={{ fontFamily: 'var(--font-mono)', color: '#34d399', fontWeight: 600 }}>
+                  {truncate(walletAddress || '', 10, 6)}
+                </span>
+              </div>
 
-          {/* Privacy Guarantee Note */}
-          <div className="privacy-banner">
-            <strong>Client-Side Zero Disclosure:</strong> Balances are processed strictly inside local browser WebAssembly memory. Raw figures never leave this device and are never submitted to the ledger or indexer.
-          </div>
+              {/* Reserve Assets Input via shadcn BalanceSlider */}
+              <BalanceSlider
+                label="Total Reserve Assets"
+                value={customReserves}
+                min={1000000}
+                max={50000000}
+                step={250000}
+                defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.reserves}
+                onChange={(val) => {
+                  setCustomReserves(val);
+                  setSelectedPreset('custom');
+                }}
+                onReset={() => {
+                  const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.reserves;
+                  if (defaultVal) setCustomReserves(defaultVal);
+                }}
+                badge="Private Witness"
+              />
+
+              {/* Customer Liabilities Input via shadcn BalanceSlider */}
+              <BalanceSlider
+                label="Customer Deposit Liabilities"
+                value={customLiabilities}
+                min={1000000}
+                max={50000000}
+                step={250000}
+                defaultValue={PRESETS.find((p) => p.id === selectedPreset)?.liabilities}
+                onChange={(val) => {
+                  setCustomLiabilities(val);
+                  setSelectedPreset('custom');
+                }}
+                onReset={() => {
+                  const defaultVal = PRESETS.find((p) => p.id === selectedPreset)?.liabilities;
+                  if (defaultVal) setCustomLiabilities(defaultVal);
+                }}
+                badge="Private Witness"
+              />
+
+              {/* Live Solvency Ratio Card */}
+              <div className="solvency-ratio-card">
+                <div className="ratio-value-group">
+                  <span className="ratio-label">Backing Ratio</span>
+                  <span className={`ratio-number ${isSolvent ? 'solvent' : 'insolvent'}`}>
+                    {reserveRatio}%
+                  </span>
+                </div>
+                <div>
+                  <span className={`status-badge ${isSolvent ? 'solvent' : 'insolvent'}`}>
+                    {isSolvent ? (
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Solvent (100%+ Backed)</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-4 h-4" />
+                        <span>Insolvent (Deficit)</span>
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Privacy Guarantee Note */}
+              <div className="privacy-banner">
+                <strong>Client-Side Zero Disclosure:</strong> Balances are processed strictly inside local browser WebAssembly memory. Raw figures never leave this device and are never submitted to the ledger or indexer.
+              </div>
+            </>
+          )}
         </div>
 
         {/* Right Column: Execution & On-Chain Confirmation */}
@@ -251,14 +295,22 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
           {/* Action Trigger */}
           <div style={{ marginTop: 'auto' }}>
             <button
-              onClick={onCallCircuit}
+              onClick={() => {
+                // TODO: Submit proof to Compact contract once integration is wired up via ConnectedAPI / midnight.js
+                // That's a separate step once the Compact contract integration is wired up.
+                if (onCallCircuit) {
+                  onCallCircuit();
+                } else {
+                  console.info('TODO: Submit proof to Compact contract via ConnectedAPI');
+                }
+              }}
               disabled={!isConnected || isProving || !isSolvent}
               className="cta-button cta-button-primary"
             >
               {isProving ? (
                 <span>Generating ZK Proof in Browser...</span>
               ) : !isConnected ? (
-                <span>Connect Wallet Above to Prove</span>
+                <span>Connect Wallet to Submit Proof</span>
               ) : !isSolvent ? (
                 <span>Cannot Prove: Insolvent Balance Sheet</span>
               ) : (

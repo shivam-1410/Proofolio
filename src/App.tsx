@@ -170,6 +170,7 @@ export const App: React.FC = () => {
         <SolvencyGate
           contractAddress={contractAddress}
           isConnected={isConnected}
+          walletAddress={walletAddress}
           isProving={isProving}
           provingStep={provingStep}
           txResult={txResult}
