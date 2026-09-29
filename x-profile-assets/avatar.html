@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proofolio X Avatar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background-color: #030712;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      position: relative;
+    }
+
+    /* Ambient background lighting */
+    .glow-sphere {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .glow-blue {
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, #2563eb, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .glow-emerald {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, #10b981, transparent 70%);
+      bottom: 240px;
+      right: 280px;
+      opacity: 0.35;
+    }
+
+    /* Background Geometric Grid */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
+      -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
+    }
+
+    /* Concentric rings */
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(59, 130, 246, 0.12);
+      pointer-events: none;
+    }
+    .ring-1 { width: 520px; height: 520px; }
+    .ring-2 { width: 720px; height: 720px; border-style: dashed; border-color: rgba(59, 130, 246, 0.08); }
+    .ring-3 { width: 920px; height: 920px; border-color: rgba(255, 255, 255, 0.04); }
+
+    /* Center Card Emblem */
+    .emblem-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emblem-wrapper {
+      width: 440px;
+      height: 440px;
+      border-radius: 100px;
+      background: linear-gradient(145deg, rgba(26, 35, 60, 0.8), rgba(9, 14, 26, 0.95));
+      border: 2px solid rgba(59, 130, 246, 0.35);
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.8),
+        0 0 50px 0 rgba(37, 99, 235, 0.25),
+        inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      backdrop-filter: blur(20px);
+    }
+
+    .emblem-svg {
+      width: 290px;
+      height: 290px;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+    }
+
+    /* Brand typography */
+    .brand-title {
+      margin-top: 44px;
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-network {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-sphere glow-blue"></div>
+  <div class="glow-sphere glow-emerald"></div>
+  <div class="grid-bg"></div>
+
+  <div class="ring ring-1"></div>
+  <div class="ring ring-2"></div>
+  <div class="ring ring-3"></div>
+
+  <div class="emblem-container">
+    <div class="emblem-wrapper">
+      <svg class="emblem-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="shieldGrad" x1="50" y1="18" x2="50" y2="82" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0a101d"/>
+          </linearGradient>
+          <linearGradient id="strokeGrad" x1="24" y1="18" x2="76" y2="82" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="50%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <filter id="emeraldGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- Institutional Geometric Shield -->
+        <path d="M50 16 L78 29 V53 C78 68 50 85 50 85 C50 85 22 68 22 53 V29 Z" 
+              stroke="url(#strokeGrad)" 
+              stroke-width="3.2" 
+              fill="url(#shieldGrad)"
+              stroke-linejoin="round"/>
+
+        <!-- Cryptographic Invariant Mathematical Sigil: ZK Constraint -->
+        <path d="M36 40 L64 40 L40 62 L64 62" 
+              stroke="#ffffff" 
+              stroke-width="4.2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"/>
+
+        <!-- Status Verification Pin with glow -->
+        <circle cx="50" cy="51" r="3.2" fill="#10b981" filter="url(#emeraldGlow)" />
+        <circle cx="50" cy="51" r="2.2" fill="#ffffff" />
+      </svg>
+    </div>
+
+    <div class="brand-title">
+      Proofolio
+    </div>
+
+    <div class="badge-network">
+      <span class="status-dot"></span>
+      Midnight Solvency Verifier
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proofolio Website HD Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 2560px;
+      height: 1440px;
+      overflow: hidden;
+      background-color: #030712;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      position: relative;
+    }
+
+    /* Ambient glow effects */
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(160px);
+      pointer-events: none;
+    }
+    .glow-top {
+      width: 1400px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.4), transparent 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .glow-bottom {
+      width: 1000px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25), transparent 70%);
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Grid texture */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black 60%, transparent 95%);
+      -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 95%);
+    }
+
+    /* Header text on showcase */
+    .showcase-header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      margin-bottom: 18px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+
+    .header-title {
+      font-size: 54px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+
+    .header-title span {
+      background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Window Browser Frame */
+    .window-frame {
+      width: 2160px;
+      height: 1080px;
+      background: #090d16;
+      border-radius: 24px;
+      border: 1.5px solid rgba(59, 130, 246, 0.35);
+      box-shadow: 
+        0 40px 120px -20px rgba(0, 0, 0, 0.95),
+        0 0 80px rgba(37, 99, 235, 0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 10;
+    }
+
+    .window-titlebar {
+      height: 56px;
+      background: #0d1322;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 20px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 10px;
+    }
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .dot-1 { background: #ff5f56; }
+    .dot-2 { background: #ffbd2e; }
+    .dot-3 { background: #27c93f; }
+
+    .address-bar {
+      flex: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      height: 34px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .lock-icon {
+      color: #10b981;
+    }
+
+    .window-content {
+      flex: 1;
+      overflow: hidden;
+      background: #020617;
+      position: relative;
+    }
+
+    .window-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      object-position: top center;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow glow-top"></div>
+  <div class="glow glow-bottom"></div>
+  <div class="grid-bg"></div>
+
+  <div class="showcase-header">
+    <div class="badge-pill">
+      <span class="pill-dot"></span>
+      LIVE APPLICATION ON CARDANO MIDNIGHT PREPROD
+    </div>
+    <h1 class="header-title">
+      Proofolio &bull; <span>Confidential Solvency Protocol</span>
+    </h1>
+  </div>
+
+  <div class="window-frame">
+    <div class="window-titlebar">
+      <div class="dots">
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+      </div>
+      <div class="address-bar">
+        <span class="lock-icon">🔒</span> https://proofolio.app &bull; Midnight Verified Circuit
+      </div>
+    </div>
+    <div class="window-content">
+      <img src="file:///Users/shivam/Desktop/Proofolio/website_screenshot_hd.png" alt="Proofolio Website">
+    </div>
+  </div>
+</body>
+</html>

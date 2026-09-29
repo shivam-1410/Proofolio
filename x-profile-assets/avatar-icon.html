@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proofolio X Avatar Icon Only</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background-color: #030712;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Ambient background lighting */
+    .glow-sphere {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+    }
+    .glow-blue {
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, #2563eb 0%, #1e40af 40%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.65;
+    }
+    .glow-cyan {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #38bdf8 0%, transparent 70%);
+      top: 30%;
+      right: 25%;
+      opacity: 0.35;
+    }
+    .glow-emerald {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #10b981 0%, transparent 70%);
+      bottom: 25%;
+      left: 30%;
+      opacity: 0.3;
+    }
+
+    /* Background Geometric Grid */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 45px 45px;
+      mask-image: radial-gradient(circle at center, black 45%, transparent 85%);
+      -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 85%);
+    }
+
+    /* Concentric rings */
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      pointer-events: none;
+    }
+    .ring-1 { width: 680px; height: 680px; }
+    .ring-2 { width: 880px; height: 880px; border-style: dashed; border-color: rgba(59, 130, 246, 0.1); }
+    .ring-3 { width: 1020px; height: 1020px; border-color: rgba(255, 255, 255, 0.03); }
+
+    /* Center Card Emblem */
+    .emblem-wrapper {
+      width: 600px;
+      height: 600px;
+      border-radius: 140px;
+      background: linear-gradient(145deg, rgba(20, 29, 52, 0.85), rgba(7, 11, 22, 0.96));
+      border: 3px solid rgba(59, 130, 246, 0.4);
+      box-shadow: 
+        0 35px 80px -15px rgba(0, 0, 0, 0.9),
+        0 0 70px 0 rgba(37, 99, 235, 0.35),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(24px);
+    }
+
+    .emblem-svg {
+      width: 420px;
+      height: 420px;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.7));
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-sphere glow-blue"></div>
+  <div class="glow-sphere glow-cyan"></div>
+  <div class="glow-sphere glow-emerald"></div>
+  <div class="grid-bg"></div>
+
+  <div class="ring ring-1"></div>
+  <div class="ring ring-2"></div>
+  <div class="ring ring-3"></div>
+
+  <div class="emblem-wrapper">
+    <svg class="emblem-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="shieldGrad" x1="50" y1="16" x2="50" y2="85" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#0a101d"/>
+        </linearGradient>
+        <linearGradient id="strokeGrad" x1="22" y1="16" x2="78" y2="85" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="35%" stop-color="#3b82f6"/>
+          <stop offset="70%" stop-color="#2563eb"/>
+          <stop offset="100%" stop-color="#1d4ed8"/>
+        </linearGradient>
+        <filter id="emeraldGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+
+      <!-- Institutional Geometric Shield -->
+      <path d="M50 16 L78 29 V53 C78 68 50 85 50 85 C50 85 22 68 22 53 V29 Z" 
+            stroke="url(#strokeGrad)" 
+            stroke-width="3.5" 
+            fill="url(#shieldGrad)"
+            stroke-linejoin="round"/>
+
+      <!-- Cryptographic Invariant Mathematical Sigil: ZK Constraint -->
+      <path d="M36 40 L64 40 L40 62 L64 62" 
+            stroke="#ffffff" 
+            stroke-width="4.5" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"/>
+
+      <!-- Status Verification Pin with glow -->
+      <circle cx="50" cy="51" r="3.6" fill="#10b981" filter="url(#emeraldGlow)" />
+      <circle cx="50" cy="51" r="2.4" fill="#ffffff" />
+    </svg>
+  </div>
+</body>
+</html>
