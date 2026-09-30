@@ -44,77 +44,55 @@ export const Layout: React.FC<LayoutProps> = ({
         Skip to Solvency Verifier Terminal
       </a>
 
-      {/* Trustworthy Financial Product Navbar */}
+      {/* Modern Startup Navbar */}
       <header className="navbar">
         <div className="nav-content">
-          <a href="#" className="brand-group" aria-label="Proofolio Home">
+          <div className="brand-group">
             <div className="brand-logo-container">
-              <img src="/logo.svg" alt="" width={24} height={24} aria-hidden="true" />
+              <img src="/logo.svg" alt="Proofolio" width={28} height={28} />
             </div>
-            <div className="brand-text-col">
-              <span className="brand-title">Proofolio</span>
-              <span className="brand-tagline">ZK Solvency Gate</span>
-            </div>
-            <span className="brand-pill" title="Target Network">
-              {networkId.toUpperCase()}
-            </span>
-          </a>
+            <span className="brand-title">Proofolio</span>
+            <span className="brand-pill">Preprod</span>
+          </div>
 
-          <nav className="nav-links" aria-label="Main Navigation">
-            <a href="#prover-app" className="nav-link">
-              Verifier Terminal
-            </a>
-            <a href="#how-it-works" className="nav-link">
-              How It Works
-            </a>
-            <a href="#privacy-model" className="nav-link">
-              Dual-State Privacy
-            </a>
-            <a href="#smart-contract" className="nav-link">
-              Compact Circuit
-            </a>
-            <a href="#faq" className="nav-link">
-              FAQ
-            </a>
-          </nav>
-
-          <div className="nav-actions">
+          <nav className="nav-links">
+            <a href="#prover-app" className="nav-link">Verifier App</a>
+            <a href="#how-it-works" className="nav-link">How It Works</a>
+            <a href="#smart-contract" className="nav-link">Smart Contract</a>
             {onOpenCertificate && (
               <button
                 type="button"
                 onClick={onOpenCertificate}
-                className="nav-btn nav-btn-ghost"
-                title="View Verifiable Cryptographic Solvency Certificate"
+                className="nav-btn"
+                title="View Verifiable Audit Certificate"
               >
-                <span>Audit Certificate</span>
+                Audit Certificate
               </button>
             )}
-
             {onOpenFeedback && (
               <button
                 type="button"
                 onClick={onOpenFeedback}
-                className="nav-btn nav-btn-ghost"
-                title="Provide User Feedback"
+                className="nav-btn"
+                title="Community & Preprod Feedback"
               >
-                <span>Feedback</span>
+                Feedback
               </button>
             )}
+          </nav>
 
-            <div className="network-indicator-badge" title={`Active Network: Midnight ${networkId}`}>
-              <span className="pulse-dot" aria-hidden="true"></span>
-              <span className="network-text">Midnight {networkId.toUpperCase()}</span>
+          <div className="nav-actions">
+            <div className="network-badge">
+              <span className="pulse-dot"></span>
+              <span>Midnight {networkId.toUpperCase()}</span>
             </div>
-
             <a
               href="https://github.com/shivam-1410/Proofolio"
               target="_blank"
               rel="noreferrer"
-              className="nav-btn nav-btn-github"
-              aria-label="View Proofolio Source Code on GitHub"
+              className="nav-btn"
             >
-              <span>GitHub</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" aria-hidden="true" />
+              GitHub
             </a>
           </div>
         </div>
