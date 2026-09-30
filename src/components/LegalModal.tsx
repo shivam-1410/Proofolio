@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LegalModalProps {
   isOpen: boolean;
@@ -13,10 +13,42 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'terms' | 'privacy'>(initialTab);
 
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+    <div
+      className="modal-backdrop"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="legal-modal-title"
+    >
       <div className="legal-modal-card">
         <div className="legal-modal-header">
           <div>
@@ -36,9 +68,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           </button>
         </div>
 
-        <div className="legal-tab-bar">
+        <div className="legal-tab-bar" role="tablist">
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'terms'}
             className={`legal-tab-btn ${activeTab === 'terms' ? 'active' : ''}`}
             onClick={() => setActiveTab('terms')}
           >
@@ -47,6 +81,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'privacy'}
             className={`legal-tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
             onClick={() => setActiveTab('privacy')}
           >
@@ -130,3 +166,4 @@ export const LegalModal: React.FC<LegalModalProps> = ({
   );
 };
 
+export default LegalModal;

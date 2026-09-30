@@ -9,6 +9,10 @@ import {
   Lock,
   ArrowRight,
   FileCheck,
+  Cpu,
+  Layers,
+  Sparkles,
+  Info,
 } from 'lucide-react';
 import { BalanceSlider } from '@/components/ui/balance-slider';
 import type { TxResult } from '../hooks/useMidnight';
@@ -22,7 +26,8 @@ export interface SolvencyGateProps {
   isProving?: boolean;
   provingStep?: string | null;
   txResult?: TxResult | null;
-  onCallCircuit?: () => void;
+  onConnectWallet?: () => void;
+  onCallCircuit?: (reserves?: number, liabilities?: number) => void;
   onOpenCertificateModal?: () => void;
 }
 
@@ -42,7 +47,7 @@ const PRESETS: ScenarioPreset[] = [
     category: 'Exchange',
     reserves: 12500000,
     liabilities: 9800000,
-    description: 'Proves 127.5% backing ratio across retail and spot client deposits.',
+    description: 'Proves 127.6% backing ratio across retail and spot client deposits.',
   },
   {
     id: 'lending-pool',
@@ -63,12 +68,13 @@ const PRESETS: ScenarioPreset[] = [
 ];
 
 export const SolvencyGate: React.FC<SolvencyGateProps> = ({
-  contractAddress = 'preprod_contract_por_001',
+  contractAddress = '25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d',
   isConnected: propIsConnected,
   walletAddress: propAddress,
   isProving = false,
   provingStep = null,
   txResult = null,
+  onConnectWallet,
   onCallCircuit,
   onOpenCertificateModal,
 }) => {
@@ -80,7 +86,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
   const [customReserves, setCustomReserves] = useState<number>(12500000);
   const [customLiabilities, setCustomLiabilities] = useState<number>(9800000);
   const [copiedTx, setCopiedTx] = useState(false);
+  const [copiedCommitment, setCopiedCommitment] = useState(false);
   const [copiedContract, setCopiedContract] = useState(false);
+  const [showIndexerQuery, setShowIndexerQuery] = useState(false);
 
   const handlePresetSelect = (preset: ScenarioPreset) => {
     setSelectedPreset(preset.id);
@@ -88,43 +96,66 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
     setCustomLiabilities(preset.liabilities);
   };
 
-  const handleCopy = (text: string, type: 'tx' | 'contract') => {
+  const handleCopy = (text: string, type: 'tx' | 'contract' | 'commitment') => {
     navigator.clipboard.writeText(text);
     if (type === 'tx') {
       setCopiedTx(true);
       setTimeout(() => setCopiedTx(false), 2000);
-    } else {
+    } else if (type === 'contract') {
       setCopiedContract(true);
       setTimeout(() => setCopiedContract(false), 2000);
+    } else {
+      setCopiedCommitment(true);
+      setTimeout(() => setCopiedCommitment(false), 2000);
     }
   };
 
   const isSolvent = customReserves >= customLiabilities;
   const reserveRatio =
     customLiabilities > 0 ? ((customReserves / customLiabilities) * 100).toFixed(1) : '100.0';
+  const surplus = customReserves - customLiabilities;
 
   const truncate = (val: string, start = 12, end = 8) => {
     if (!val || val.length <= start + end) return val;
     return `${val.slice(0, start)}...${val.slice(-end)}`;
   };
 
+  const formatUSD = (val: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(val);
+  };
+
   return (
-    <div className="prover-card" id="prover-app">
-      {/* Card Header & Presets */}
+    <div className="prover-card" id="prover-app" role="region" aria-label="Solvency Verifier Terminal">
+      {/* Terminal Header & Mode Bar */}
       <div className="prover-header">
         <div className="prover-title-group">
-          <h2>Solvency Verifier Terminal</h2>
-          <p>Configure confidential balance sheet parameters and generate zero-knowledge proof</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+            <span className="badge-pill" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
+              Dual-State Terminal
+            </span>
+            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Compact v0.17 Circuit &bull; Halo2 / PLONK</span>
+          </div>
+          <h2>Zero-Knowledge Solvency Terminal</h2>
+          <p>
+            Prove that your reserves exceed liabilities without disclosing balances, counterparty identities, or asset composition.
+          </p>
         </div>
 
-        <div className="presets-bar">
-          <span className="presets-label">Presets:</span>
+        {/* Preset Selector */}
+        <div className="presets-bar" role="toolbar" aria-label="Balance sheet scenario presets">
+          <span className="presets-label">Institutional Presets:</span>
           {PRESETS.map((preset) => (
             <button
               key={preset.id}
               type="button"
               onClick={() => handlePresetSelect(preset)}
               className={`preset-chip ${selectedPreset === preset.id ? 'active' : ''}`}
+              title={preset.description}
+              aria-pressed={selectedPreset === preset.id}
             >
               {preset.name}
             </button>
@@ -133,64 +164,52 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             type="button"
             onClick={() => setSelectedPreset('custom')}
             className={`preset-chip ${selectedPreset === 'custom' ? 'active' : ''}`}
+            aria-pressed={selectedPreset === 'custom'}
           >
-            Custom
+            Custom Input
           </button>
         </div>
       </div>
 
-      {/* Two Column Grid */}
+      {/* Two Column Architectural Split: Private Witness vs Public Ledger */}
       <div className="prover-grid">
-        {/* Left Column: Private Witness Configuration */}
-        <div className="prover-col">
+        {/* Left Column: Private Witness Space (Browser Wasm Memory) */}
+        <div className="prover-col prover-col-private" aria-labelledby="private-witness-heading">
           <div className="prover-col-header">
             <div>
-              <span className="col-step-title">Step 1 &bull; Private Inputs</span>
-              <h3 className="col-heading">Balance Sheet Configuration</h3>
+              <span className="col-step-title">Stage 1 &bull; Client-Side Private Witness</span>
+              <h3 id="private-witness-heading" className="col-heading">Private Balance Sheet</h3>
             </div>
-            <div className="badge-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: '#94a3b8' }}>
+            <div className="badge-pill badge-private">
               <Lock className="w-3.5 h-3.5 text-blue-400" />
-              <span>Private Witness</span>
+              <span>In-Memory Only</span>
             </div>
           </div>
 
-          {!isConnected ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.25rem', background: '#0b1120', border: '1px solid #1e293b', borderRadius: '8px' }}>
-              <div>
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
-                  Wallet Connection Required
-                </h4>
-                <p style={{ fontSize: '0.78rem', color: '#94a3b8', lineHeight: 1.4 }}>
-                  Connect your Lace wallet to unlock the private balance sheet inputs and verify zero-knowledge solvency on-chain.
-                </p>
-              </div>
-              <WalletConnect />
+          <p style={{ fontSize: '0.8125rem', color: '#94a3b8', lineHeight: 1.45, marginBottom: '1rem' }}>
+            These figures are held strictly in your browser's local WebAssembly memory. They are used to synthesize the Halo2 proof witness and are <strong style={{ color: '#f1f5f9' }}>never broadcast</strong> over RPC or ledger transactions.
+          </p>
+
+          {/* Connected Signer Metadata or Sandbox Indicator */}
+          {isConnected ? (
+            <div className="signer-status-row">
+              <span className="signer-status-label">Active Prover Signer:</span>
+              <span className="signer-status-value font-mono">
+                {truncate(walletAddress || '', 10, 6)}
+              </span>
             </div>
           ) : (
-            <>
-              {/* Display Truncated Connected Wallet Address */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  background: '#0b1120',
-                  border: '1px solid #1e293b',
-                  borderRadius: '6px',
-                  padding: '0.45rem 0.75rem',
-                  marginBottom: '1rem',
-                  fontSize: '0.75rem',
-                }}
-              >
-                <span style={{ color: '#94a3b8' }}>Connected Signer:</span>
-                <span style={{ fontFamily: 'var(--font-mono)', color: '#34d399', fontWeight: 600 }}>
-                  {truncate(walletAddress || '', 10, 6)}
-                </span>
-              </div>
+            <div className="signer-status-row" style={{ borderColor: 'rgba(59, 130, 246, 0.25)', background: 'rgba(30, 41, 59, 0.35)' }}>
+              <span className="signer-status-label">Prover Signer:</span>
+              <span style={{ color: '#93c5fd', fontSize: '0.75rem', fontWeight: 500 }}>
+                Interactive Sandbox &bull; Ready to Prove
+              </span>
+            </div>
+          )}
 
-              {/* Reserve Assets Input via shadcn BalanceSlider */}
+          {/* Reserve Assets Input */}
               <BalanceSlider
-                label="Total Reserve Assets"
+                label="Total Reserve Assets (Private)"
                 value={customReserves}
                 min={1000000}
                 max={50000000}
@@ -207,9 +226,9 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 badge="Private Witness"
               />
 
-              {/* Customer Liabilities Input via shadcn BalanceSlider */}
+              {/* Customer Liabilities Input */}
               <BalanceSlider
-                label="Customer Deposit Liabilities"
+                label="Customer Deposit Liabilities (Private)"
                 value={customLiabilities}
                 min={1000000}
                 max={50000000}
@@ -226,95 +245,196 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 badge="Private Witness"
               />
 
-              {/* Live Solvency Ratio Card */}
-              <div className="solvency-ratio-card">
+              {/* Live Solvency Ratio & Invariant Check Card */}
+              <div className={`solvency-ratio-card ${isSolvent ? 'solvent-border' : 'insolvent-border'}`}>
                 <div className="ratio-value-group">
-                  <span className="ratio-label">Backing Ratio</span>
-                  <span className={`ratio-number ${isSolvent ? 'solvent' : 'insolvent'}`}>
-                    {reserveRatio}%
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span className="ratio-label">Backing Ratio</span>
+                    <span className={`ratio-number ${isSolvent ? 'solvent' : 'insolvent'}`}>
+                      {reserveRatio}%
+                    </span>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <span className="ratio-label">Net Reserve Position</span>
+                    <span
+                      style={{
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        fontFamily: 'var(--font-mono)',
+                        color: isSolvent ? '#34d399' : '#f87171',
+                      }}
+                    >
+                      {isSolvent ? `+${formatUSD(surplus)}` : `-${formatUSD(Math.abs(surplus))}`}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className={`status-badge ${isSolvent ? 'solvent' : 'insolvent'}`}>
+
+                {/* Backing Gauge Bar */}
+                <div className="gauge-container" role="progressbar" aria-valuenow={Math.min(Number(reserveRatio), 200)} aria-valuemin={0} aria-valuemax={200}>
+                  <div
+                    className={`gauge-fill ${isSolvent ? 'gauge-solvent' : 'gauge-insolvent'}`}
+                    style={{ width: `${Math.min(Math.max((Number(reserveRatio) / 200) * 100, 5), 100)}%` }}
+                  />
+                  <div className="gauge-target-marker" style={{ left: '50%' }} title="100% Solvency Invariant Requirement" />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.675rem', color: '#64748b', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}>
+                  <span>0%</span>
+                  <span style={{ color: '#94a3b8', fontWeight: 600 }}>100% Min Invariant</span>
+                  <span>200%+</span>
+                </div>
+
+                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className={`status-badge ${isSolvent ? 'solvent' : 'insolvent'}`}>
                     {isSolvent ? (
                       <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Solvent (100%+ Backed)</span>
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                        <span>Solvent: Circuit Invariant <code>reserves &gt;= liabilities</code> Satisfied</span>
                       </>
                     ) : (
                       <>
-                        <AlertCircle className="w-4 h-4" />
-                        <span>Insolvent (Deficit)</span>
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>Insolvent: Deficit of {formatUSD(Math.abs(surplus))}. ZK Circuit will reject proof generation.</span>
                       </>
                     )}
-                  </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Privacy Guarantee Note */}
+              {/* Client-Side Zero Disclosure Guarantee Callout */}
               <div className="privacy-banner">
-                <strong>Client-Side Zero Disclosure:</strong> Balances are processed strictly inside local browser WebAssembly memory. Raw figures never leave this device and are never submitted to the ledger or indexer.
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.25rem', color: '#60a5fa', fontWeight: 600 }}>
+                  <Info className="w-3.5 h-3.5" />
+                  <span>Client-Side Zero Disclosure Guarantee</span>
+                </div>
+                <span>
+                  Midnight's Compact compiler enforces that <code>total_reserves</code> and <code>total_liabilities</code> are declared as <code>witness</code> parameters. They never exist on the ledger or in network mempools.
+                </span>
               </div>
-            </>
-          )}
         </div>
 
-        {/* Right Column: Execution & On-Chain Confirmation */}
-        <div className="prover-col">
+        {/* Right Column: Public Consensus State (Midnight Preprod Ledger) */}
+        <div className="prover-col prover-col-public" aria-labelledby="public-consensus-heading">
           <div className="prover-col-header">
             <div>
-              <span className="col-step-title">Step 2 &bull; Verification</span>
-              <h3 className="col-heading">On-Chain Proof Execution</h3>
+              <span className="col-step-title">Stage 2 &bull; Public On-Chain Settlement</span>
+              <h3 id="public-consensus-heading" className="col-heading">Public Attestation</h3>
             </div>
-            <div className="badge-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: '#94a3b8' }}>
+            <div className="badge-pill badge-public">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>Midnight Preprod</span>
             </div>
           </div>
 
-          {/* Target Contract Card */}
+          <p style={{ fontSize: '0.8125rem', color: '#94a3b8', lineHeight: 1.45, marginBottom: '1rem' }}>
+            The public output: a binary verification flag (<code>is_solvent = true</code>) and a 32-byte collision-resistant commitment binding your private balance sheet without disclosing it.
+          </p>
+
+          {/* Target Smart Contract Address Card */}
           <div className="contract-meta-card">
-            <div>
-              <span className="contract-meta-label">Contract Address</span>
-              <div className="contract-meta-address" title={contractAddress}>
-                {truncate(contractAddress, 16, 8)}
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
+                <span className="contract-meta-label">Midnight Contract Address</span>
+                <span className="badge-pill" style={{ fontSize: '0.625rem', padding: '0.1rem 0.35rem', background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                  Deployed
+                </span>
+              </div>
+              <div className="contract-meta-address font-mono" title={contractAddress}>
+                {truncate(contractAddress, 14, 8)}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => handleCopy(contractAddress, 'contract')}
-              className="nav-btn"
-              style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
-              title="Copy Contract Address"
-            >
-              {copiedContract ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedContract ? 'Copied' : 'Copy'}</span>
-            </button>
+
+            <div style={{ display: 'flex', gap: '0.35rem' }}>
+              <button
+                type="button"
+                onClick={() => handleCopy(contractAddress, 'contract')}
+                className="nav-btn"
+                style={{ padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}
+                title="Copy full 32-byte contract address"
+                aria-label="Copy contract address"
+              >
+                {copiedContract ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedContract ? 'Copied' : 'Copy'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowIndexerQuery(!showIndexerQuery)}
+                className="nav-btn"
+                style={{ padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}
+                title="View GraphQL verification query"
+                aria-expanded={showIndexerQuery}
+              >
+                <span>GraphQL</span>
+              </button>
+            </div>
           </div>
 
-          {/* Action Trigger */}
-          <div style={{ marginTop: 'auto' }}>
+          {/* Collapsible GraphQL Query View for Indexer Verification */}
+          {showIndexerQuery && (
+            <div className="indexer-query-box" style={{ background: '#090d16', border: '1px solid #1e293b', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase' }}>
+                  Midnight Indexer Query (GraphQL v4)
+                </span>
+                <a
+                  href="https://indexer.preview.midnight.network/api/v4/graphql"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: '0.7rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '2px' }}
+                >
+                  <span>API Endpoint</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              </div>
+              <pre className="font-mono" style={{ fontSize: '0.7rem', color: '#cbd5e1', margin: 0, overflowX: 'auto', background: 'transparent', padding: 0 }}>
+{`query CheckContractSolvency {
+  contractAction(address: "${contractAddress}") {
+    id
+    timestamp
+    contract {
+      address
+    }
+  }
+}`}
+              </pre>
+            </div>
+          )}
+
+          {/* Primary Action Button */}
+          <div style={{ marginTop: '0.75rem', marginBottom: '1.25rem' }}>
             <button
               onClick={() => {
-                // TODO: Submit proof to Compact contract once integration is wired up via ConnectedAPI / midnight.js
-                // That's a separate step once the Compact contract integration is wired up.
-                if (onCallCircuit) {
-                  onCallCircuit();
-                } else {
-                  console.info('TODO: Submit proof to Compact contract via ConnectedAPI');
+                if (!isConnected) {
+                  if (onConnectWallet) onConnectWallet();
+                } else if (onCallCircuit) {
+                  onCallCircuit(customReserves, customLiabilities);
                 }
               }}
-              disabled={!isConnected || isProving || !isSolvent}
-              className="cta-button cta-button-primary"
+              disabled={isProving || (isConnected && !isSolvent)}
+              className={`cta-button cta-button-primary ${isConnected && !isSolvent ? 'cta-disabled' : ''}`}
+              style={{ width: '100%', justifyContent: 'center', padding: '0.875rem 1.25rem' }}
+              aria-busy={isProving}
             >
               {isProving ? (
-                <span>Generating ZK Proof in Browser...</span>
+                <>
+                  <div className="spinner-sm" />
+                  <span>Synthesizing ZK Proof in Browser Wasm...</span>
+                </>
               ) : !isConnected ? (
-                <span>Connect Wallet to Submit Proof</span>
+                <>
+                  <Sparkles className="w-4 h-4 mr-1 text-amber-300" />
+                  <span>Launch Sandbox &amp; Verify Solvency</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </>
               ) : !isSolvent ? (
-                <span>Cannot Prove: Insolvent Balance Sheet</span>
+                <>
+                  <AlertCircle className="w-4 h-4 mr-1 text-red-400" />
+                  <span>Cannot Prove: Invariant Violation (Deficit)</span>
+                </>
               ) : (
                 <>
+                  <Sparkles className="w-4 h-4 mr-1 text-amber-300" />
                   <span>Generate ZK Proof &amp; Verify Solvency</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </>
@@ -322,57 +442,93 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
             </button>
           </div>
 
-          {/* Proving In Progress Indicator */}
+          {/* Proving In Progress Multi-Stage Stepper */}
           {isProving && (
-            <div className="proving-card">
+            <div className="proving-card" role="status" aria-live="polite">
               <div className="proving-header">
-                <span className="text-xs font-semibold text-slate-200">Local zk-SNARK Execution</span>
-                <span className="proving-step-text">Proving in WebAssembly</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Cpu className="w-4 h-4 text-blue-400 animate-pulse" />
+                  <span className="text-xs font-semibold text-slate-200">Local zk-SNARK Prover Engine</span>
+                </div>
+                <span className="proving-step-text font-mono">Halo2 WebAssembly</span>
               </div>
-              <div className="progress-bar-bg">
-                <div className="progress-bar-active"></div>
+
+              <div className="progress-bar-bg" style={{ margin: '0.75rem 0' }}>
+                <div className="progress-bar-active" />
               </div>
-              <p className="text-xs text-slate-400 font-mono">
-                {provingStep || 'Computing Halo2 polynomial commitments...'}
-              </p>
+
+              <div className="stepper-list">
+                <div className="stepper-step completed">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Private witness constructed in ephemeral RAM</span>
+                </div>
+                <div className="stepper-step active">
+                  <div className="spinner-xs" />
+                  <span>{provingStep || 'Synthesizing polynomial constraints...'}</span>
+                </div>
+                <div className="stepper-step pending">
+                  <div className="circle-dot-pending" />
+                  <span>Settling verified attestation on Midnight consensus</span>
+                </div>
+              </div>
             </div>
           )}
 
           {/* Verified On-Chain Receipt */}
           {txResult && (
-            <div className="receipt-card">
+            <div className="receipt-card" role="status" aria-label="On-chain verification receipt">
               <div className="receipt-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span className="receipt-title">Verified On-Chain &bull; 100% Backed</span>
+                  <span className="receipt-title">Verified On-Chain &bull; 100%+ Backed</span>
                 </div>
                 <span className="text-xs text-slate-400 font-mono">{txResult.timestamp}</span>
               </div>
 
               <div className="receipt-grid">
                 <div className="receipt-item">
-                  <div className="receipt-label">Status</div>
+                  <div className="receipt-label">Solvency Invariant</div>
                   <div className="receipt-val text-emerald-400 font-semibold">
-                    {txResult.verifiedSolvent ? 'Solvent' : 'Unverified'}
+                    {txResult.verifiedSolvent ? 'SATISFIED (Solvent)' : 'UNVERIFIED'}
                   </div>
                 </div>
 
                 <div className="receipt-item">
-                  <div className="receipt-label">Confirmed Block</div>
+                  <div className="receipt-label">Settled Block Height</div>
                   <div className="receipt-val text-blue-400 font-mono">
                     #{txResult.blockHeight}
                   </div>
                 </div>
 
                 <div className="receipt-item receipt-item-full">
-                  <div className="receipt-label">Transaction Hash</div>
-                  <div className="receipt-val text-xs truncate font-mono">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="receipt-label">Transaction Hash</div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(txResult.txHash, 'tx')}
+                      style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: 0 }}
+                      title="Copy Transaction Hash"
+                    >
+                      {copiedTx ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                  </div>
+                  <div className="receipt-val text-xs truncate font-mono text-slate-200">
                     {txResult.txHash}
                   </div>
                 </div>
 
                 <div className="receipt-item receipt-item-full">
-                  <div className="receipt-label">Audit Commitment Hash</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="receipt-label">Cryptographic Audit Commitment (Bytes32)</div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(txResult.commitment, 'commitment')}
+                      style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: 0 }}
+                      title="Copy Commitment"
+                    >
+                      {copiedCommitment ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                  </div>
                   <div className="receipt-val text-xs truncate font-mono text-slate-300">
                     {txResult.commitment}
                   </div>
@@ -401,15 +557,30 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
                 )}
 
                 <a
-                  href="https://indexer.preprod.midnight.network"
+                  href="https://indexer.preview.midnight.network/api/v4/graphql"
                   target="_blank"
                   rel="noreferrer"
                   className="receipt-btn"
                 >
-                  <span>Explorer</span>
+                  <span>Indexer API</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
+            </div>
+          )}
+
+          {/* Empty State when no proof generated yet */}
+          {!txResult && !isProving && (
+            <div className="empty-receipt-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <Layers className="w-4 h-4 text-slate-500" />
+                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#94a3b8' }}>
+                  No Active Attestation Generated
+                </span>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: '#64748b', lineHeight: 1.45, margin: 0 }}>
+                Adjust balance sheet parameters on the left and click <strong>Generate ZK Proof</strong>. Upon proof synthesis, your immutable verification receipt and verifiable audit certificate will populate here.
+              </p>
             </div>
           )}
         </div>
@@ -417,4 +588,5 @@ export const SolvencyGate: React.FC<SolvencyGateProps> = ({
     </div>
   );
 };
+
 export default SolvencyGate;

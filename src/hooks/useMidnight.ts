@@ -363,9 +363,9 @@ export function useMidnight() {
   }, []);
 
   // Call Circuit (verifySolvency)
-  const callVerifySolvencyCircuit = async () => {
+  const callVerifySolvencyCircuit = async (customReserves?: number, customLiabilities?: number) => {
     if (!isConnected) {
-      setError('Please connect your Lace wallet before calling the circuit.');
+      setError('Please connect your Lace wallet or launch demo mode before proving.');
       return;
     }
 
@@ -379,8 +379,8 @@ export function useMidnight() {
       // are strictly encapsulated in local client memory during proof creation.
       // They are NEVER displayed in the DOM, NEVER sent across clear HTTP,
       // and NEVER logged or included in the public ledger transaction payload.
-      const privateTotalReserves = 12500000n; // 12,500,000 units (CONFIDENTIAL)
-      const privateTotalLiabilities = 9200000n; //  9,200,000 units (CONFIDENTIAL)
+      const privateTotalReserves = customReserves !== undefined ? BigInt(customReserves) : 12500000n;
+      const privateTotalLiabilities = customLiabilities !== undefined ? BigInt(customLiabilities) : 9800000n;
       const randomEntropy = Array.from(crypto.getRandomValues(new Uint8Array(32)))
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');

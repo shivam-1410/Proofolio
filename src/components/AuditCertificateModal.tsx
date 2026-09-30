@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Award, CheckCircle2, Copy, Check, Printer, X, ShieldCheck } from 'lucide-react';
 import type { TxResult } from '../hooks/useMidnight';
 
@@ -16,6 +16,22 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
   contractAddress,
 }) => {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -38,8 +54,20 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
     window.print();
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal-backdrop">
+    <div
+      className="modal-backdrop"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cert-title"
+    >
       <div className="modal-dialog" style={{ maxWidth: '640px', padding: '2rem' }}>
         {/* Close Button */}
         <button
@@ -71,7 +99,7 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
             <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Midnight Network &bull; Zero-Knowledge Attestation
             </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#f8fafc', margin: '0.1rem 0' }}>
+            <h2 id="cert-title" style={{ fontSize: '1.35rem', fontWeight: 700, color: '#f8fafc', margin: '0.1rem 0' }}>
               Certificate of Mathematical Solvency
             </h2>
             <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
@@ -106,7 +134,7 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
               color: '#34d399',
             }}
           >
-            total_reserves &gt;= total_liabilities (100% Backed)
+            total_reserves &gt;= total_liabilities (100%+ Backed)
           </div>
           <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.75rem', lineHeight: 1.4 }}>
             *Confidential Witness Guarantee: Neither raw asset quantities, client deposit amounts, nor balance sheet positions were revealed or recorded on the public blockchain.
@@ -179,4 +207,5 @@ export const AuditCertificateModal: React.FC<AuditCertificateModalProps> = ({
     </div>
   );
 };
+
 export default AuditCertificateModal;

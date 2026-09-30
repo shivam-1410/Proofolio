@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Wallet, Copy, Check, LogOut, AlertCircle, RefreshCw, ExternalLink } from 'lucide-react';
+import {
+  Wallet,
+  Copy,
+  Check,
+  LogOut,
+  AlertCircle,
+  RefreshCw,
+  ExternalLink,
+  Shield,
+  Zap,
+} from 'lucide-react';
 import { useMidnightWallet } from '../hooks/useMidnightWallet';
 
 export interface WalletConnectProps {
@@ -45,8 +55,6 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
   };
 
   const handleDisconnect = () => {
-    // Note: Midnight DApp Connector API does not provide a remote disconnect() method.
-    // Calling hook.disconnect() resets local connection state in application memory.
     if (onDisconnect) onDisconnect();
     hook.disconnect();
   };
@@ -64,57 +72,46 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
   const truncate = (addr: string) => {
     if (!addr) return '';
-    if (addr.length <= 18) return addr;
-    return `${addr.slice(0, 10)}...${addr.slice(-6)}`;
+    if (addr.length <= 20) return addr;
+    return `${addr.slice(0, 12)}...${addr.slice(-8)}`;
   };
 
-  const isNotDetected = error?.toLowerCase().includes('not detected') || error?.toLowerCase().includes('not installed');
+  const isNotDetected =
+    error?.toLowerCase().includes('not detected') ||
+    error?.toLowerCase().includes('not installed');
 
   return (
-    <div className="wallet-status-box mb-4">
-      {/* State 4: Error State */}
+    <div className="wallet-card" aria-label="Wallet & Signer Configuration">
+      {/* Error / Warning Alert State */}
       {error && !isConnected && (
-        <div
-          style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            borderRadius: '6px',
-            padding: '0.75rem 1rem',
-            fontSize: '0.8rem',
-            color: '#fca5a5',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem',
-            marginBottom: '0.75rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-            <AlertCircle className="w-4 h-4 text-rose-400" />
-            <span>{isNotDetected ? 'Lace Wallet Extension Not Found' : 'Wallet Connection Notice'}</span>
+        <div className="wallet-error-box" role="alert" aria-live="polite">
+          <div className="wallet-error-header">
+            <AlertCircle className="w-4 h-4 text-rose-400" aria-hidden="true" />
+            <span className="wallet-error-title">
+              {isNotDetected ? 'Lace Wallet Extension Not Found' : 'Wallet Connection Notice'}
+            </span>
           </div>
-          <p style={{ lineHeight: 1.4 }}>
+          <p className="wallet-error-msg">
             {isNotDetected
-              ? 'Lace wallet extension was not detected on window.midnight.mnLace. Please install or enable the extension to connect.'
+              ? 'The Midnight Lace wallet extension was not detected on window.midnight.mnLace. Install the extension to sign with your own keys, or use Instant Demo Mode to test the client-side ZK proving circuit immediately.'
               : error}
           </p>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+          <div className="wallet-error-actions">
             {isNotDetected ? (
               <a
                 href="https://docs.midnight.network/relnotes/lace"
                 target="_blank"
                 rel="noreferrer"
-                className="nav-btn nav-btn-primary"
-                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                className="wallet-btn wallet-btn-primary"
               >
-                <span>Install Lace</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Install Lace Wallet</span>
+                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
             ) : (
               <button
                 type="button"
                 onClick={handleConnect}
-                className="nav-btn nav-btn-primary"
-                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+                className="wallet-btn wallet-btn-primary"
               >
                 Retry Connection
               </button>
@@ -123,10 +120,10 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
               <button
                 type="button"
                 onClick={onConnectDemo}
-                className="nav-btn"
-                style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+                className="wallet-btn wallet-btn-accent"
               >
-                Use Demo Wallet
+                <Zap className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Launch Demo Wallet (15s Test)</span>
               </button>
             )}
             <button
@@ -135,8 +132,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 if (onClearError) onClearError();
                 hook.disconnect();
               }}
-              className="nav-btn"
-              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+              className="wallet-btn wallet-btn-secondary"
             >
               Dismiss
             </button>
@@ -144,73 +140,61 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
         </div>
       )}
 
-      {/* State 1 (Idle) & State 2 (Connecting) */}
+      {/* Unconnected State */}
       {!isConnected ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '6px',
-                  background: '#1e293b',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#60a5fa',
-                }}
-              >
-                <Wallet className="w-4 h-4" />
+        <div className="wallet-idle-layout">
+          <div className="wallet-idle-header">
+            <div className="wallet-idle-info">
+              <div className="wallet-icon-badge">
+                <Wallet className="w-4 h-4 text-blue-400" aria-hidden="true" />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#f8fafc' }}>
-                  Wallet Provider
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                  Connect Lace via Midnight DApp Connector API
-                </div>
+                <h3 className="wallet-idle-title">Signer Provider Connection</h3>
+                <p className="wallet-idle-desc">
+                  Connect your Midnight Lace wallet to verify solvency on-chain, or test client-side ZK proving with a simulated signer.
+                </p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.25rem' }}>
-              <button
-                type="button"
-                onClick={() => onSwitchNetwork && onSwitchNetwork('preprod')}
-                className={`preset-chip ${networkId === 'preprod' ? 'active' : ''}`}
-                style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}
-              >
-                Preprod
-              </button>
-              <button
-                type="button"
-                onClick={() => onSwitchNetwork && onSwitchNetwork('preview')}
-                className={`preset-chip ${networkId === 'preview' ? 'active' : ''}`}
-                style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}
-              >
-                Preview
-              </button>
+            <div className="network-selector-group">
+              <span className="network-selector-label">Target Network:</span>
+              <div className="network-toggle" role="group" aria-label="Midnight Network Selection">
+                <button
+                  type="button"
+                  onClick={() => onSwitchNetwork && onSwitchNetwork('preprod')}
+                  className={`network-toggle-btn ${networkId === 'preprod' ? 'active' : ''}`}
+                  aria-pressed={networkId === 'preprod'}
+                >
+                  Preprod
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onSwitchNetwork && onSwitchNetwork('preview')}
+                  className={`network-toggle-btn ${networkId === 'preview' ? 'active' : ''}`}
+                  aria-pressed={networkId === 'preview'}
+                >
+                  Preview
+                </button>
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            {/* Connecting State vs Idle State Button */}
+          <div className="wallet-action-row">
             <button
               type="button"
               onClick={handleConnect}
               disabled={isConnecting}
-              className="cta-button cta-button-primary"
-              style={{ flex: 1, minWidth: '180px', padding: '0.65rem 1rem', fontSize: '0.85rem' }}
+              className="cta-button cta-button-primary wallet-connect-cta"
             >
               {isConnecting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  <span>Connecting to Lace...</span>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                  <span>Connecting to Lace Wallet...</span>
                 </>
               ) : (
                 <>
-                  <Wallet className="w-4 h-4 mr-1" />
-                  <span>Connect Lace Wallet</span>
+                  <Wallet className="w-4 h-4 mr-2" aria-hidden="true" />
+                  <span>Connect Midnight Lace Wallet</span>
                 </>
               )}
             </button>
@@ -219,97 +203,92 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
               <button
                 type="button"
                 onClick={onConnectDemo}
-                className="cta-button cta-button-secondary"
-                style={{ flex: 1, minWidth: '180px', padding: '0.65rem 1rem', fontSize: '0.85rem' }}
+                className="cta-button cta-button-secondary wallet-demo-cta"
+                title="Test ZK proving immediately without installing the browser extension"
               >
-                <span>Launch Demo Wallet</span>
+                <Zap className="w-4 h-4 mr-2 text-amber-400" aria-hidden="true" />
+                <span>Launch Instant Demo Signer</span>
               </button>
             )}
           </div>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span className="pulse-dot"></span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#34d399' }}>
-                Wallet Connected &bull; Midnight {networkId.toUpperCase()}
+        /* Connected State */
+        <div className="wallet-connected-layout">
+          <div className="wallet-connected-top">
+            <div className="signer-status-indicator">
+              <span className="pulse-dot-green" aria-hidden="true"></span>
+              <span className="signer-status-text">
+                Signer Active &bull; Midnight {networkId.toUpperCase()}
               </span>
             </div>
 
             <button
               type="button"
               onClick={handleDisconnect}
-              className="nav-btn"
-              style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', color: '#f87171' }}
+              className="wallet-disconnect-btn"
+              title="Disconnect local wallet session"
             >
-              <LogOut className="w-3.5 h-3.5 mr-1" />
+              <LogOut className="w-3.5 h-3.5 mr-1" aria-hidden="true" />
               <span>Disconnect</span>
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <div
-              style={{
-                flex: 1,
-                minWidth: '200px',
-                background: '#0b1120',
-                border: '1px solid #1e293b',
-                borderRadius: '6px',
-                padding: '0.5rem 0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div>
-                <span style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', display: 'block' }}>
-                  Unshielded Address
-                </span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#e2e8f0' }}>
-                  {truncate(address || '')}
-                </span>
+          <div className="wallet-addresses-grid">
+            <div className="address-tile">
+              <div className="address-tile-header">
+                <span className="address-type-label">Public Signer Address (Unshielded)</span>
+                <span className="address-network-tag">{networkId}</span>
               </div>
-              <button
-                type="button"
-                onClick={() => handleCopy(address || '', false)}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
-                title="Copy Address"
-              >
-                {copiedUnshielded ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
+              <div className="address-tile-content">
+                <code className="address-code font-mono" title={address || ''}>
+                  {truncate(address || '')}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(address || '', false)}
+                  className="address-copy-btn"
+                  title="Copy unshielded address"
+                  aria-label="Copy unshielded address"
+                >
+                  {copiedUnshielded ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                  <span>{copiedUnshielded ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
             </div>
 
             {shieldedAddress && (
-              <div
-                style={{
-                  flex: 1,
-                  minWidth: '200px',
-                  background: '#0b1120',
-                  border: '1px solid #1e293b',
-                  borderRadius: '6px',
-                  padding: '0.5rem 0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <div>
-                  <span style={{ fontSize: '0.675rem', color: '#64748b', textTransform: 'uppercase', display: 'block' }}>
-                    Shielded ZK Address
-                  </span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#60a5fa' }}>
-                    {truncate(shieldedAddress)}
+              <div className="address-tile address-tile-shielded">
+                <div className="address-tile-header">
+                  <span className="address-type-label">Private ZK Address (Shielded)</span>
+                  <span className="address-shielded-tag">
+                    <Shield className="w-3 h-3 text-blue-400 inline mr-1" />
+                    Zero Knowledge
                   </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopy(shieldedAddress, true)}
-                  style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
-                  title="Copy Shielded Address"
-                >
-                  {copiedShielded ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
+                <div className="address-tile-content">
+                  <code className="address-code font-mono text-blue-300" title={shieldedAddress}>
+                    {truncate(shieldedAddress)}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(shieldedAddress, true)}
+                    className="address-copy-btn"
+                    title="Copy shielded address"
+                    aria-label="Copy shielded address"
+                  >
+                    {copiedShielded ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                    <span>{copiedShielded ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -318,4 +297,5 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     </div>
   );
 };
+
 export default WalletConnect;

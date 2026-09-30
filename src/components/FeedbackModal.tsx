@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, X, Send, CheckCircle2 } from 'lucide-react';
 
 interface FeedbackModalProps {
@@ -11,6 +11,22 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -37,8 +53,20 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     }, 2500);
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal-backdrop">
+    <div
+      className="modal-backdrop"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="feedback-title"
+    >
       <div className="modal-dialog">
         <button onClick={onClose} className="modal-close" aria-label="Close feedback modal">
           <X className="w-5 h-5" />
@@ -60,11 +88,11 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             <MessageSquare className="w-5 h-5" />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc' }}>
+            <h3 id="feedback-title" style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc' }}>
               Feedback &amp; Validation Hub
             </h3>
             <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-              Preprod Tester Validation &bull; Level 5 &amp; Level 6
+              Preprod Tester Validation &bull; Midnight Community Testing
             </p>
           </div>
         </div>
@@ -190,4 +218,5 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     </div>
   );
 };
+
 export default FeedbackModal;
