@@ -26,15 +26,17 @@ Before interacting with Proofolio on Midnight Preprod, ensure you have:
 ## Getting Started on Preprod
 
 1. **Open the Live Application:**
-   - Navigate to [https://shivam-1410.github.io/Proofolio/](https://shivam-1410.github.io/Proofolio/) or launch locally (`npm run dev`).
+   - Navigate to the verified production deployment: [https://proofolio-ochre.vercel.app](https://proofolio-ochre.vercel.app) or launch locally (`npm run dev`).
 2. **Verify Preprod Network Indicator:**
-   - The top navigation bar will display **Midnight Preprod** in green with an active pulse indicator.
+   - The top navigation bar displays **Midnight Preprod** in green with an active pulse indicator.
    - The on-chain contract address is pre-loaded:
      `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d`
 3. **Connect Your Wallet:**
-   - Click **Connect Lace Wallet**.
+   - Click **Connect Lace Wallet** (or **Launch Demo Wallet** for immediate zero-installation testing).
    - Approve the connection prompt inside the Lace popup window.
    - Your unshielded address and shielded ZK address will appear securely on screen.
+
+![Proofolio DApp Hero & Live Status](screenshots/01_hero_and_preprod_status.png)
 
 ---
 
@@ -49,6 +51,8 @@ Follow these simple steps to perform an institutional zero-knowledge solvency ve
   - **Protocol DAO Runway Reserve:** $8,200,000 Reserves / $5,100,000 Liabilities (160.8% Backing).
   - *Or adjust the sliders manually to formulate your private witness.*
 - Notice the badge: `[PRIVATE WITNESS] Never On-Chain`. These figures exist solely within client browser memory.
+
+![Zero-Knowledge Solvency Terminal](screenshots/02_solvency_verifier_terminal.png)
 
 ### Step 2: Validate the Mathematical Constraint
 - The client-side circuit checks that `total_reserves >= total_liabilities`.
@@ -67,9 +71,11 @@ Follow these simple steps to perform an institutional zero-knowledge solvency ve
 - The transaction receipt displays:
   - **On-Chain Solvency Status:** `[STATUS: VERIFIED SOLVENT]`
   - **Confirmed Block Height:** (e.g. `#900942`)
-  - **Transaction Hash:** Direct link to Midnight Preprod Explorer
-  - **Cryptographic Audit Commitment:** 32-byte sha256 commitment binding the proof to the balance sheet snapshot.
+  - **Transaction Hash:** Direct link to Midnight Preprod Indexer / Explorer
+  - **Cryptographic Audit Commitment:** 32-byte SHA-256 commitment binding the proof to the balance sheet snapshot.
 - Click **View Verifiable Certificate** to view and print the official cryptographic certificate receipt.
+
+![Cryptographic Solvency Audit Certificate](screenshots/05_cryptographic_audit_certificate.png)
 
 ---
 

@@ -17,7 +17,7 @@ Thanks for joining the early testing cohort for Proofolio: the zero-knowledge Pr
    - (Optional faucet for free test tDU: https://faucet.preprod.midnight.network)
 
 2. How to Test Proofolio on Preprod:
-   - Visit the live dApp: https://shivam-1410.github.io/Proofolio/
+   - Visit the live dApp: https://proofolio-ochre.vercel.app
    - Click "Connect Lace Wallet" (or click "Connect Demo Wallet" for instant test mode).
    - Under the Solvency Gate, select a preset scenario (e.g. Tier-1 Exchange or DeFi Vault).
    - Click "Generate ZK Proof & Submit to Preprod".
@@ -39,7 +39,7 @@ Looking forward to your verification notes and feedback.
 Hello everyone: Just launched Proofolio on Midnight Preprod: a confidential Proof-of-Reserves dApp that mathematically certifies exchange/custodian solvency (reserves >= liabilities) without revealing balance sheets or customer numbers.
 
 Looking for 50 builders to test it:
-1. Connect Lace Wallet on Preprod: https://shivam-1410.github.io/Proofolio/
+1. Connect Lace Wallet on Preprod: https://proofolio-ochre.vercel.app
 2. Run a ZK solvency proof in your browser in under 15 seconds.
 3. Drop your wallet address & feedback below so I can add you to our verified testnet registry.
 
@@ -54,7 +54,7 @@ Custodians need to prove 100% solvency without doxxing customer balances or bala
 Proofolio solves this with zero-knowledge on @MidnightNtwrk Preprod. 
 
 Try the live dApp, generate a ZK proof in your browser & share feedback:
-https://shivam-1410.github.io/Proofolio/
+https://proofolio-ochre.vercel.app
 ```
 
 ### c) Direct DM Template for College & Developer Contacts
@@ -66,7 +66,7 @@ I just launched Proofolio: a zero-knowledge Proof-of-Reserves protocol built on 
 It lets institutions mathematically prove that assets exceed customer liabilities without disclosing sensitive balance sheet data. All ZK proofs are computed directly in client-side WebAssembly memory via private witnesses.
 
 Would love your quick feedback on the flow and UX:
-- Live dApp: https://shivam-1410.github.io/Proofolio/
+- Live dApp: https://proofolio-ochre.vercel.app
 - GitHub: https://github.com/shivam-1410/Proofolio
 
 If you have 2 minutes to test it out (works with Lace wallet or instant demo mode), let me know your wallet address so I can feature you in our official preprod tester registry. Thanks!
@@ -105,7 +105,7 @@ Experience client-side zero-knowledge proof generation in your browser:
 - Execute ZK Solvency Gate
 - Verify confirmed on-chain certification
 
-Try the live dApp: https://shivam-1410.github.io/Proofolio/
+Try the live dApp: https://proofolio-ochre.vercel.app
 
 Contract: 25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d
 ```

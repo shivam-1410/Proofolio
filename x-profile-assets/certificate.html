@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proofolio Cryptographic Solvency Audit Certificate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 1600px;
+      height: 1100px;
+      background-color: #030712;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient glow effects */
+    .glow-emerald {
+      position: absolute;
+      width: 900px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.18), transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, black 65%, transparent 95%);
+    }
+
+    /* Certificate Modal Card */
+    .cert-card {
+      position: relative;
+      z-index: 10;
+      width: 780px;
+      background: #0f172a;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 45px rgba(16, 185, 129, 0.2);
+      border-radius: 14px;
+      padding: 2.25rem;
+      color: #f8fafc;
+    }
+
+    .cert-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cert-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+      font-size: 22px;
+    }
+
+    .cert-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.01em;
+    }
+
+    .cert-sub {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      margin-top: 0.2rem;
+    }
+
+    .badge-network {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Meta Grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 1.15rem 1.35rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .meta-val {
+      font-size: 0.875rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    /* Assertion statement */
+    .assertion-box {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 1.35rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .assertion-p {
+      font-size: 0.875rem;
+      color: #cbd5e1;
+      line-height: 1.55;
+      margin-bottom: 0.85rem;
+    }
+
+    .formula-banner {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 0.85rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #34d399;
+      letter-spacing: 0.02em;
+    }
+
+    .guarantee-note {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 0.85rem;
+      line-height: 1.45;
+    }
+
+    /* Verification Data Grid */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .data-tile {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .data-tile.span-2 {
+      grid-column: span 2;
+    }
+
+    .data-tile .meta-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.825rem;
+      margin-top: 0.15rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #34d399;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 0.85rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      border: 1px solid #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-emerald"></div>
+  <div class="grid-bg"></div>
+
+  <div class="cert-card">
+    <div class="cert-header">
+      <div class="cert-title-group">
+        <div class="icon-box">🛡️</div>
+        <div>
+          <h2 class="cert-title">Cryptographic Solvency Audit Certificate</h2>
+          <div class="cert-sub">Midnight Network &bull; Zero-Knowledge Proof-of-Reserves</div>
+        </div>
+      </div>
+      <div class="badge-network">Preprod Verified</div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Certified Entity</span>
+        <span class="meta-val">Proofolio Solvency Gate (Institutional Pilot)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Ledger Protocol</span>
+        <span class="meta-val">Cardano Midnight Preprod Network</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">ZK Proving Engine</span>
+        <span class="meta-val">Halo2 / PLONK Arithmetic Circuit</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Disclosure Level</span>
+        <span class="meta-val" style="color: #34d399;">Zero Disclosure (100% Private Witness)</span>
+      </div>
+    </div>
+
+    <div class="assertion-box">
+      <p class="assertion-p">
+        This certifies that on-chain cryptographic verification has executed on the <strong>Midnight Network Preprod</strong> testnet. The zero-knowledge Compact circuit mathematically proved that:
+      </p>
+      <div class="formula-banner">
+        total_reserves &gt;= total_liabilities (100% Backed)
+      </div>
+      <p class="guarantee-note">
+        *Confidential Witness Guarantee: Neither raw asset quantities, client deposit amounts, nor balance sheet positions were revealed or recorded on the public blockchain.
+      </p>
+    </div>
+
+    <div class="data-grid">
+      <div class="data-tile">
+        <span class="meta-label">Certificate ID</span>
+        <div class="meta-val" style="color: #f8fafc;">900942-POR-SOLVENT</div>
+      </div>
+      <div class="data-tile">
+        <span class="meta-label">Verification Status</span>
+        <div class="status-badge" style="margin-top: 0.15rem;">
+          <span class="pulse"></span>
+          <span>Verified Solvent</span>
+        </div>
+      </div>
+      <div class="data-tile">
+        <span class="meta-label">Block Height</span>
+        <div class="meta-val" style="color: #60a5fa;">#900942</div>
+      </div>
+      <div class="data-tile">
+        <span class="meta-label">Attestation Timestamp</span>
+        <div class="meta-val" style="color: #cbd5e1;">2026-09-29 18:30:00 UTC</div>
+      </div>
+      <div class="data-tile span-2">
+        <span class="meta-label">Midnight Preprod Smart Contract Address</span>
+        <div class="meta-val" style="color: #38bdf8;">25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d</div>
+      </div>
+      <div class="data-tile span-2">
+        <span class="meta-label">Cryptographic Audit Commitment (SHA-256)</span>
+        <div class="meta-val" style="color: #a78bfa;">0x678605e736b76aac95555f7b1b5940893de24decf6824c192d3bbb89946dcb4e</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="btn btn-secondary">
+        <span>🔗 Copy Verification URL</span>
+      </div>
+      <div class="btn btn-primary">
+        <span>🖨️ Print / Export Verifiable Certificate (PDF)</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

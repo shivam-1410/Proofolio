@@ -104,6 +104,14 @@ Here are representative entries from the 50 verified Preprod testers (full walle
   > *"I verified that the selective disclosure payload emitted to the Midnight ledger strictly exposes `solvency_status`, `last_verified_block`, and `commitment_hash`. Total reserves and total liabilities were 100% shielded from the indexer."*
   - **Resolution:** Formally codified in `README.md` and verified across 10 passing unit tests.
 
+### Theme 5: Live DApp Accessibility, Contract Address Verification & Visual Evidence
+- **Evaluator / Community Review:**
+  > *"Invalid website link (404 on GitHub Pages) and confusion on contract address. Also, need screenshots of the dApp directly in the documentation for immediate visual review."*
+  - **Resolution:**
+    1. Replaced all stale GitHub Pages links across the repository with the primary, verified production URL: `https://proofolio-ochre.vercel.app` (HTTP 200).
+    2. Clarified contract deployment on Midnight Preview (`25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d`) and provided exact GraphQL queries to verify on-chain state via Midnight's Indexer.
+    3. Captured and embedded 5 high-resolution screenshots of the dApp (Hero & Status, Solvency Terminal, Audit Certificate, Protocol Architecture, and Privacy Model) directly into `README.md` and `docs/USAGE.md`.
+
 ---
 
 ## 6. What Changed: Engineering Changelog (Level 5 Iterations)

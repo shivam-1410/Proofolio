@@ -74,8 +74,7 @@ Connect your Lace wallet & test browser ZK proving today!
 | **Target Network** | Midnight Preprod Testnet |
 | **Smart Contract** | `25c4b17fc652493af4ba88e4bd25d1f82a80bcebe7e3189f199c32e3910efc1d` |
 | **Wallet Connector** | Midnight Lace Wallet (`@midnight-ntwrk/dapp-connector-api`) |
-| **Live Demo (HTTP 200)** | `https://proofolio-ochre.vercel.app` |
-| **GitHub Pages Mirror** | `https://shivam-1410.github.io/Proofolio/` |
+| **Live Demo (HTTP 200)** | `https://proofolio-ochre.vercel.app` (Primary Verified Deployment) |
 | **Tested On-Chain Proof Tx** | `00ec78c9bd1fe53a7b77e09b52c28022a06b7736fc550da2b28f8fb60e8707aea6` |
 | **Confirmed Block** | `#900942` |
 | **Audit Commitment** | `c51ed5c9823abf10...74da70` |
