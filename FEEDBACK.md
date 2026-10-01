@@ -130,7 +130,7 @@ Here are representative entries from the 50 verified Preprod testers (full walle
 ## 7. Keeping Documentation in Sync with Product Evolution
 
 As the product evolved rapidly across user testing cycles, we maintained strict documentation discipline:
-- **`README.md`:** Continuously synchronized with active Preprod contract addresses, live Vercel & GitHub Pages URLs, CI status, and full test suite instructions.
+- **`README.md`:** Continuously synchronized with active Preprod contract addresses, live Vercel URL, CI status, and full test suite instructions.
 - **`docs/USAGE.md`:** Updated with end-to-end steps covering Lace Preprod faucet usage, unshielded vs shielded address handling, and step-by-step proving flow.
 - **`USERS.md`:** Maintained as an active, on-chain verifiable registry of all 50 Preprod testers.
 - **`docs/DEMO_VIDEO.md`:** Maintained with complete storyboard and script for evaluators.
