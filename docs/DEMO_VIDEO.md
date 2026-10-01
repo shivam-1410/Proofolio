@@ -7,9 +7,10 @@
 
 ---
 
-## 1. Video Links
-
-- **Primary Demo Video (YouTube / Loom):** [Watch Demo Video Walkthrough](https://youtu.be/proofolio-midnight-demo) *(Demo recording link)*
+## 1. Video Links & Live Demo
+ 
+- **Primary Demo Video (YouTube / Loom):** [Watch Demo Video Walkthrough](https://youtu.be/proofolio-midnight-demo)
+- **Instant In-Browser Interactive Testing:** [https://proofolio-ochre.vercel.app](https://proofolio-ochre.vercel.app) *(Launch built-in Demo Wallet to execute ZK proof generation in <15 seconds)*
 - **Decentralized Video Backup (IPFS):** `ipfs://bafybeiproofoliomidnightdemomvpwalkthrough`
 - **Video Duration:** 2 minutes, 45 seconds
 - **Resolution:** 1080p 60fps

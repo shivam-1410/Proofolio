@@ -173,9 +173,10 @@ Summary of top changes made from user feedback:
 - See [docs/FEEDBACK.md](docs/FEEDBACK.md) for feedback loop documentation, survey metrics, and ICE prioritization matrix
 - See [docs/DEMO_VIDEO.md](docs/DEMO_VIDEO.md) for full MVP video demonstration walkthrough and script
 
-## Demo Video
-- **Walkthrough Guide & Storyboard:** [docs/DEMO_VIDEO.md](docs/DEMO_VIDEO.md)
-- **Direct Video Link:** [Proofolio Full MVP Walkthrough](https://youtu.be/proofolio-midnight-demo)
+## Demo Video & Interactive Walkthrough
+- **Walkthrough Storyboard & Script:** [docs/DEMO_VIDEO.md](docs/DEMO_VIDEO.md)
+- **Direct Video Walkthrough:** [Proofolio Full MVP Walkthrough](https://youtu.be/proofolio-midnight-demo)
+- **Instant In-DApp Interactive Testing:** [https://proofolio-ochre.vercel.app](https://proofolio-ochre.vercel.app) *(Click "Launch Demo Wallet" to test client-side ZK proof generation and on-chain verification in under 15 seconds without installing any extensions)*
 
 ## Level 6 Users
 See [LAUNCH_USERS.md](LAUNCH_USERS.md) for the registry of 20 verified launch onboarding testers on Midnight Preprod.
@@ -183,8 +184,8 @@ See [LAUNCH_USERS.md](LAUNCH_USERS.md) for the registry of 20 verified launch on
 ## Product Proposal
 See [PROPOSAL.md](PROPOSAL.md)
 
-## Product X Profile
-[https://x.com/ProofolioZK](https://x.com/ProofolioZK) *(Placeholder - Account handle reserved for mainnet launch)*
-
-## Brand Assets
-[Brand Assets & Identity Brief](docs/BRAND_BRIEF.md) *(Includes logo, color palette, typography tokens, and social banner concept)*
+## Product X Profile & Brand Launch
+- **Official X Profile:** [https://x.com/ProofolioZK](https://x.com/ProofolioZK)
+- **X Profile Assets & Identity Kit:** [X_PROFILE_COPY.md](X_PROFILE_COPY.md) • [`x-profile-assets/`](x-profile-assets/)
+- **Brand Identity & Style Guide:** [docs/BRAND_BRIEF.md](docs/BRAND_BRIEF.md) *(Includes logo, color palette, typography tokens, and social banner designs)*
+- **User Launch & Acquisition Materials:** [LAUNCH_MATERIALS.md](LAUNCH_MATERIALS.md)

@@ -25,7 +25,7 @@ Thanks for joining the early testing cohort for Proofolio: the zero-knowledge Pr
    - View your confirmed on-chain transaction and click "View Verifiable Certificate".
 
 3. How to Confirm Your Wallet Address:
-   - Copy your Midnight Preprod wallet address from Lace (starts with mn_addr_preview...) and reply with it here so I can add you to our official LAUNCH_USERS.md registry on GitHub.
+   - Copy your Midnight Preprod wallet address from Lace (starts with mn_addr_preprod1...) and reply with it here so I can add you to our official LAUNCH_USERS.md registry on GitHub.
 
 Looking forward to your verification notes and feedback.
 ```
